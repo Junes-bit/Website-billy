@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 import json, time, random
 
+print("Server startet...")
+
 app = Flask(__name__)
 
 # ================= DATA =================

@@ -17,6 +17,12 @@ def save(data):
 
 data = load()
 
+import os
+
+if not os.path.exists("data.json"):
+    with open("data.json", "w") as f:
+        json.dump({}, f)
+
 def user(uid):
     if uid not in data:
         data[uid] = {

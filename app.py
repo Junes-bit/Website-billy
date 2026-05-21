@@ -143,7 +143,7 @@ def daily():
 @app.route("/coinflip")
 def coinflip():
     uid = request.args.get("user")
-    bet = int(request.args.get("bet"))
+    bet = int(request.args.get("bet", 0))
     choice = request.args.get("choice")
 
     u = user(uid)

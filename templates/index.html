@@ -1,25 +1,39 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Button Counter</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
-  <div class="panel">
+<div class="game">
 
-    <h1>Counter Projekt</h1>
-    <p>Klicke auf den Button</p>
+    <div class="sockel"></div>
 
-    <button id="btn">
-      KLICK <span id="count">0</span>
+    <button id="clickBtn">
+        <img src="https://i.imgur.com/3QZQZQZ.png" alt="button">
     </button>
 
-  </div>
+    <div id="counter">0</div>
+
 </div>
 
-<script src="script.js"></script>
+<script>
+let count = 0;
+
+const btn = document.getElementById("clickBtn");
+const counter = document.getElementById("counter");
+
+btn.addEventListener("click", () => {
+    count++;
+    counter.innerText = count;
+
+    btn.classList.add("pop");
+    setTimeout(() => btn.classList.remove("pop"), 120);
+});
+</script>
+
 </body>
 </html>

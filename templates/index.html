@@ -1,44 +1,25 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clicker</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8">
+  <title>Button Counter</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="background-glow"></div>
-
 <div class="container">
+  <div class="panel">
 
-    <div class="platform"></div>
+    <h1>Counter Projekt</h1>
+    <p>Klicke auf den Button</p>
 
-    <button id="clickBtn">0</button>
+    <button id="btn">
+      KLICK <span id="count">0</span>
+    </button>
 
+  </div>
 </div>
 
-<script>
-
-let count = 0;
-
-const btn = document.getElementById("clickBtn");
-
-btn.addEventListener("click", () => {
-
-    count++;
-
-    btn.innerText = count;
-
-    btn.classList.remove("animate");
-
-    void btn.offsetWidth;
-
-    btn.classList.add("animate");
-
-});
-
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>

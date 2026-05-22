@@ -1,87 +1,54 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
-    width: 100vw;
+    margin: 0;
     height: 100vh;
-    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle at center, #ff4d4d 0%, #7a0000 100%);
+    background: #f5efe8;
     font-family: Arial, sans-serif;
 }
 
-.background-glow {
-    position: absolute;
-    width: 700px;
-    height: 700px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 50%;
-    filter: blur(120px);
-}
-
-.container {
+.game {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.platform {
+/* SOCKEL (Bild) */
+.sockel {
     width: 420px;
-    height: 80px;
-    background: linear-gradient(to bottom, #9a9a9a, #4f4f4f);
-    border-radius: 40px;
+    height: 120px;
+    background-image: url("https://i.imgur.com/1cXzQ9m.png");
+    background-size: cover;
+    background-position: center;
     position: absolute;
-    bottom: -35px;
-    box-shadow:
-        0 15px 30px rgba(0,0,0,0.4),
-        inset 0 5px 10px rgba(255,255,255,0.2);
+    bottom: -40px;
 }
 
+/* BUTTON */
 #clickBtn {
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
     border: none;
-    background: radial-gradient(circle at top, #ff5b5b, #c30000);
-    color: white;
-    font-size: 70px;
-    font-weight: bold;
+    background: none;
     cursor: pointer;
-    position: relative;
     z-index: 2;
+}
 
-    box-shadow:
-        0 20px 40px rgba(0,0,0,0.45),
-        inset 0 10px 20px rgba(255,255,255,0.25),
-        inset 0 -10px 20px rgba(0,0,0,0.35);
-
+#clickBtn img {
+    width: 220px;
+    height: 220px;
     transition: transform 0.1s ease;
 }
 
-#clickBtn:hover {
-    transform: scale(1.03);
+/* Klick Animation */
+.pop img {
+    transform: scale(0.9);
 }
 
-.animate {
-    animation: pop 0.18s ease;
-}
-
-@keyframes pop {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(0.92);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+/* COUNTER */
+#counter {
+    margin-top: 20px;
+    font-size: 50px;
+    font-weight: bold;
+    color: #3a2f2a;
 }

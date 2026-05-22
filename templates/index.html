@@ -1,41 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-    <title>BillyBot Web</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
+<div class="background-glow"></div>
+
 <div class="container">
-    <h1>🎮 BillyBot Web</h1>
 
-    <input id="user" placeholder="User ID">
+    <div class="platform"></div>
 
-    <div class="buttons">
-        <button onclick="me()">👤 ME</button>
-        <button onclick="inventory()">🎒 INVENTORY</button>
-    <input id="name" placeholder="Name">
-<input id="age" placeholder="Age">
-<button onclick="register()">REGISTER</button>
+    <button id="clickBtn">0</button>
 
-    <p id="output"></p>
 </div>
 
 <script>
-async function me() {
-    let user = document.getElementById("user").value;
-    let res = await fetch("/me?user=" + user);
-    document.getElementById("output").innerText = await res.text();
-}
 
-async function inventory() {
-    let user = document.getElementById("user").value;
-    let res = await fetch("/me?user=" + user);
-    let data = await res.json();
+let count = 0;
 
-    document.getElementById("output").innerText =
-        JSON.stringify(data.inventory, null, 2);
-}
+const btn = document.getElementById("clickBtn");
+
+btn.addEventListener("click", () => {
+
+    count++;
+
+    btn.innerText = count;
+
+    btn.classList.remove("animate");
+
+    void btn.offsetWidth;
+
+    btn.classList.add("animate");
+
+});
+
 </script>
 
 </body>

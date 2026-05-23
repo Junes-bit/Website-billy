@@ -3,24 +3,43 @@ import os
 
 app = Flask(__name__)
 
-players = {}  # {name: score}
+players = {}
+user_data = {}
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("/save_score", methods=["POST"])
-def save_score():
+# -------- SAVE GAME --------
+@app.route("/save", methods=["POST"])
+def save():
 
     data = request.json
     name = data["name"]
-    score = data["score"]
 
-    players[name] = max(players.get(name, 0), score)
+    user_data[name] = {
+        "coins": data["coins"],
+        "power": data["power"],
+        "skin": data["skin"],
+        "owned": data["owned"]
+    }
 
-    return jsonify({"success": True})
+    players[name] = data["coins"]
 
+    return jsonify({"ok": True})
 
+# -------- LOAD GAME --------
+@app.route("/load/<name>")
+def load(name):
+
+    return jsonify(user_data.get(name, {
+        "coins": 0,
+        "power": 1,
+        "skin": "#3b82f6",
+        "owned": ["blue"]
+    }))
+
+# -------- LEADERBOARD --------
 @app.route("/leaderboard")
 def leaderboard():
 
@@ -32,9 +51,7 @@ def leaderboard():
 
     return jsonify(sorted_players[:10])
 
-
 if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 5000))
-
     app.run(host="0.0.0.0", port=port)

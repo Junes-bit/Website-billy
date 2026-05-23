@@ -4,51 +4,61 @@
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Clicker Game</title>
 
 <link rel="stylesheet" href="/static/style.css">
 
-<!-- Font -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
 </head>
 
 <body>
 
-<!-- NAME -->
+<!-- NAME SCREEN -->
 <div id="nameScreen">
 
-<h1>👤 Name</h1>
+    <h1>👤 Name</h1>
 
-<input id="nameInput" placeholder="Dein Name">
+    <input id="nameInput" placeholder="Dein Name">
 
-<button onclick="startGame()">Start</button>
+    <button onclick="startGame()">
+        Start
+    </button>
 
 </div>
 
 <!-- TOPBAR -->
 <div class="topbar hidden" id="ui">
 
-<button onclick="show('game')">🎮</button>
-<button onclick="show('shop')">🛒</button>
-<button onclick="show('leaderboard')">🏆</button>
+    <button onclick="show('game')">
+        🎮 <span>Spiel</span>
+    </button>
+
+    <button onclick="show('shop')">
+        🛒 <span>Shop</span>
+    </button>
+
+    <button onclick="show('leaderboard')">
+        🏆 <span>Ranking</span>
+    </button>
 
 </div>
 
 <!-- GAME -->
 <div id="game" class="menu hidden">
 
-<div id="coins">0</div>
+    <div id="coins">0</div>
 
-<div id="power">⚡ 1 pro Klick</div>
+    <div id="power">
+        ⚡ 1 pro Klick
+    </div>
 
-<button id="click"></button>
+    <button id="click"></button>
 
 </div>
 
@@ -61,41 +71,100 @@ content="width=device-width, initial-scale=1.0">
 
     <div class="shopGrid">
 
-        <div class="card" id="blueSkin" onclick="selectSkin('#3b82f6', 'blueSkin')">
+        <!-- BLUE -->
+        <div class="card selected"
+             id="blueSkin"
+             onclick="selectSkin('#3b82f6', 'blueSkin')">
+
             🔵 Blau
+
         </div>
 
-        <div class="card" id="redSkin" onclick="buySkin('redSkin', 50, '#ef4444')">
-            🔴 Rot<br><span>50 Coins</span>
+        <!-- RED -->
+        <div class="card"
+             id="redSkin"
+             onclick="buySkin('redSkin', 50, '#ef4444')">
+
+            🔴 Rot
+
+            <span class="price">
+                50 Coins
+            </span>
+
         </div>
 
-        <div class="card" id="greenSkin" onclick="buySkin('greenSkin', 150, '#22c55e')">
-            🟢 Grün<br><span>150 Coins</span>
+        <!-- GREEN -->
+        <div class="card"
+             id="greenSkin"
+             onclick="buySkin('greenSkin', 150, '#22c55e')">
+
+            🟢 Grün
+
+            <span class="price">
+                150 Coins
+            </span>
+
         </div>
 
-        <div class="card" id="goldSkin" onclick="buySkin('goldSkin', 300, 'gold')">
-            🟡 Gold<br><span>300 Coins</span>
+        <!-- GOLD -->
+        <div class="card"
+             id="goldSkin"
+             onclick="buySkin('goldSkin', 300, 'gold')">
+
+            🟡 Gold
+
+            <span class="price">
+                300 Coins
+            </span>
+
         </div>
 
-        <div class="card" id="diamondSkin" onclick="buySkin('diamondSkin', 500, '#38bdf8')">
-            💎 Diamant<br><span>500 Coins</span>
+        <!-- DIAMOND -->
+        <div class="card"
+             id="diamondSkin"
+             onclick="buySkin('diamondSkin', 500, '#38bdf8')">
+
+            💎 Diamant
+
+            <span class="price">
+                500 Coins
+            </span>
+
         </div>
 
     </div>
 
+    <!-- UPGRADES -->
     <h2>⬆️ Upgrades</h2>
 
     <div class="shopGrid">
-<div class="card" onclick="buyUpgrade(getUpgradePrice(50),1)">
-+1 Klick<br><span id="u1"></span>
-</div>
 
-      <div class="card" onclick="buyUpgrade(getUpgradePrice(150),5)">
-+5 Klick<br><span id="u2"></span>
-</div>
-<div class="card" onclick="buyUpgrade(getUpgradePrice(500),10)">
-+10 Klick<br><span id="u3"></span>
-</div>
+        <div class="card"
+             onclick="buyUpgrade(getUpgradePrice(50),1)">
+
+            +1 Klick
+
+            <span id="u1"></span>
+
+        </div>
+
+        <div class="card"
+             onclick="buyUpgrade(getUpgradePrice(150),5)">
+
+            +5 Klick
+
+            <span id="u2"></span>
+
+        </div>
+
+        <div class="card"
+             onclick="buyUpgrade(getUpgradePrice(500),10)">
+
+            +10 Klick
+
+            <span id="u3"></span>
+
+        </div>
 
     </div>
 
@@ -104,9 +173,9 @@ content="width=device-width, initial-scale=1.0">
 <!-- LEADERBOARD -->
 <div id="leaderboard" class="menu hidden">
 
-<h1>🏆 Leaderboard</h1>
+    <h1>🏆 Leaderboard</h1>
 
-<ul id="list"></ul>
+    <ul id="list"></ul>
 
 </div>
 

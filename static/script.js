@@ -13,11 +13,36 @@ const click = document.getElementById("click");
 function startGame(){
 
     const input = document.getElementById("nameInput");
+    const pass = prompt("🔐 Passwort setzen oder eingeben:");
 
-    if(!input || !input.value) return;
+    if(!input.value || !pass) return;
 
     name = input.value;
 
+    const savedPass = localStorage.getItem("pass_" + name);
+
+    // neues Konto
+    if(!savedPass){
+        localStorage.setItem("pass_" + name, pass);
+    }
+
+    // falsches Passwort
+    if(savedPass && savedPass !== pass){
+        alert("Falsches Passwort!");
+        return;
+    }
+
+    // 🔒 PRO GERÄT LOCK
+    const deviceUser = localStorage.getItem("activeUser");
+
+    if(deviceUser && deviceUser !== name){
+        alert("❌ Dieses Gerät hat schon einen Account!");
+        return;
+    }
+
+    localStorage.setItem("activeUser", name);
+
+    // LOAD GAME
     fetch("/load/" + name)
     .then(r => r.json())
     .then(data => {
@@ -31,21 +56,9 @@ function startGame(){
         document.getElementById("ui").classList.remove("hidden");
         document.getElementById("game").classList.remove("hidden");
 
-        click.style.background = skin;
-
-        update();
-    })
-    .catch(() => {
-
-        // fallback wenn neuer Spieler
-        document.getElementById("nameScreen").style.display = "none";
-        document.getElementById("ui").classList.remove("hidden");
-        document.getElementById("game").classList.remove("hidden");
-
         update();
     });
 }
-
 click.addEventListener("click", () => {
 
     coins += power;

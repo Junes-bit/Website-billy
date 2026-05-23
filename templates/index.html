@@ -55,27 +55,51 @@ content="width=device-width, initial-scale=1.0">
 <!-- SHOP -->
 <div id="shop" class="menu hidden">
 
-<h1>🛒 SHOP</h1>
+    <h1>🛒 SHOP</h1>
 
-<h2>🎨 Skins</h2>
+    <h2>🎨 Skins</h2>
 
-<button onclick="setSkin('#3b82f6')">🔵 Blau</button>
+    <div class="shopGrid">
 
-<button onclick="buySkin('red', 50, '#ef4444')">🔴 Rot - 50</button>
+        <div class="card" id="blueSkin" onclick="selectSkin('#3b82f6', 'blueSkin')">
+            🔵 Blau
+        </div>
 
-<button onclick="buySkin('green', 150, '#22c55e')">🟢 Grün - 150</button>
+        <div class="card" id="redSkin" onclick="buySkin('redSkin', 50, '#ef4444')">
+            🔴 Rot<br><span>50 Coins</span>
+        </div>
 
-<button onclick="buySkin('gold', 300, 'gold')">🟡 Gold - 300</button>
+        <div class="card" id="greenSkin" onclick="buySkin('greenSkin', 150, '#22c55e')">
+            🟢 Grün<br><span>150 Coins</span>
+        </div>
 
-<button onclick="buySkin('diamond', 500, '#38bdf8')">💎 Diamant - 500</button>
+        <div class="card" id="goldSkin" onclick="buySkin('goldSkin', 300, 'gold')">
+            🟡 Gold<br><span>300 Coins</span>
+        </div>
 
-<h2>⬆️ Upgrades</h2>
+        <div class="card" id="diamondSkin" onclick="buySkin('diamondSkin', 500, '#38bdf8')">
+            💎 Diamant<br><span>500 Coins</span>
+        </div>
 
-<button onclick="buyUpgrade(50,1)">+1 Klick - 50</button>
+    </div>
 
-<button onclick="buyUpgrade(150,5)">+5 Klick - 150</button>
+    <h2>⬆️ Upgrades</h2>
 
-<button onclick="buyUpgrade(500,10)">+10 Klick - 500</button>
+    <div class="shopGrid">
+
+        <div class="card" onclick="buyUpgrade(50,1)">
+            +1 Klick<br><span>50 Coins</span>
+        </div>
+
+        <div class="card" onclick="buyUpgrade(150,5)">
+            +5 Klick<br><span>150 Coins</span>
+        </div>
+
+        <div class="card" onclick="buyUpgrade(500,10)">
+            +10 Klick<br><span>500 Coins</span>
+        </div>
+
+    </div>
 
 </div>
 

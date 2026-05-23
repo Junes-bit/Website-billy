@@ -19,6 +19,34 @@ function startGame(){
 
     name = input.value;
 
+    const savedPass = localStorage.getItem("pass_" + name);
+
+    let pass = "";
+
+    if(!savedPass){
+        pass = prompt("🔐 Neues Passwort setzen:");
+        if(!pass) return;
+
+        localStorage.setItem("pass_" + name, pass);
+    } else {
+        pass = prompt("🔐 Passwort eingeben:");
+        if(pass !== savedPass){
+            alert("❌ Falsches Passwort!");
+            return;
+        }
+    }
+
+    // 🔒 1 Account pro Gerät
+    const deviceUser = localStorage.getItem("activeUser");
+
+    if(deviceUser && deviceUser !== name){
+        alert("❌ Dieses Gerät nutzt bereits einen Account!");
+        return;
+    }
+
+    localStorage.setItem("activeUser", name);
+
+    // LOAD GAME
     fetch("/load/" + name)
     .then(r => r.json())
     .then(data => {
@@ -31,7 +59,8 @@ function startGame(){
         document.getElementById("nameScreen").style.display = "none";
         document.getElementById("ui").classList.remove("hidden");
         document.getElementById("game").classList.remove("hidden");
-click.style.background = skin;
+
+       click.style.background = skin;
 
 // 💎 WICHTIG: UI richtig anwenden
 coinsEl.style.color = skin;
@@ -42,6 +71,11 @@ document.querySelectorAll(".card")
 .forEach(c => c.classList.remove("selected"));
 
 update();
+
+        coinsEl.style.color = skin;
+        coinsEl.style.textShadow = `0 0 20px ${skin}`;
+
+        update();
     })
     .catch(() => {
 
@@ -50,9 +84,23 @@ update();
         document.getElementById("game").classList.remove("hidden");
 
         update();
+
+        setTimeout(() => {
+
+    const cards = document.querySelectorAll(".card");
+
+    cards.forEach(card => {
+
+        const onclick = card.getAttribute("onclick");
+
+        if(onclick && onclick.includes(skin)){
+            card.classList.add("selected");
+        }
+    })
+
+}, 100);
     });
 }
-
 // ---------------- CLICK ----------------
 click.addEventListener("click", () => {
 

@@ -1,86 +1,128 @@
 from flask import Flask, render_template, request, jsonify
+import sqlite3
 import os
-import json
 
 app = Flask(__name__)
 
-DATA_FILE = "data.json"
+DB = "game.db"
 
 
-# -------- LOAD FROM FILE --------
-def load_data():
-    if not os.path.exists(DATA_FILE):
-        return {}
-    with open(DATA_FILE, "r") as f:
-        return json.load(f)
+# ---------------- DB ----------------
+def connect():
+    conn = sqlite3.connect(DB)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
-# -------- SAVE TO FILE --------
-def save_data(data):
-    with open(DATA_FILE, "w") as f:
-        json.dump(data, f)
+def setup():
+
+    conn = connect()
+
+    conn.execute("""
+    CREATE TABLE IF NOT EXISTS players(
+        name TEXT PRIMARY KEY,
+        coins INTEGER,
+        power INTEGER,
+        skin TEXT,
+        owned TEXT
+    )
+    """)
+
+    conn.commit()
+    conn.close()
 
 
-# -------- HOME --------
+setup()
+
+
+# ---------------- HOME ----------------
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# -------- SAVE GAME --------
+# ---------------- SAVE ----------------
 @app.route("/save", methods=["POST"])
 def save():
 
-    data = load_data()
-    req = request.json
+    data = request.json
 
-    name = req["name"]
+    conn = connect()
 
-    data[name] = {
-        "coins": req["coins"],
-        "power": req["power"],
-        "skin": req["skin"],
-        "owned": req["owned"]
-    }
+    conn.execute("""
+    INSERT OR REPLACE INTO players
+    (name, coins, power, skin, owned)
+    VALUES (?, ?, ?, ?, ?)
+    """, (
+        data["name"],
+        data["coins"],
+        data["power"],
+        data["skin"],
+        ",".join(data["owned"])
+    ))
 
-    save_data(data)
+    conn.commit()
+    conn.close()
 
     return jsonify({"ok": True})
 
 
-# -------- LOAD GAME --------
+# ---------------- LOAD ----------------
 @app.route("/load/<name>")
 def load(name):
 
-    data = load_data()
+    conn = connect()
 
-    return jsonify(data.get(name, {
+    player = conn.execute("""
+    SELECT * FROM players WHERE name=?
+    """, (name,)).fetchone()
+
+    conn.close()
+
+    if player:
+
+        return jsonify({
+            "coins": player["coins"],
+            "power": player["power"],
+            "skin": player["skin"],
+            "owned": player["owned"].split(",")
+        })
+
+    return jsonify({
         "coins": 0,
         "power": 1,
         "skin": "#3b82f6",
         "owned": ["blue"]
-    }))
+    })
 
 
-# -------- LEADERBOARD --------
+# ---------------- LEADERBOARD ----------------
 @app.route("/leaderboard")
 def leaderboard():
 
-    data = load_data()
+    conn = connect()
 
-    sorted_players = sorted(
-        data.items(),
-        key=lambda x: x[1]["coins"],
-        reverse=True
-    )
+    players = conn.execute("""
+    SELECT name, coins
+    FROM players
+    ORDER BY coins DESC
+    LIMIT 10
+    """).fetchall()
+
+    conn.close()
 
     return jsonify([
-        [name, info["coins"]] for name, info in sorted_players[:10]
+        [p["name"], p["coins"]]
+        for p in players
     ])
 
 
-# -------- START SERVER --------
+# ---------------- RUN ----------------
 if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+
+    app.run(
+        host="0.0.0.0",
+        port=port
+    )

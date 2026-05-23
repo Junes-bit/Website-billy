@@ -2,38 +2,47 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clicker Game</title>
-    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-<div class="game">
+<div class="container">
 
-    <div class="sockel"></div>
+    <h1>🔥 Clicker Game</h1>
 
-    <button id="clickBtn">
-        <img src="https://m.media-amazon.com/images/I/61QKhYL%2BeCL.png" alt="button">
+    <div id="score">0</div>
+
+    <button id="clickButton">
+        CLICK
     </button>
 
-    <div id="counter">0</div>
+    <div class="shop">
+        <h2>Shop</h2>
+
+        <button onclick="buyColor('red', 50)">
+            Rot kaufen (50)
+        </button>
+
+        <button onclick="buyColor('blue', 100)">
+            Blau kaufen (100)
+        </button>
+
+        <button onclick="buyColor('gold', 250)">
+            Gold kaufen (250)
+        </button>
+    </div>
+
+    <div class="leaderboard">
+        <h2>Leaderboard</h2>
+
+        <ul id="leaderboardList"></ul>
+    </div>
 
 </div>
 
-<script>
-let count = 0;
-
-const btn = document.getElementById("clickBtn");
-const counter = document.getElementById("counter");
-
-btn.addEventListener("click", () => {
-    count++;
-    counter.innerText = count;
-
-    btn.classList.add("pop");
-    setTimeout(() => btn.classList.remove("pop"), 120);
-});
-</script>
+<script src="/static/script.js"></script>
 
 </body>
 </html>

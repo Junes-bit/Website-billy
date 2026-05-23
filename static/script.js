@@ -149,11 +149,23 @@ function buyUpgrade(price, add){
         update();
         save();
 
+        // 💥 VISUAL FEEDBACK
+        powerEl.innerText = "⚡ +" + add + " Upgrade gekauft!";
+
+        powerEl.style.transform = "scale(1.2)";
+        powerEl.style.color = "#38bdf8";
+
+        setTimeout(() => {
+
+            powerEl.style.transform = "scale(1)";
+            update();
+
+        }, 800);
+
     } else {
         alert("Zu wenig Coins");
     }
 }
-
 function save(){
 
     fetch("/save",{

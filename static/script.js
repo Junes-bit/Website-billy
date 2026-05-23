@@ -31,10 +31,17 @@ function startGame(){
         document.getElementById("nameScreen").style.display = "none";
         document.getElementById("ui").classList.remove("hidden");
         document.getElementById("game").classList.remove("hidden");
+click.style.background = skin;
 
-        click.style.background = skin;
+// 💎 WICHTIG: UI richtig anwenden
+coinsEl.style.color = skin;
+coinsEl.style.textShadow = `0 0 20px ${skin}`;
 
-        update();
+// optional: selected skin visuell markieren
+document.querySelectorAll(".card")
+.forEach(c => c.classList.remove("selected"));
+
+update();
     })
     .catch(() => {
 

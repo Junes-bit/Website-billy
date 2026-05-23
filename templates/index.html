@@ -3,172 +3,70 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-    content="width=device-width,
-    initial-scale=1.0,
-    maximum-scale=1.0,
-    user-scalable=no">
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0,
+user-scalable=no">
 
-    <title>Clicker Game</title>
+<title>Clicker Game</title>
 
-    <link rel="stylesheet"
-    href="/static/style.css">
+<link rel="stylesheet" href="/static/style.css">
 
 </head>
 
 <body>
 
-<div class="topbar">
+<!-- NAME SCREEN -->
+<div id="nameScreen">
 
-    <button onclick="showMenu('game')">
-        🎮 Spiel
-    </button>
+    <h1>👤 Dein Name</h1>
 
-    <button onclick="showMenu('shop')">
-        🛒 Shop
-    </button>
+    <input id="nameInput"
+    placeholder="Name eingeben">
 
-    <button onclick="showMenu('leaderboard')">
-        🏆 Leaderboard
+    <button onclick="startGame()">
+        Start
     </button>
 
 </div>
 
-<div id="gameMenu" class="menu">
+<!-- TOPBAR -->
+<div class="topbar hidden"
+id="gameUI">
 
-    <h1>💎 CLICKER GAME</h1>
+    <button onclick="showMenu('game')">🎮</button>
+    <button onclick="showMenu('shop')">🛒</button>
+    <button onclick="showMenu('leaderboard')">🏆</button>
+
+</div>
+
+<!-- GAME -->
+<div id="gameMenu" class="menu hidden">
 
     <div id="coins">0</div>
-
-    <div id="powerText">
-        ⚡ Pro Klick: 1
-    </div>
 
     <button id="clickButton"></button>
 
 </div>
 
-<div id="shopMenu"
-class="menu hidden">
+<!-- SHOP -->
+<div id="shopMenu" class="menu hidden">
 
-    <h1>🛒 SHOP</h1>
+    <h1>Shop</h1>
 
-    <h2>🎨 Skins</h2>
-
-    <div class="skins">
-
-        <button
-        onclick="selectSkin('#3b82f6')">
-
-            🔵 Blau
-        </button>
-
-        <button
-        id="redSkin"
-
-        onclick="
-        buySkin(
-        '#ef4444',
-        50,
-        'redSkin'
-        )">
-
-            🔴 Rot - 50
-        </button>
-
-        <button
-        id="greenSkin"
-
-        onclick="
-        buySkin(
-        '#22c55e',
-        150,
-        'greenSkin'
-        )">
-
-            🟢 Grün - 150
-        </button>
-
-        <button
-        id="goldSkin"
-
-        onclick="
-        buySkin(
-        'gold',
-        300,
-        'goldSkin'
-        )">
-
-            🟡 Gold - 300
-        </button>
-
-        <button
-        id="diamondSkin"
-
-        onclick="
-        buySkin(
-        '#38bdf8',
-        500,
-        'diamondSkin'
-        )">
-
-            💎 Diamant - 500
-        </button>
-
-    </div>
-
-    <h2>⬆️ Upgrades</h2>
-
-    <div class="upgrades">
-
-        <button
-        onclick="
-        buyUpgrade(
-        50,
-        1
-        )">
-
-            +1 pro Klick - 50
-        </button>
-
-        <button
-        onclick="
-        buyUpgrade(
-        150,
-        5
-        )">
-
-            +5 pro Klick - 150
-        </button>
-
-        <button
-        onclick="
-        buyUpgrade(
-        500,
-        10
-        )">
-
-            +10 pro Klick - 500
-        </button>
-
-    </div>
+    <button onclick="buyUpgrade(50,1)">+1 Klick (50)</button>
+    <button onclick="buyUpgrade(150,5)">+5 Klick (150)</button>
 
 </div>
 
-<div id="leaderboardMenu"
-class="menu hidden">
+<!-- LEADERBOARD -->
+<div id="leaderboardMenu" class="menu hidden">
 
     <h1>🏆 Leaderboard</h1>
 
-    <ol class="leaderboard">
-
-        <li>Max - 9999</li>
-        <li>Lisa - 7000</li>
-        <li>Tom - 4000</li>
-
-    </ol>
+    <ul id="leaderboardList"></ul>
 
 </div>
 

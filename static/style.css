@@ -1,1 +1,68 @@
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
+    text-align:center;
+}
 
+.hidden{ display:none; }
+
+#nameScreen{
+    margin-top:150px;
+}
+
+input{
+    padding:10px;
+    font-size:18px;
+}
+
+button{
+    padding:12px 20px;
+    margin:10px;
+    border:none;
+    border-radius:12px;
+    background:#1e293b;
+    color:white;
+    cursor:pointer;
+}
+
+.topbar{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:15px;
+    background:#111827;
+}
+
+.menu{
+    padding-top:30px;
+}
+
+#coins{
+    font-size:80px;
+    margin:20px;
+}
+
+#click{
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    border:none;
+    background:#3b82f6;
+}
+
+ul{
+    list-style:none;
+    padding:0;
+}
+
+li{
+    margin:10px;
+    padding:10px;
+    background:#1e293b;
+    width:200px;
+    margin-left:auto;
+    margin-right:auto;
+    border-radius:10px;
+}

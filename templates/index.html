@@ -86,18 +86,16 @@ content="width=device-width, initial-scale=1.0">
     <h2>⬆️ Upgrades</h2>
 
     <div class="shopGrid">
+<div class="card" onclick="buyUpgrade(getUpgradePrice(50),1)">
++1 Klick<br><span id="u1"></span>
+</div>
 
-        <div class="card" onclick="buyUpgrade(50,1)">
-            +1 Klick<br><span>50 Coins</span>
-        </div>
-
-        <div class="card" onclick="buyUpgrade(150,5)">
-            +5 Klick<br><span>150 Coins</span>
-        </div>
-
-        <div class="card" onclick="buyUpgrade(500,10)">
-            +10 Klick<br><span>500 Coins</span>
-        </div>
+      <div class="card" onclick="buyUpgrade(getUpgradePrice(150),5)">
++5 Klick<br><span id="u2"></span>
+</div>
+<div class="card" onclick="buyUpgrade(getUpgradePrice(500),10)">
++10 Klick<br><span id="u3"></span>
+</div>
 
     </div>
 

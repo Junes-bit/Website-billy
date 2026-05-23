@@ -1,63 +1,76 @@
-let score = 0;
+let coins = 0;
 
-const scoreText = document.getElementById("score");
-const button = document.getElementById("clickButton");
+const coinsText =
+    document.getElementById("coins");
 
-const clickSound = new Audio("/static/click.mp3");
-const buySound = new Audio("/static/buy.mp3");
+const clickButton =
+    document.getElementById("clickButton");
 
-button.addEventListener("click", () => {
+clickButton.addEventListener("click", () => {
 
-    score++;
+    coins++;
 
-    scoreText.innerText = score;
+    coinsText.innerText = coins;
 
-    clickSound.currentTime = 0;
-    clickSound.play();
-
-    button.animate([
-        { transform: "scale(1)" },
-        { transform: "scale(1.1)" },
-        { transform: "scale(1)" }
-    ], {
-        duration: 150
+    clickButton.animate([
+        { transform:"scale(1)" },
+        { transform:"scale(1.1)" },
+        { transform:"scale(1)" }
+    ],{
+        duration:100
     });
+
 });
 
-function buyColor(color, price) {
+function showMenu(menu){
 
-    if (score >= price) {
+    document
+        .getElementById("gameMenu")
+        .classList.add("hidden");
 
-        score -= price;
+    document
+        .getElementById("shopMenu")
+        .classList.add("hidden");
 
-        scoreText.innerText = score;
+    document
+        .getElementById("leaderboardMenu")
+        .classList.add("hidden");
 
-        button.style.background = color;
+    if(menu === "game"){
+        document
+            .getElementById("gameMenu")
+            .classList.remove("hidden");
+    }
 
-        buySound.currentTime = 0;
-        buySound.play();
+    if(menu === "shop"){
+        document
+            .getElementById("shopMenu")
+            .classList.remove("hidden");
+    }
+
+    if(menu === "leaderboard"){
+        document
+            .getElementById("leaderboardMenu")
+            .classList.remove("hidden");
     }
 }
 
-async function loadLeaderboard() {
+function buySkin(color, price, id){
 
-    const response = await fetch("/leaderboard");
+    if(coins >= price){
 
-    const data = await response.json();
+        coins -= price;
 
-    const list = document.getElementById("leaderboardList");
+        coinsText.innerText = coins;
 
-    list.innerHTML = "";
+        clickButton.style.background = color;
 
-    data.forEach(player => {
+        document
+            .getElementById(id)
+            .innerText = "✅ Gekauft";
 
-        const li = document.createElement("li");
+    }else{
 
-        li.innerText =
-            player.name + " - " + player.score;
-
-        list.appendChild(li);
-    });
+        alert("Nicht genug Coins!");
+    }
 }
-
-loadLeaderboard();

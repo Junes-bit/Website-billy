@@ -58,18 +58,35 @@ function show(id){
     if(id === "leaderboard") loadLB();
 }
 
-function setSkin(c){
+let owned = JSON.parse(localStorage.getItem("owned")) || [];
+let selectedSkin = localStorage.getItem("skin") || "#3b82f6";
 
-    skin = c;
-    click.style.background = c;
+function selectSkin(color, id){
+
+    selectedSkin = color;
+
+    document.querySelectorAll(".card")
+    .forEach(c => c.classList.remove("selected"));
+
+    const el = document.getElementById(id);
+    el.classList.add("selected");
+
+    el.style.setProperty("--glow", color);
+
+    click.style.background = color;
+
+    coinsEl.style.color = color;
+    coinsEl.style.textShadow = `0 0 20px ${color}`;
+
     save();
 }
 
 function buySkin(id, price, color){
 
-    if(owned.includes(id)){
+    const el = document.getElementById(id);
 
-        setSkin(color);
+    if(owned.includes(id)){
+        selectSkin(color, id);
         return;
     }
 
@@ -78,13 +95,17 @@ function buySkin(id, price, color){
         coins -= price;
         owned.push(id);
 
-        setSkin(color);
+        el.innerHTML = "🎨 Auswählen";
+
+        selectSkin(color, id);
+
         update();
         save();
 
-    } else alert("Zu wenig Coins");
+    } else {
+        alert("Nicht genug Coins");
+    }
 }
-
 function buyUpgrade(price, add){
 
     if(coins >= price){

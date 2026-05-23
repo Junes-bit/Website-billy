@@ -87,9 +87,26 @@ function startGame(){
         document.getElementById("ui").classList.remove("hidden");
         document.getElementById("game").classList.remove("hidden");
 
-        applySkin(skin);
-        update();
-    });
+function applySkin(value){
+
+    const click = document.getElementById("click");
+
+    // RESET
+    click.style.background = "";
+    click.style.backgroundImage = "";
+
+    // 🍕 BILD SKIN
+    if(value.endsWith(".png")){
+
+        click.style.backgroundImage = `url('/static/${value}')`;
+        click.style.backgroundSize = "cover";
+        click.style.backgroundPosition = "center";
+
+    } 
+    // 🎨 FARBE
+    else {
+        click.style.background = value;
+    }
 }
 
 // ---------------- CLICK ----------------

@@ -1,154 +1,77 @@
 let coins = 0;
-
 let clickPower = 1;
+let playerName = "";
 
-let ownedSkins = [
-    "#3b82f6"
-];
+const coinsText = document.getElementById("coins");
+const clickButton = document.getElementById("clickButton");
 
-const coinsText =
-document.getElementById("coins");
+function startGame(){
 
-const powerText =
-document.getElementById("powerText");
+    playerName =
+    document.getElementById("nameInput").value;
 
-const clickButton =
-document.getElementById("clickButton");
+    if(!playerName) return;
+
+    document.getElementById("nameScreen").style.display = "none";
+    document.getElementById("gameUI").classList.remove("hidden");
+    document.getElementById("gameMenu").classList.remove("hidden");
+
+    loadLeaderboard();
+}
 
 clickButton.addEventListener("click", () => {
 
     coins += clickPower;
+    coinsText.innerText = coins;
 
-    updateUI();
-
-    clickButton.animate([
-
-        {
-            transform:"scale(1)"
-        },
-
-        {
-            transform:"scale(1.08)"
-        },
-
-        {
-            transform:"scale(1)"
-        }
-
-    ],{
-
-        duration:80
+    fetch("/save_score", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            name: playerName,
+            score: coins
+        })
     });
 
 });
 
-function updateUI(){
-
-    coinsText.innerText = coins;
-
-    powerText.innerText =
-    "⚡ Pro Klick: " + clickPower;
-}
-
 function showMenu(menu){
 
-    document
-    .getElementById("gameMenu")
-    .classList.add("hidden");
+    document.getElementById("gameMenu").classList.add("hidden");
+    document.getElementById("shopMenu").classList.add("hidden");
+    document.getElementById("leaderboardMenu").classList.add("hidden");
 
-    document
-    .getElementById("shopMenu")
-    .classList.add("hidden");
-
-    document
-    .getElementById("leaderboardMenu")
-    .classList.add("hidden");
-
-    if(menu === "game"){
-
-        document
-        .getElementById("gameMenu")
-        .classList.remove("hidden");
-    }
-
-    if(menu === "shop"){
-
-        document
-        .getElementById("shopMenu")
-        .classList.remove("hidden");
-    }
+    document.getElementById(menu + "Menu").classList.remove("hidden");
 
     if(menu === "leaderboard"){
-
-        document
-        .getElementById("leaderboardMenu")
-        .classList.remove("hidden");
+        loadLeaderboard();
     }
 }
 
-function buySkin(
-color,
-price,
-id
-){
-
-    if(
-    ownedSkins.includes(color)
-    ){
-
-        selectSkin(color);
-
-        return;
-    }
+function buyUpgrade(price, power){
 
     if(coins >= price){
-
         coins -= price;
-
-        ownedSkins.push(color);
-
-        document
-        .getElementById(id)
-        .innerText =
-        "✅ Auswählen";
-
-        selectSkin(color);
-
-        updateUI();
-
-    }else{
-
-        alert(
-        "Nicht genug Coins!"
-        );
-    }
-}
-
-function selectSkin(color){
-
-    clickButton.style.background =
-    color;
-}
-
-function buyUpgrade(
-price,
-power
-){
-
-    if(coins >= price){
-
-        coins -= price;
-
         clickPower += power;
-
-        updateUI();
-
-    }else{
-
-        alert(
-        "Nicht genug Coins!"
-        );
+        coinsText.innerText = coins;
     }
 }
 
-updateUI();
+async function loadLeaderboard(){
+
+    const res = await fetch("/leaderboard");
+    const data = await res.json();
+
+    const list = document.getElementById("leaderboardList");
+
+    list.innerHTML = "";
+
+    data.forEach(p => {
+
+        const li = document.createElement("li");
+
+        li.innerText = p[0] + " - " + p[1];
+
+        list.appendChild(li);
+    });
+}

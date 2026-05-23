@@ -72,6 +72,11 @@ function update(){
     powerEl.innerText = "⚡ " + power + " pro Klick";
 }
 
+function getUpgradePrice(base){
+
+    return Math.floor(base * (1 + power * 0.15));
+}
+
 function show(id){
 
     document.querySelectorAll(".menu")

@@ -129,31 +129,24 @@ function show(id){
     if(id === "leaderboard") loadLB();
 }
 
-// ---------------- SKIN ----------------
+
 function selectSkin(color, id){
 
     skin = color;
 
     document.querySelectorAll(".card")
-    .forEach(c => {
-        c.classList.remove("selected");
-        const s = c.querySelector(".status");
-        if(s) s.innerText = "";
-    });
+    .forEach(c => c.classList.remove("selected"));
 
     const el = document.getElementById(id);
+
     el.classList.add("selected");
+
+    el.style.setProperty("--glow", color);
 
     click.style.background = color;
 
     coinsEl.style.color = color;
     coinsEl.style.textShadow = `0 0 20px ${color}`;
-
-    const status = el.querySelector(".status");
-    if(status){
-        status.innerText = "✓ Ausgewählt";
-        status.style.color = color;
-    }
 
     save();
 }
@@ -162,17 +155,25 @@ function buySkin(id, price, color){
 
     const el = document.getElementById(id);
 
+    // schon gekauft
     if(owned.includes(id)){
         selectSkin(color, id);
         return;
     }
 
+    // kaufen
     if(coins >= price){
 
         coins -= price;
+
         owned.push(id);
 
-        el.innerHTML = "🎨 Auswählen<div class='status'></div>";
+        // Preis entfernen
+        const priceTag = el.querySelector(".price");
+
+        if(priceTag){
+            priceTag.remove();
+        }
 
         selectSkin(color, id);
 

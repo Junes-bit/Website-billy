@@ -1,60 +1,95 @@
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #0f172a;
-    color: white;
-    text-align: center;
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
+    text-align:center;
 }
 
-.container {
-    padding-top: 40px;
+.topbar{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+
+    padding:20px;
+
+    background:#111827;
 }
 
-h1 {
-    font-size: 48px;
+.topbar button{
+    padding:12px 20px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#1e293b;
+    color:white;
+
+    cursor:pointer;
+
+    font-size:18px;
 }
 
-#score {
-    font-size: 70px;
-    margin: 30px;
-    font-weight: bold;
+.topbar button:hover{
+    background:#334155;
 }
 
-#clickButton {
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    border: none;
-    background: linear-gradient(45deg, #3b82f6, #06b6d4);
-    color: white;
-    font-size: 40px;
-    cursor: pointer;
-    transition: 0.2s;
-    box-shadow: 0 0 40px rgba(0,255,255,0.5);
+.menu{
+    padding-top:40px;
 }
 
-#clickButton:hover {
-    transform: scale(1.08);
+.hidden{
+    display:none;
 }
 
-#clickButton:active {
-    transform: scale(0.95);
+#coins{
+    font-size:70px;
+    margin:20px;
+    font-weight:bold;
 }
 
-.shop {
-    margin-top: 40px;
+#clickButton{
+
+    width:220px;
+    height:220px;
+
+    border-radius:50%;
+    border:none;
+
+    background:#3b82f6;
+
+    cursor:pointer;
+
+    transition:0.15s;
+
+    box-shadow:
+        0 0 40px rgba(0,255,255,0.5);
 }
 
-.shop button {
-    margin: 10px;
-    padding: 15px 25px;
-    border: none;
-    border-radius: 12px;
-    background: #1e293b;
-    color: white;
-    cursor: pointer;
+#clickButton:hover{
+    transform:scale(1.05);
 }
 
-.leaderboard {
-    margin-top: 50px;
+#clickButton:active{
+    transform:scale(0.92);
+}
+
+.skins button{
+
+    display:block;
+
+    margin:20px auto;
+
+    padding:15px 30px;
+
+    border:none;
+    border-radius:12px;
+
+    background:#1e293b;
+
+    color:white;
+
+    font-size:20px;
+
+    cursor:pointer;
 }

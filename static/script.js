@@ -1,77 +1,136 @@
-let coins = 0;
-let clickPower = 1;
-let playerName = "";
+let name = "";
 
-const coinsText = document.getElementById("coins");
-const clickButton = document.getElementById("clickButton");
+let coins = 0;
+let power = 1;
+
+let skin = "#3b82f6";
+let owned = ["blue"];
+
+const coinsEl = document.getElementById("coins");
+const powerEl = document.getElementById("power");
+const click = document.getElementById("click");
 
 function startGame(){
 
-    playerName =
-    document.getElementById("nameInput").value;
+    name = document.getElementById("nameInput").value;
 
-    if(!playerName) return;
+    if(!name) return;
 
-    document.getElementById("nameScreen").style.display = "none";
-    document.getElementById("gameUI").classList.remove("hidden");
-    document.getElementById("gameMenu").classList.remove("hidden");
+    fetch("/load/" + name)
+    .then(r => r.json())
+    .then(data => {
 
-    loadLeaderboard();
+        coins = data.coins;
+        power = data.power;
+        skin = data.skin;
+        owned = data.owned;
+
+        click.style.background = skin;
+
+        document.getElementById("nameScreen").style.display = "none";
+        document.getElementById("ui").classList.remove("hidden");
+        document.getElementById("game").classList.remove("hidden");
+
+        update();
+    });
 }
 
-clickButton.addEventListener("click", () => {
+click.addEventListener("click", () => {
 
-    coins += clickPower;
-    coinsText.innerText = coins;
+    coins += power;
+    update();
+    save();
+});
 
-    fetch("/save_score", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            name: playerName,
-            score: coins
+function update(){
+
+    coinsEl.innerText = coins;
+    powerEl.innerText = "⚡ " + power + " pro Klick";
+}
+
+function show(id){
+
+    document.querySelectorAll(".menu")
+    .forEach(e => e.classList.add("hidden"));
+
+    document.getElementById(id).classList.remove("hidden");
+
+    if(id === "leaderboard") loadLB();
+}
+
+function setSkin(c){
+
+    skin = c;
+    click.style.background = c;
+    save();
+}
+
+function buySkin(id, price, color){
+
+    if(owned.includes(id)){
+
+        setSkin(color);
+        return;
+    }
+
+    if(coins >= price){
+
+        coins -= price;
+        owned.push(id);
+
+        setSkin(color);
+        update();
+        save();
+
+    } else alert("Zu wenig Coins");
+}
+
+function buyUpgrade(price, add){
+
+    if(coins >= price){
+
+        coins -= price;
+        power += add;
+
+        update();
+        save();
+
+    } else alert("Zu wenig Coins");
+}
+
+function save(){
+
+    fetch("/save",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            name,
+            coins,
+            power,
+            skin,
+            owned
         })
     });
 
-});
-
-function showMenu(menu){
-
-    document.getElementById("gameMenu").classList.add("hidden");
-    document.getElementById("shopMenu").classList.add("hidden");
-    document.getElementById("leaderboardMenu").classList.add("hidden");
-
-    document.getElementById(menu + "Menu").classList.remove("hidden");
-
-    if(menu === "leaderboard"){
-        loadLeaderboard();
-    }
 }
 
-function buyUpgrade(price, power){
+function loadLB(){
 
-    if(coins >= price){
-        coins -= price;
-        clickPower += power;
-        coinsText.innerText = coins;
-    }
-}
+    fetch("/leaderboard")
+    .then(r => r.json())
+    .then(data => {
 
-async function loadLeaderboard(){
+        let list = document.getElementById("list");
 
-    const res = await fetch("/leaderboard");
-    const data = await res.json();
+        list.innerHTML = "";
 
-    const list = document.getElementById("leaderboardList");
+        data.forEach(p => {
 
-    list.innerHTML = "";
+            let li = document.createElement("li");
 
-    data.forEach(p => {
+            li.innerText = p[0] + " - " + p[1];
 
-        const li = document.createElement("li");
-
-        li.innerText = p[0] + " - " + p[1];
-
-        list.appendChild(li);
+            list.appendChild(li);
+        });
     });
 }

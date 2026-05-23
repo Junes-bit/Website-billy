@@ -9,21 +9,24 @@ let owned = ["blue"];
 const coinsEl = document.getElementById("coins");
 const powerEl = document.getElementById("power");
 
-// ---------------- SKIN APPLY (WICHTIG) ----------------
+// ---------------- SKIN SYSTEM ----------------
 function applySkin(value){
 
     const click = document.getElementById("click");
 
-    // PNG SKIN
-    if(value && value.includes(".png")){
+    click.style.background = "";
+    click.style.backgroundImage = "";
+
+    // 🍕 IMAGE SKINS
+    if(value && value.endsWith(".png")){
 
         click.style.backgroundImage = `url('/static/${value}')`;
         click.style.backgroundSize = "cover";
         click.style.backgroundPosition = "center";
 
-    } else {
-
-        click.style.backgroundImage = "";
+    } 
+    // 🎨 COLOR SKINS
+    else {
         click.style.background = value;
     }
 
@@ -87,26 +90,9 @@ function startGame(){
         document.getElementById("ui").classList.remove("hidden");
         document.getElementById("game").classList.remove("hidden");
 
-function applySkin(value){
-
-    const click = document.getElementById("click");
-
-    // RESET
-    click.style.background = "";
-    click.style.backgroundImage = "";
-
-    // 🍕 BILD SKIN
-    if(value.endsWith(".png")){
-
-        click.style.backgroundImage = `url('/static/${value}')`;
-        click.style.backgroundSize = "cover";
-        click.style.backgroundPosition = "center";
-
-    } 
-    // 🎨 FARBE
-    else {
-        click.style.background = value;
-    }
+        applySkin(skin);
+        update();
+    });
 }
 
 // ---------------- CLICK ----------------
@@ -146,7 +132,7 @@ function selectSkin(value, id){
     .forEach(c => c.classList.remove("selected"));
 
     const el = document.getElementById(id);
-    el.classList.add("selected");
+    if(el) el.classList.add("selected");
 
     applySkin(value);
 

@@ -6,9 +6,7 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-content="width=device-width,
-initial-scale=1.0,
-user-scalable=no">
+content="width=device-width, initial-scale=1.0">
 
 <title>Clicker Game</title>
 
@@ -18,55 +16,70 @@ user-scalable=no">
 
 <body>
 
-<!-- NAME SCREEN -->
+<!-- NAME -->
 <div id="nameScreen">
 
-    <h1>👤 Dein Name</h1>
+<h1>👤 Name</h1>
 
-    <input id="nameInput"
-    placeholder="Name eingeben">
+<input id="nameInput" placeholder="Dein Name">
 
-    <button onclick="startGame()">
-        Start
-    </button>
+<button onclick="startGame()">Start</button>
 
 </div>
 
 <!-- TOPBAR -->
-<div class="topbar hidden"
-id="gameUI">
+<div class="topbar hidden" id="ui">
 
-    <button onclick="showMenu('game')">🎮</button>
-    <button onclick="showMenu('shop')">🛒</button>
-    <button onclick="showMenu('leaderboard')">🏆</button>
+<button onclick="show('game')">🎮</button>
+<button onclick="show('shop')">🛒</button>
+<button onclick="show('leaderboard')">🏆</button>
 
 </div>
 
 <!-- GAME -->
-<div id="gameMenu" class="menu hidden">
+<div id="game" class="menu hidden">
 
-    <div id="coins">0</div>
+<div id="coins">0</div>
 
-    <button id="clickButton"></button>
+<div id="power">⚡ 1 pro Klick</div>
+
+<button id="click"></button>
 
 </div>
 
 <!-- SHOP -->
-<div id="shopMenu" class="menu hidden">
+<div id="shop" class="menu hidden">
 
-    <h1>Shop</h1>
+<h1>🛒 SHOP</h1>
 
-    <button onclick="buyUpgrade(50,1)">+1 Klick (50)</button>
-    <button onclick="buyUpgrade(150,5)">+5 Klick (150)</button>
+<h2>🎨 Skins</h2>
+
+<button onclick="setSkin('#3b82f6')">🔵 Blau</button>
+
+<button onclick="buySkin('red', 50, '#ef4444')">🔴 Rot - 50</button>
+
+<button onclick="buySkin('green', 150, '#22c55e')">🟢 Grün - 150</button>
+
+<button onclick="buySkin('gold', 300, 'gold')">🟡 Gold - 300</button>
+
+<button onclick="buySkin('diamond', 500, '#38bdf8')">💎 Diamant - 500</button>
+
+<h2>⬆️ Upgrades</h2>
+
+<button onclick="buyUpgrade(50,1)">+1 Klick - 50</button>
+
+<button onclick="buyUpgrade(150,5)">+5 Klick - 150</button>
+
+<button onclick="buyUpgrade(500,10)">+10 Klick - 500</button>
 
 </div>
 
 <!-- LEADERBOARD -->
-<div id="leaderboardMenu" class="menu hidden">
+<div id="leaderboard" class="menu hidden">
 
-    <h1>🏆 Leaderboard</h1>
+<h1>🏆 Leaderboard</h1>
 
-    <ul id="leaderboardList"></ul>
+<ul id="list"></ul>
 
 </div>
 

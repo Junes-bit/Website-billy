@@ -1,4 +1,3 @@
-
 let name = "";
 
 let coins = 0;
@@ -9,7 +8,28 @@ let owned = ["blue"];
 
 const coinsEl = document.getElementById("coins");
 const powerEl = document.getElementById("power");
-const click = document.getElementById("click");
+
+// ---------------- SKIN APPLY (WICHTIG) ----------------
+function applySkin(value){
+
+    const click = document.getElementById("click");
+
+    // PNG SKIN
+    if(value && value.includes(".png")){
+
+        click.style.backgroundImage = `url('/static/${value}')`;
+        click.style.backgroundSize = "cover";
+        click.style.backgroundPosition = "center";
+
+    } else {
+
+        click.style.backgroundImage = "";
+        click.style.background = value;
+    }
+
+    coinsEl.style.color = value;
+    coinsEl.style.textShadow = `0 0 20px ${value}`;
+}
 
 // ---------------- START GAME ----------------
 function startGame(){
@@ -36,7 +56,6 @@ function startGame(){
         }
     }
 
-    // 🔒 1 Account pro Gerät
     const deviceUser = localStorage.getItem("activeUser");
 
     if(deviceUser && deviceUser !== name){
@@ -46,7 +65,6 @@ function startGame(){
 
     localStorage.setItem("activeUser", name);
 
-    // LOAD GAME
     fetch("/load/" + name)
     .then(r => r.json())
     .then(data => {
@@ -60,21 +78,7 @@ function startGame(){
         document.getElementById("ui").classList.remove("hidden");
         document.getElementById("game").classList.remove("hidden");
 
-       click.style.background = skin;
-
-// 💎 WICHTIG: UI richtig anwenden
-coinsEl.style.color = skin;
-coinsEl.style.textShadow = `0 0 20px ${skin}`;
-
-// optional: selected skin visuell markieren
-document.querySelectorAll(".card")
-.forEach(c => c.classList.remove("selected"));
-
-update();
-
-        coinsEl.style.color = skin;
-        coinsEl.style.textShadow = `0 0 20px ${skin}`;
-
+        applySkin(skin);
         update();
     })
     .catch(() => {
@@ -83,33 +87,20 @@ update();
         document.getElementById("ui").classList.remove("hidden");
         document.getElementById("game").classList.remove("hidden");
 
+        applySkin(skin);
         update();
-
-        setTimeout(() => {
-
-    const cards = document.querySelectorAll(".card");
-
-    cards.forEach(card => {
-
-        const onclick = card.getAttribute("onclick");
-
-        if(onclick && onclick.includes(skin)){
-            card.classList.add("selected");
-        }
-    })
-
-}, 100);
     });
 }
+
 // ---------------- CLICK ----------------
-click.addEventListener("click", () => {
+document.getElementById("click").addEventListener("click", () => {
 
     coins += power;
     update();
     save();
 });
 
-// ---------------- UI UPDATE ----------------
+// ---------------- UPDATE ----------------
 function update(){
 
     coinsEl.innerText = coins;
@@ -129,53 +120,40 @@ function show(id){
     if(id === "leaderboard") loadLB();
 }
 
+// ---------------- SKINS ----------------
+function selectSkin(value, id){
 
-function selectSkin(color, id){
-
-    skin = color;
+    skin = value;
 
     document.querySelectorAll(".card")
     .forEach(c => c.classList.remove("selected"));
 
     const el = document.getElementById(id);
-
     el.classList.add("selected");
 
-    el.style.setProperty("--glow", color);
-
-    click.style.background = color;
-
-    coinsEl.style.color = color;
-    coinsEl.style.textShadow = `0 0 20px ${color}`;
+    applySkin(value);
 
     save();
 }
 
-function buySkin(id, price, color){
+function buySkin(id, price, value){
 
     const el = document.getElementById(id);
 
-    // schon gekauft
     if(owned.includes(id)){
-        selectSkin(color, id);
+        selectSkin(value, id);
         return;
     }
 
-    // kaufen
     if(coins >= price){
 
         coins -= price;
-
         owned.push(id);
 
-        // Preis entfernen
         const priceTag = el.querySelector(".price");
+        if(priceTag) priceTag.remove();
 
-        if(priceTag){
-            priceTag.remove();
-        }
-
-        selectSkin(color, id);
+        selectSkin(value, id);
 
         update();
         save();
@@ -205,7 +183,7 @@ function buyUpgrade(price, add){
     }
 }
 
-// ---------------- SHOW PRICE ----------------
+// ---------------- PRICE UI ----------------
 function updateUpgradePrices(){
 
     const u1 = document.getElementById("u1");

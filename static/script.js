@@ -154,38 +154,17 @@ function buyUpgrade(price, add){
         update();
         save();
 
-        // 💥 VISUAL FEEDBACK
-        powerEl.innerText = "⚡ +" + add + " Upgrade gekauft!";
-
-        powerEl.style.transform = "scale(1.2)";
-        powerEl.style.color = "#38bdf8";
+        // 💥 Feedback
+        powerEl.innerText = "⚡ Upgrade +"+add+" gekauft!";
 
         setTimeout(() => {
-
-            powerEl.style.transform = "scale(1)";
             update();
-
         }, 800);
 
     } else {
         alert("Zu wenig Coins");
     }
 }
-function save(){
-
-    fetch("/save",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-            name,
-            coins,
-            power,
-            skin,
-            owned
-        })
-    });
-}
-
 function loadLB(){
 
     fetch("/leaderboard")

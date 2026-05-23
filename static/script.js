@@ -69,12 +69,16 @@ function show(id){
     if(id === "leaderboard") loadLB();
 }
 
-function selectSkin(color, id){
+function selectSkin(color, id, nameText){
 
     skin = color;
 
     document.querySelectorAll(".card")
-    .forEach(c => c.classList.remove("selected"));
+    .forEach(c => {
+        c.classList.remove("selected");
+        const t = c.querySelector(".status");
+        if(t) t.innerText = "";
+    });
 
     const el = document.getElementById(id);
     el.classList.add("selected");
@@ -85,6 +89,13 @@ function selectSkin(color, id){
 
     coinsEl.style.color = color;
     coinsEl.style.textShadow = `0 0 20px ${color}`;
+
+    // 👇 TEXT UNTER SKIN
+    const status = el.querySelector(".status");
+    if(status){
+        status.innerText = "✓ Ausgewählt";
+        status.style.color = color;
+    }
 
     save();
 }

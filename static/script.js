@@ -1,3 +1,4 @@
+
 let name = "";
 
 let coins = 0;
@@ -10,47 +11,32 @@ const coinsEl = document.getElementById("coins");
 const powerEl = document.getElementById("power");
 const click = document.getElementById("click");
 
+// ---------------- START GAME ----------------
 function startGame(){
 
     const input = document.getElementById("nameInput");
-    const pass = prompt("🔐 Passwort setzen oder eingeben:");
-
-    if(!input.value || !pass) return;
+    if(!input || !input.value) return;
 
     name = input.value;
 
-    const savedPass = localStorage.getItem("pass_" + name);
-
-    // neues Konto
-    if(!savedPass){
-        localStorage.setItem("pass_" + name, pass);
-    }
-
-    // falsches Passwort
-    if(savedPass && savedPass !== pass){
-        alert("Falsches Passwort!");
-        return;
-    }
-
-    // 🔒 PRO GERÄT LOCK
-    const deviceUser = localStorage.getItem("activeUser");
-
-    if(deviceUser && deviceUser !== name){
-        alert("❌ Dieses Gerät hat schon einen Account!");
-        return;
-    }
-
-    localStorage.setItem("activeUser", name);
-
-    // LOAD GAME
     fetch("/load/" + name)
     .then(r => r.json())
     .then(data => {
 
-        coins = data.coins;
-        power = data.power;
-        skin = data.skin;
-        owned = data.owned;
+        coins = data.coins || 0;
+        power = data.power || 1;
+        skin = data.skin || "#3b82f6";
+        owned = data.owned || ["blue"];
+
+        document.getElementById("nameScreen").style.display = "none";
+        document.getElementById("ui").classList.remove("hidden");
+        document.getElementById("game").classList.remove("hidden");
+
+        click.style.background = skin;
+
+        update();
+    })
+    .catch(() => {
 
         document.getElementById("nameScreen").style.display = "none";
         document.getElementById("ui").classList.remove("hidden");
@@ -59,6 +45,8 @@ function startGame(){
         update();
     });
 }
+
+// ---------------- CLICK ----------------
 click.addEventListener("click", () => {
 
     coins += power;
@@ -66,17 +54,16 @@ click.addEventListener("click", () => {
     save();
 });
 
+// ---------------- UI UPDATE ----------------
 function update(){
 
     coinsEl.innerText = coins;
     powerEl.innerText = "⚡ " + power + " pro Klick";
+
+    updateUpgradePrices();
 }
 
-function getUpgradePrice(base){
-
-    return Math.floor(base * (1 + power * 0.15));
-}
-
+// ---------------- MENU ----------------
 function show(id){
 
     document.querySelectorAll(".menu")
@@ -87,28 +74,26 @@ function show(id){
     if(id === "leaderboard") loadLB();
 }
 
-function selectSkin(color, id, nameText){
+// ---------------- SKIN ----------------
+function selectSkin(color, id){
 
     skin = color;
 
     document.querySelectorAll(".card")
     .forEach(c => {
         c.classList.remove("selected");
-        const t = c.querySelector(".status");
-        if(t) t.innerText = "";
+        const s = c.querySelector(".status");
+        if(s) s.innerText = "";
     });
 
     const el = document.getElementById(id);
     el.classList.add("selected");
-
-    el.style.setProperty("--glow", color);
 
     click.style.background = color;
 
     coinsEl.style.color = color;
     coinsEl.style.textShadow = `0 0 20px ${color}`;
 
-    // 👇 TEXT UNTER SKIN
     const status = el.querySelector(".status");
     if(status){
         status.innerText = "✓ Ausgewählt";
@@ -132,7 +117,7 @@ function buySkin(id, price, color){
         coins -= price;
         owned.push(id);
 
-        el.innerHTML = "🎨 Auswählen";
+        el.innerHTML = "🎨 Auswählen<div class='status'></div>";
 
         selectSkin(color, id);
 
@@ -142,6 +127,11 @@ function buySkin(id, price, color){
     } else {
         alert("Nicht genug Coins");
     }
+}
+
+// ---------------- UPGRADES ----------------
+function getUpgradePrice(base){
+    return Math.floor(base * (1 + power * 0.15));
 }
 
 function buyUpgrade(price, add){
@@ -154,17 +144,40 @@ function buyUpgrade(price, add){
         update();
         save();
 
-        // 💥 Feedback
-        powerEl.innerText = "⚡ Upgrade +"+add+" gekauft!";
-
-        setTimeout(() => {
-            update();
-        }, 800);
-
     } else {
         alert("Zu wenig Coins");
     }
 }
+
+// ---------------- SHOW PRICE ----------------
+function updateUpgradePrices(){
+
+    const u1 = document.getElementById("u1");
+    const u2 = document.getElementById("u2");
+    const u3 = document.getElementById("u3");
+
+    if(u1) u1.innerText = getUpgradePrice(50) + " Coins";
+    if(u2) u2.innerText = getUpgradePrice(150) + " Coins";
+    if(u3) u3.innerText = getUpgradePrice(500) + " Coins";
+}
+
+// ---------------- SAVE ----------------
+function save(){
+
+    fetch("/save",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            name,
+            coins,
+            power,
+            skin,
+            owned
+        })
+    });
+}
+
+// ---------------- LEADERBOARD ----------------
 function loadLB(){
 
     fetch("/leaderboard")

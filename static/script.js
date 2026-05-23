@@ -24,13 +24,10 @@ function startGame(){
 
         coins = data.coins;
         power = data.power;
-
         skin = data.skin;
         owned = data.owned;
 
-        // UI umschalten
         document.getElementById("nameScreen").style.display = "none";
-
         document.getElementById("ui").classList.remove("hidden");
         document.getElementById("game").classList.remove("hidden");
 
@@ -38,12 +35,10 @@ function startGame(){
 
         update();
     })
-    .catch(err => {
-        console.log("Load Fehler:", err);
+    .catch(() => {
 
-        // falls Server noch nichts hat → trotzdem starten
+        // fallback wenn neuer Spieler
         document.getElementById("nameScreen").style.display = "none";
-
         document.getElementById("ui").classList.remove("hidden");
         document.getElementById("game").classList.remove("hidden");
 
@@ -74,12 +69,9 @@ function show(id){
     if(id === "leaderboard") loadLB();
 }
 
-let owned = JSON.parse(localStorage.getItem("owned")) || [];
-let selectedSkin = localStorage.getItem("skin") || "#3b82f6";
-
 function selectSkin(color, id){
 
-    selectedSkin = color;
+    skin = color;
 
     document.querySelectorAll(".card")
     .forEach(c => c.classList.remove("selected"));
@@ -122,6 +114,7 @@ function buySkin(id, price, color){
         alert("Nicht genug Coins");
     }
 }
+
 function buyUpgrade(price, add){
 
     if(coins >= price){
@@ -132,7 +125,9 @@ function buyUpgrade(price, add){
         update();
         save();
 
-    } else alert("Zu wenig Coins");
+    } else {
+        alert("Zu wenig Coins");
+    }
 }
 
 function save(){
@@ -148,7 +143,6 @@ function save(){
             owned
         })
     });
-
 }
 
 function loadLB(){
@@ -157,14 +151,12 @@ function loadLB(){
     .then(r => r.json())
     .then(data => {
 
-        let list = document.getElementById("list");
-
+        const list = document.getElementById("list");
         list.innerHTML = "";
 
         data.forEach(p => {
 
-            let li = document.createElement("li");
-
+            const li = document.createElement("li");
             li.innerText = p[0] + " - " + p[1];
 
             list.appendChild(li);

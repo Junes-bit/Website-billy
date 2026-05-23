@@ -8,37 +8,72 @@
 </head>
 <body>
 
-<div class="container">
+<div class="topbar">
 
-    <h1>🔥 Clicker Game</h1>
-
-    <div id="score">0</div>
-
-    <button id="clickButton">
-        CLICK
+    <button onclick="showMenu('game')">
+        🎮 Spiel
     </button>
 
-    <div class="shop">
-        <h2>Shop</h2>
+    <button onclick="showMenu('shop')">
+        🛒 Shop
+    </button>
 
-        <button onclick="buyColor('red', 50)">
-            Rot kaufen (50)
+    <button onclick="showMenu('leaderboard')">
+        🏆 Leaderboard
+    </button>
+
+</div>
+
+<div id="gameMenu" class="menu">
+
+    <h1>⚡ CLICKER GAME</h1>
+
+    <div id="coins">0</div>
+
+    <button id="clickButton"></button>
+
+</div>
+
+<div id="shopMenu" class="menu hidden">
+
+    <h1>🛒 SHOP</h1>
+
+    <div class="skins">
+
+        <button
+            id="redSkin"
+            onclick="buySkin('red', 50, 'redSkin')">
+
+            🔴 Rot - 50
         </button>
 
-        <button onclick="buyColor('blue', 100)">
-            Blau kaufen (100)
+        <button
+            id="greenSkin"
+            onclick="buySkin('green', 100, 'greenSkin')">
+
+            🟢 Grün - 100
         </button>
 
-        <button onclick="buyColor('gold', 250)">
-            Gold kaufen (250)
+        <button
+            id="goldSkin"
+            onclick="buySkin('gold', 250, 'goldSkin')">
+
+            🟡 Gold - 250
         </button>
+
     </div>
 
-    <div class="leaderboard">
-        <h2>Leaderboard</h2>
+</div>
 
-        <ul id="leaderboardList"></ul>
-    </div>
+<div id="leaderboardMenu" class="menu hidden">
+
+    <h1>🏆 Leaderboard</h1>
+
+    <ol>
+        <li>Max - 9999</li>
+        <li>Lisa - 5000</li>
+        <li>Tom - 3200</li>
+    </ol>
 
 </div>
 

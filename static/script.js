@@ -12,9 +12,11 @@ const click = document.getElementById("click");
 
 function startGame(){
 
-    name = document.getElementById("nameInput").value;
+    const input = document.getElementById("nameInput");
 
-    if(!name) return;
+    if(!input || !input.value) return;
+
+    name = input.value;
 
     fetch("/load/" + name)
     .then(r => r.json())
@@ -22,12 +24,26 @@ function startGame(){
 
         coins = data.coins;
         power = data.power;
+
         skin = data.skin;
         owned = data.owned;
 
+        // UI umschalten
+        document.getElementById("nameScreen").style.display = "none";
+
+        document.getElementById("ui").classList.remove("hidden");
+        document.getElementById("game").classList.remove("hidden");
+
         click.style.background = skin;
 
+        update();
+    })
+    .catch(err => {
+        console.log("Load Fehler:", err);
+
+        // falls Server noch nichts hat → trotzdem starten
         document.getElementById("nameScreen").style.display = "none";
+
         document.getElementById("ui").classList.remove("hidden");
         document.getElementById("game").classList.remove("hidden");
 

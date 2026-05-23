@@ -135,3 +135,40 @@ li{
         font-size:60px;
     }
 }
+
+.shopGrid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+    gap:15px;
+    padding:20px;
+    max-width:600px;
+    margin:auto;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:15px;
+    cursor:pointer;
+    transition:0.2s;
+    font-weight:bold;
+    text-align:center;
+}
+
+.card span{
+    display:block;
+    margin-top:8px;
+    font-size:14px;
+    color:#94a3b8;
+}
+
+.card:hover{
+    transform:scale(1.05);
+    background:#334155;
+}
+
+/* selected skin glow */
+.card.selected{
+    outline:2px solid var(--glow, #38bdf8);
+    box-shadow:0 0 25px var(--glow, #38bdf8);
+}

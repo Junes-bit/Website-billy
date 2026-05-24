@@ -7,7 +7,7 @@ app = Flask(__name__)
 # ---------------- DATABASE ----------------
 def init_db():
 
-    conn = sqlite3.connect("game.db")
+    conn = sqlite3.connect("/data/game.db")
     c = conn.cursor()
 
     c.execute("""
@@ -36,7 +36,7 @@ def save():
 
     data = request.json
 
-    conn = sqlite3.connect("game.db")
+    conn = sqlite3.connect("/data/game.db")
     c = conn.cursor()
 
     c.execute("""
@@ -60,8 +60,7 @@ def save():
 @app.route("/load/<name>")
 def load(name):
 
-    conn = sqlite3.connect("game.db")
-    c = conn.cursor()
+    conn = sqlite3.connect("/data/game.db")
 
     c.execute(
         "SELECT * FROM players WHERE name=?",
@@ -92,7 +91,7 @@ def load(name):
 @app.route("/leaderboard")
 def leaderboard():
 
-    conn = sqlite3.connect("game.db")
+    conn = sqlite3.connect("/data/game.db")
     c = conn.cursor()
 
     c.execute("""

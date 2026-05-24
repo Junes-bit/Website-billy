@@ -4,22 +4,14 @@ import os
 
 app = Flask(__name__)
 
-DB = "game.db"
+# ---------------- DATABASE ----------------
+def init_db():
 
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
 
-# ---------------- DB ----------------
-def connect():
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def setup():
-
-    conn = connect()
-
-    conn.execute("""
-    CREATE TABLE IF NOT EXISTS players(
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS players (
         name TEXT PRIMARY KEY,
         coins INTEGER,
         power INTEGER,
@@ -31,15 +23,12 @@ def setup():
     conn.commit()
     conn.close()
 
-
-setup()
-
+init_db()
 
 # ---------------- HOME ----------------
 @app.route("/")
 def home():
     return render_template("index.html")
-
 
 # ---------------- SAVE ----------------
 @app.route("/save", methods=["POST"])
@@ -47,9 +36,10 @@ def save():
 
     data = request.json
 
-    conn = connect()
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
 
-    conn.execute("""
+    c.execute("""
     INSERT OR REPLACE INTO players
     (name, coins, power, skin, owned)
     VALUES (?, ?, ?, ?, ?)
@@ -66,26 +56,29 @@ def save():
 
     return jsonify({"ok": True})
 
-
 # ---------------- LOAD ----------------
 @app.route("/load/<name>")
 def load(name):
 
-    conn = connect()
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
 
-    player = conn.execute("""
-    SELECT * FROM players WHERE name=?
-    """, (name,)).fetchone()
+    c.execute(
+        "SELECT * FROM players WHERE name=?",
+        (name,)
+    )
+
+    row = c.fetchone()
 
     conn.close()
 
-    if player:
+    if row:
 
         return jsonify({
-            "coins": player["coins"],
-            "power": player["power"],
-            "skin": player["skin"],
-            "owned": player["owned"].split(",")
+            "coins": row[1],
+            "power": row[2],
+            "skin": row[3],
+            "owned": row[4].split(",") if row[4] else ["blue"]
         })
 
     return jsonify({
@@ -95,27 +88,25 @@ def load(name):
         "owned": ["blue"]
     })
 
-
 # ---------------- LEADERBOARD ----------------
 @app.route("/leaderboard")
 def leaderboard():
 
-    conn = connect()
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
 
-    players = conn.execute("""
+    c.execute("""
     SELECT name, coins
     FROM players
     ORDER BY coins DESC
     LIMIT 10
-    """).fetchall()
+    """)
+
+    data = c.fetchall()
 
     conn.close()
 
-    return jsonify([
-        [p["name"], p["coins"]]
-        for p in players
-    ])
-
+    return jsonify(data)
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":

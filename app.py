@@ -4,12 +4,11 @@ import os
 
 app = Flask(__name__)
 
-# ---------------- DATABASE PATH (IMPORTANT FIX) ----------------
+# ---------------- SAFE DB PATH ----------------
 DB_PATH = "game.db"
 
 # ---------------- INIT DB ----------------
 def init_db():
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -31,50 +30,6 @@ def init_db():
     )
     """)
 
-    codes_to_add = [
-        ("B4N3R", 1000),
-        ("R3M5F", 2500),
-        ("G7Z4N", 3000),
-        ("G0ZFR", 5000),
-        ("D1M3S", 10000),
-
-        ("B0N1E", 1000),
-        ("B4S3L", 1000),
-        ("B8N2O", 1000),
-        ("B9B9B", 1000),
-        ("B5U6Y", 1000),
-
-        ("B6L3Y", 1000),
-        ("B6Z8L", 1000),
-
-        ("R6B8C", 2500),
-        ("R6M3E", 2500),
-        ("R9Y4S", 2500),
-        ("R7N9S", 2500),
-        ("R6X3M", 2500),
-        ("R9D4E", 2500),
-
-        ("D2F3M", 10000),
-        ("D9Z1F", 10000),
-
-        ("G0O9A", 5000),
-        ("G0X7E", 5000),
-        ("G0M3S", 5000),
-
-        ("G4D6W", 3000),
-        ("G3N2S", 3000),
-        ("G8L3S", 3000),
-        ("G9F3L", 3000),
-        ("G7X8Y", 3000),
-        ("G6B8A", 3000)
-    ]
-
-    for code, reward in codes_to_add:
-        c.execute("""
-        INSERT OR IGNORE INTO codes (code, reward, used)
-        VALUES (?, ?, 0)
-        """, (code, reward))
-
     conn.commit()
     conn.close()
 
@@ -88,7 +43,6 @@ def home():
 # ---------------- SAVE ----------------
 @app.route("/save", methods=["POST"])
 def save():
-
     data = request.json
 
     conn = sqlite3.connect(DB_PATH)
@@ -99,11 +53,11 @@ def save():
     (name, coins, power, skin, owned)
     VALUES (?, ?, ?, ?, ?)
     """, (
-        data["name"],
-        int(data["coins"]),
-        int(data["power"]),
-        data["skin"],
-        ",".join(data["owned"])
+        data.get("name", ""),
+        int(data.get("coins", 0)),
+        int(data.get("power", 1)),
+        data.get("skin", "#3b82f6"),
+        ",".join(data.get("owned", ["blue"]))
     ))
 
     conn.commit()
@@ -157,13 +111,12 @@ def leaderboard():
 
     return jsonify(data)
 
-# ---------------- REDEEM ----------------
+# ---------------- REDEEM (SAFE) ----------------
 @app.route("/redeem", methods=["POST"])
 def redeem():
-
     data = request.json
-    code = data["code"]
-    name = data["name"]
+    code = data.get("code")
+    name = data.get("name")
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -173,20 +126,20 @@ def redeem():
 
     if not row:
         conn.close()
-        return jsonify({"ok": False, "msg": "Ungültiger Code"})
+        return jsonify({"ok": False, "msg": "Ungültig"})
 
     reward, used = row
 
-    if used == 1:
+    if used:
         conn.close()
-        return jsonify({"ok": False, "msg": "Code schon benutzt"})
+        return jsonify({"ok": False, "msg": "Schon benutzt"})
 
     c.execute("SELECT coins FROM players WHERE name=?", (name,))
     player = c.fetchone()
 
     if not player:
         conn.close()
-        return jsonify({"ok": False})
+        return jsonify({"ok": False, "msg": "User fehlt"})
 
     new_coins = player[0] + reward
 
@@ -200,6 +153,5 @@ def redeem():
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
-
- port = int(os.environ.get("PORT", 5000))
-app.run(host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

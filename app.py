@@ -45,7 +45,7 @@ def save():
     VALUES (?, ?, ?, ?, ?)
     """, (
         data["name"],
-        data["coins"],
+       int(data["coins"]),
         data["power"],
         data["skin"],
         ",".join(data["owned"])
@@ -96,9 +96,9 @@ def leaderboard():
     c = conn.cursor()
 
     c.execute("""
-    SELECT name, coins
+    SELECT name, CAST(coins AS INTEGER)
     FROM players
-    ORDER BY coins DESC
+    ORDER BY CAST(coins AS INTEGER) DESC
     LIMIT 10
     """)
 

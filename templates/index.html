@@ -26,38 +26,38 @@
 
     <input id="nameInput" placeholder="Dein Name">
 
-    <button onclick="startGame()">
-        Start
-    </button>
+    <button onclick="startGame()">Start</button>
 
 </div>
 
 <!-- TOPBAR -->
 <div class="topbar hidden" id="ui">
 
-    <button onclick="show('game')">
-        🎮 <span>Spiel</span>
-    </button>
+    <button onclick="show('game')">🎮 <span>Spiel</span></button>
 
-    <button onclick="show('shop')">
-        🛒 <span>Shop</span>
-    </button>
+    <button onclick="show('shop')">🛒 <span>Shop</span></button>
 
-    <button onclick="show('leaderboard')">
-        🏆 <span>Ranking</span>
-    </button>
+    <button onclick="show('leaderboard')">🏆 <span>Ranking</span></button>
+
+    <!-- CODE BUTTON -->
+    <button onclick="toggleCodeBox()">🎁 <span>Code</span></button>
 
 </div>
 
+<!-- CODE POPUP -->
+<div id="codePopup" class="popup hidden">
 
-    <div class="redeemBox">
+    <div class="popupBox">
 
-    <input id="codeInput"
-           placeholder="Code eingeben">
+        <h2>🎁 Code einlösen</h2>
 
-    <button onclick="redeemCode()">
-        Einlösen
-    </button>
+        <input id="codeInput" placeholder="Code eingeben">
+
+        <button onclick="redeemCode()">Einlösen</button>
+
+        <button onclick="toggleCodeBox()">Schließen</button>
+
+    </div>
 
 </div>
 
@@ -66,9 +66,7 @@
 
     <div id="coins">0</div>
 
-    <div id="power">
-        ⚡ 1 pro Klick
-    </div>
+    <div id="power">⚡ 1 pro Klick</div>
 
     <button id="click"></button>
 
@@ -83,125 +81,84 @@
 
     <div class="shopGrid">
 
-     <!-- BASIC -->
-<div class="card selected"
-     id="blueSkin"
-     onclick="selectSkin('#3b82f6', 'blueSkin')">
+        <div class="card selected"
+             id="blueSkin"
+             onclick="selectSkin('#3b82f6', 'blueSkin')">
+            🔵 Blau
+        </div>
 
-    🔵 Blau
+        <div class="card"
+             id="redSkin"
+             onclick="buySkin('redSkin', 100, '#ef4444')">
+            🔴 Rot
+            <span class="price">100 Coins</span>
+        </div>
 
-</div>
+        <div class="card"
+             id="greenSkin"
+             onclick="buySkin('greenSkin', 250, '#22c55e')">
+            🟢 Hellgrün
+            <span class="price">250 Coins</span>
+        </div>
 
-<!-- RED -->
-<div class="card"
-     id="redSkin"
-     onclick="buySkin('redSkin', 100, '#ef4444')">
+        <div class="card"
+             id="orangeSkin"
+             onclick="buySkin('orangeSkin', 400, '#f97316')">
+            🟠 Orange
+            <span class="price">400 Coins</span>
+        </div>
 
-    🔴 Rot
+        <div class="card"
+             id="goldSkin"
+             onclick="buySkin('goldSkin', 600, 'gold')">
+            🟡 Gold
+            <span class="price">600 Coins</span>
+        </div>
 
-    <span class="price">100 Coins</span>
+        <div class="card"
+             id="diamondSkin"
+             onclick="buySkin('diamondSkin', 750, '#38bdf8')">
+            💎 Diamant
+            <span class="price">750 Coins</span>
+        </div>
 
-</div>
+        <div class="card"
+             id="lavaSkin"
+             onclick="buySkin('lavaSkin', 1000, '#ff3b30')">
+            🌋 Lava
+            <span class="price">1000 Coins</span>
+        </div>
 
-<!-- GREEN -->
-<div class="card"
-     id="greenSkin"
-     onclick="buySkin('greenSkin', 250, '#22c55e')">
+        <div class="card"
+             id="iceSkin"
+             onclick="buySkin('iceSkin', 1500, '#7dd3fc')">
+            ❄️ Ice
+            <span class="price">1500 Coins</span>
+        </div>
 
-    🟢 Hellgrün
+        <div class="card"
+             id="toxicSkin"
+             onclick="buySkin('toxicSkin', 1500, '#84cc16')">
+            ☢️ Toxic
+            <span class="price">1500 Coins</span>
+        </div>
 
-    <span class="price">250 Coins</span>
+        <div class="card"
+             id="pinkSkin"
+             onclick="buySkin('pinkSkin', 2000, '#ff4d9d')">
+            💖 Pink
+            <span class="price">2000 Coins</span>
+        </div>
 
-</div>
+        <div class="card"
+             id="voidSkin"
+             onclick="buySkin('voidSkin', 2500, '#111827')">
+            🌑 Void
+            <span class="price">2500 Coins</span>
+        </div>
 
-<!-- ORANGE -->
-<div class="card"
-     id="orangeSkin"
-     onclick="buySkin('orangeSkin', 400, '#f97316')">
+    </div>
 
-    🟠 Orange
-
-    <span class="price">400 Coins</span>
-
-</div>
-
-<!-- GOLD -->
-<div class="card"
-     id="goldSkin"
-     onclick="buySkin('goldSkin', 600, 'gold')">
-
-    🟡 Gold
-
-    <span class="price">600 Coins</span>
-
-</div>
-
-<!-- DIAMOND -->
-<div class="card"
-     id="diamondSkin"
-     onclick="buySkin('diamondSkin', 750, '#38bdf8')">
-
-    💎 Diamant
-
-    <span class="price">750 Coins</span>
-
-</div>
-
-<!-- LAVA -->
-<div class="card"
-     id="lavaSkin"
-     onclick="buySkin('lavaSkin', 1000, '#ff3b30')">
-
-    🌋 Lava
-
-    <span class="price">1000 Coins</span>
-
-</div>
-
-<!-- ICE -->
-<div class="card"
-     id="iceSkin"
-     onclick="buySkin('iceSkin', 1500, '#7dd3fc')">
-
-    ❄️ Ice
-
-    <span class="price">1500 Coins</span>
-
-</div>
-
-<!-- TOXIC -->
-<div class="card"
-     id="toxicSkin"
-     onclick="buySkin('toxicSkin', 1500, '#84cc16')">
-
-    ☢️ Toxic
-
-    <span class="price">1500 Coins</span>
-
-</div>
-
-<!-- PINK -->
-<div class="card"
-     id="pinkSkin"
-     onclick="buySkin('pinkSkin', 2000, '#ff4d9d')">
-
-    💖 Pink
-
-    <span class="price">2000 Coins</span>
-
-</div>
-
-<!-- VOID -->
-<div class="card"
-     id="voidSkin"
-     onclick="buySkin('voidSkin', 2500, '#111827')">
-
-    🌑 Void
-
-    <span class="price">2500 Coins</span>
-    
-     </div>
-</div>
     <!-- UPGRADES -->
     <h2>⬆️ Upgrades</h2>
 
@@ -209,29 +166,20 @@
 
         <div class="card"
              onclick="buyUpgrade(getUpgradePrice(50),1)">
-
             +1 Klick
-
             <span id="u1"></span>
-
         </div>
 
         <div class="card"
              onclick="buyUpgrade(getUpgradePrice(150),5)">
-
             +5 Klick
-
             <span id="u2"></span>
-
         </div>
 
         <div class="card"
              onclick="buyUpgrade(getUpgradePrice(500),10)">
-
             +10 Klick
-
             <span id="u3"></span>
-
         </div>
 
     </div>

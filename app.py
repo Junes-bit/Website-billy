@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # ---------------- DATABASE PATH (IMPORTANT FIX) ----------------
-DB_PATH = "/data/game.db"
+DB_PATH = "game.db"
 
 # ---------------- INIT DB ----------------
 def init_db():

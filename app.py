@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # ---------------- SAFE DB PATH ----------------
-DB_PATH = "game.db"
+DB_PATH = os.path.join(os.getcwd(), "game.db")
 
 # ---------------- INIT DB ----------------
 def init_db():
@@ -43,7 +43,7 @@ def home():
 # ---------------- SAVE ----------------
 @app.route("/save", methods=["POST"])
 def save():
-    data = request.json
+    data = request.get_json()
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -54,10 +54,10 @@ def save():
     VALUES (?, ?, ?, ?, ?)
     """, (
         data.get("name", ""),
-        int(data.get("coins", 0)),
-        int(data.get("power", 1)),
+        int(data.get("coins") or 0),
+        int(data.get("power") or 1),
         data.get("skin", "#3b82f6"),
-        ",".join(data.get("owned", ["blue"]))
+        ",".join(data.get("owned") or ["blue"])
     ))
 
     conn.commit()
@@ -68,7 +68,6 @@ def save():
 # ---------------- LOAD ----------------
 @app.route("/load/<name>")
 def load(name):
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -95,7 +94,6 @@ def load(name):
 # ---------------- LEADERBOARD ----------------
 @app.route("/leaderboard")
 def leaderboard():
-
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
@@ -111,10 +109,10 @@ def leaderboard():
 
     return jsonify(data)
 
-# ---------------- REDEEM (SAFE) ----------------
+# ---------------- REDEEM ----------------
 @app.route("/redeem", methods=["POST"])
 def redeem():
-    data = request.json
+    data = request.get_json()
     code = data.get("code")
     name = data.get("name")
 
@@ -151,7 +149,7 @@ def redeem():
 
     return jsonify({"ok": True, "reward": reward})
 
-# ---------------- RUN ----------------
+# ---------------- RUN (RAILWAY WITHOUT GUNICORN) ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=False)

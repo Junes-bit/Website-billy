@@ -4,12 +4,10 @@ import os
 
 app = Flask(__name__)
 
-# ---------------- SAFE DB PATH ----------------
-DB_PATH = os.path.join(os.getcwd(), "game.db")
-
 # ---------------- INIT DB ----------------
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
+
+    conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
     c.execute("""
@@ -43,9 +41,10 @@ def home():
 # ---------------- SAVE ----------------
 @app.route("/save", methods=["POST"])
 def save():
-    data = request.get_json()
 
-    conn = sqlite3.connect(DB_PATH)
+    data = request.json
+
+    conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
     c.execute("""
@@ -53,11 +52,11 @@ def save():
     (name, coins, power, skin, owned)
     VALUES (?, ?, ?, ?, ?)
     """, (
-        data.get("name", ""),
-        int(data.get("coins") or 0),
-        int(data.get("power") or 1),
-        data.get("skin", "#3b82f6"),
-        ",".join(data.get("owned") or ["blue"])
+        data["name"],
+        int(data["coins"]),
+        int(data["power"]),
+        data["skin"],
+        ",".join(data["owned"])
     ))
 
     conn.commit()
@@ -68,7 +67,8 @@ def save():
 # ---------------- LOAD ----------------
 @app.route("/load/<name>")
 def load(name):
-    conn = sqlite3.connect(DB_PATH)
+
+    conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
     c.execute("SELECT * FROM players WHERE name=?", (name,))
@@ -94,29 +94,32 @@ def load(name):
 # ---------------- LEADERBOARD ----------------
 @app.route("/leaderboard")
 def leaderboard():
-    conn = sqlite3.connect(DB_PATH)
+
+    conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
     c.execute("""
     SELECT name, coins
     FROM players
-    ORDER BY coins DESC
+    ORDER BY CAST(coins AS INTEGER) DESC
     LIMIT 10
     """)
 
     data = c.fetchall()
+
     conn.close()
 
     return jsonify(data)
 
-# ---------------- REDEEM ----------------
+# ---------------- REDEEM (optional bleibt drin) ----------------
 @app.route("/redeem", methods=["POST"])
 def redeem():
-    data = request.get_json()
-    code = data.get("code")
-    name = data.get("name")
 
-    conn = sqlite3.connect(DB_PATH)
+    data = request.json
+    code = data["code"]
+    name = data["name"]
+
+    conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
     c.execute("SELECT reward, used FROM codes WHERE code=?", (code,))
@@ -124,20 +127,20 @@ def redeem():
 
     if not row:
         conn.close()
-        return jsonify({"ok": False, "msg": "Ungültig"})
+        return jsonify({"ok": False, "msg": "Ungültiger Code"})
 
     reward, used = row
 
-    if used:
+    if used == 1:
         conn.close()
-        return jsonify({"ok": False, "msg": "Schon benutzt"})
+        return jsonify({"ok": False, "msg": "Code schon benutzt"})
 
     c.execute("SELECT coins FROM players WHERE name=?", (name,))
     player = c.fetchone()
 
     if not player:
         conn.close()
-        return jsonify({"ok": False, "msg": "User fehlt"})
+        return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
 
     new_coins = player[0] + reward
 
@@ -149,7 +152,12 @@ def redeem():
 
     return jsonify({"ok": True, "reward": reward})
 
-# ---------------- RUN (RAILWAY WITHOUT GUNICORN) ----------------
+# ---------------- RUN ----------------
 if __name__ == "__main__":
+
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+
+    app.run(
+        host="0.0.0.0",
+        port=port
+    )

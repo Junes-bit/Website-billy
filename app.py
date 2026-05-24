@@ -6,7 +6,6 @@ app = Flask(__name__)
 
 # ---------------- INIT DB ----------------
 def init_db():
-
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
@@ -17,14 +16,6 @@ def init_db():
         power INTEGER,
         skin TEXT,
         owned TEXT
-    )
-    """)
-
-    c.execute("""
-    CREATE TABLE IF NOT EXISTS codes (
-        code TEXT PRIMARY KEY,
-        reward INTEGER,
-        used INTEGER DEFAULT 0
     )
     """)
 
@@ -41,7 +32,6 @@ def home():
 # ---------------- SAVE ----------------
 @app.route("/save", methods=["POST"])
 def save():
-
     data = request.json
 
     conn = sqlite3.connect("game.db")
@@ -101,63 +91,16 @@ def leaderboard():
     c.execute("""
     SELECT name, coins
     FROM players
-    ORDER BY CAST(coins AS INTEGER) DESC
+    ORDER BY coins DESC
     LIMIT 10
     """)
 
     data = c.fetchall()
-
     conn.close()
 
     return jsonify(data)
 
-# ---------------- REDEEM (optional bleibt drin) ----------------
-@app.route("/redeem", methods=["POST"])
-def redeem():
-
-    data = request.json
-    code = data["code"]
-    name = data["name"]
-
-    conn = sqlite3.connect("game.db")
-    c = conn.cursor()
-
-    c.execute("SELECT reward, used FROM codes WHERE code=?", (code,))
-    row = c.fetchone()
-
-    if not row:
-        conn.close()
-        return jsonify({"ok": False, "msg": "Ungültiger Code"})
-
-    reward, used = row
-
-    if used == 1:
-        conn.close()
-        return jsonify({"ok": False, "msg": "Code schon benutzt"})
-
-    c.execute("SELECT coins FROM players WHERE name=?", (name,))
-    player = c.fetchone()
-
-    if not player:
-        conn.close()
-        return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
-
-    new_coins = player[0] + reward
-
-    c.execute("UPDATE players SET coins=? WHERE name=?", (new_coins, name))
-    c.execute("UPDATE codes SET used=1 WHERE code=?", (code,))
-
-    conn.commit()
-    conn.close()
-
-    return jsonify({"ok": True, "reward": reward})
-
 # ---------------- RUN ----------------
 if __name__ == "__main__":
-
-    port = int(os.environ.get("PORT", 5000))
-
-    app.run(
-        host="0.0.0.0",
-        port=port
-    )
+    port = int(os.environ.get("PORT", 500))
+    app.run(host="0.0.0.0", port=port)

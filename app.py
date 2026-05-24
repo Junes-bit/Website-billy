@@ -100,6 +100,52 @@ def leaderboard():
 
     return jsonify(data)
 
+
+@app.route("/redeem", methods=["POST"])
+def redeem():
+
+    data = request.json
+    code = data["code"]
+    name = data["name"]
+
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    # Code prüfen
+    c.execute("SELECT reward, used FROM codes WHERE code=?", (code,))
+    row = c.fetchone()
+
+    if not row:
+        conn.close()
+        return jsonify({"ok": False, "msg": "Ungültiger Code"})
+
+    reward, used = row
+
+    if used == 1:
+        conn.close()
+        return jsonify({"ok": False, "msg": "Schon benutzt"})
+
+    # Spieler holen
+    c.execute("SELECT coins FROM players WHERE name=?", (name,))
+    player = c.fetchone()
+
+    if not player:
+        conn.close()
+        return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
+
+    new_coins = player[0] + reward
+
+    # Update Coins
+    c.execute("UPDATE players SET coins=? WHERE name=?", (new_coins, name))
+
+    # Code sperren
+    c.execute("UPDATE codes SET used=1 WHERE code=?", (code,))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"ok": True, "reward": reward})
+
 # ---------------- RUN ----------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 500))

@@ -4,12 +4,13 @@ import os
 
 app = Flask(__name__)
 
-# ---------------- DATABASE ----------------
+# ---------------- DATABASE INIT ----------------
 def init_db():
 
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
+    # PLAYERS TABLE
     c.execute("""
     CREATE TABLE IF NOT EXISTS players (
         name TEXT PRIMARY KEY,
@@ -19,6 +20,56 @@ def init_db():
         owned TEXT
     )
     """)
+
+    # CODES TABLE
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS codes (
+        code TEXT PRIMARY KEY,
+        reward INTEGER,
+        used INTEGER DEFAULT 0
+    )
+    """)
+
+    # DEFAULT CODES (nur wenn sie noch nicht existieren)
+    codes_to_add = [
+        ("B4N3R", 1000),
+        ("R3M5F", 2500),
+        ("G7Z4N", 3000),
+        ("G0ZFR", 5000),
+        ("D1M3S", 10000),
+        ("B0N1E", 1000),
+        ("B4S3L", 1000),
+        ("B8N2O", 1000),
+        ("B9B9B", 1000),
+        ("B5U6Y", 1000),
+        ("B6L3Y", 1000),
+        ("B6Z8L", 1000),
+        ("R6B8C", 2500),
+        ("R6M3E", 2500),
+        ("R9Y4S", 2500),
+        ("R7N9S", 2500),
+        ("R6X3M", 2500),
+        ("R9D4E", 2500),
+        ("D1M3S", 10000),
+        ("D2F3M", 10000),
+        ("D9Z1F", 10000),
+        ("G0O9A", 5000),
+        ("G0X7E", 5000),
+        ("G0M3S", 5000),
+        ("G0X7E", 5000),
+        ("G4D6W", 3000),
+        ("G3N2S", 3000),
+        ("G8L3S", 3000),
+        ("G9F3L", 3000),
+        ("G7X8Y", 3000),
+        ("G6B8A", 3000)
+    ]
+
+    for code, reward in codes_to_add:
+        c.execute("""
+        INSERT OR IGNORE INTO codes (code, reward, used)
+        VALUES (?, ?, 0)
+        """, (code, reward))
 
     conn.commit()
     conn.close()
@@ -45,8 +96,8 @@ def save():
     VALUES (?, ?, ?, ?, ?)
     """, (
         data["name"],
-       int(data["coins"]),
-        data["power"],
+        int(data["coins"]),
+        int(data["power"]),
         data["skin"],
         ",".join(data["owned"])
     ))
@@ -61,6 +112,7 @@ def save():
 def load(name):
 
     conn = sqlite3.connect("game.db")
+    c = conn.cursor()
 
     c.execute(
         "SELECT * FROM players WHERE name=?",
@@ -68,11 +120,9 @@ def load(name):
     )
 
     row = c.fetchone()
-
     conn.close()
 
     if row:
-
         return jsonify({
             "coins": row[1],
             "power": row[2],
@@ -95,17 +145,73 @@ def leaderboard():
     c = conn.cursor()
 
     c.execute("""
-    SELECT name, CAST(coins AS INTEGER)
+    SELECT name, coins
     FROM players
-    ORDER BY CAST(coins AS INTEGER) DESC
+    ORDER BY coins DESC
     LIMIT 10
     """)
 
     data = c.fetchall()
-
     conn.close()
 
     return jsonify(data)
+
+# ---------------- REDEEM CODES ----------------
+@app.route("/redeem", methods=["POST"])
+def redeem():
+
+    data = request.json
+    code = data["code"]
+    name = data["name"]
+
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    # Code prüfen
+    c.execute("SELECT reward, used FROM codes WHERE code=?", (code,))
+    row = c.fetchone()
+
+    if not row:
+        conn.close()
+        return jsonify({"ok": False, "msg": "Ungültiger Code"})
+
+    reward, used = row
+
+    if used == 1:
+        conn.close()
+        return jsonify({"ok": False, "msg": "Code schon benutzt"})
+
+    # Spieler holen
+    c.execute("SELECT coins FROM players WHERE name=?", (name,))
+    player = c.fetchone()
+
+    if not player:
+        conn.close()
+        return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
+
+    new_coins = player[0] + reward
+
+    # Coins updaten
+    c.execute("""
+    UPDATE players
+    SET coins=?
+    WHERE name=?
+    """, (new_coins, name))
+
+    # Code als benutzt markieren
+    c.execute("""
+    UPDATE codes
+    SET used=1
+    WHERE code=?
+    """, (code,))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({
+        "ok": True,
+        "reward": reward
+    })
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":

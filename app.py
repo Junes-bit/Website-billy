@@ -4,13 +4,15 @@ import os
 
 app = Flask(__name__)
 
+# ---------------- DATABASE PATH (IMPORTANT FIX) ----------------
+DB_PATH = "/data/game.db"
+
 # ---------------- INIT DB ----------------
 def init_db():
 
-    conn = sqlite3.connect("game.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # PLAYERS
     c.execute("""
     CREATE TABLE IF NOT EXISTS players (
         name TEXT PRIMARY KEY,
@@ -21,7 +23,6 @@ def init_db():
     )
     """)
 
-    # CODES
     c.execute("""
     CREATE TABLE IF NOT EXISTS codes (
         code TEXT PRIMARY KEY,
@@ -30,7 +31,6 @@ def init_db():
     )
     """)
 
-    # DEFAULT CODES
     codes_to_add = [
         ("B4N3R", 1000),
         ("R3M5F", 2500),
@@ -91,7 +91,7 @@ def save():
 
     data = request.json
 
-    conn = sqlite3.connect("game.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     c.execute("""
@@ -115,7 +115,7 @@ def save():
 @app.route("/load/<name>")
 def load(name):
 
-    conn = sqlite3.connect("game.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     c.execute("SELECT * FROM players WHERE name=?", (name,))
@@ -142,13 +142,13 @@ def load(name):
 @app.route("/leaderboard")
 def leaderboard():
 
-    conn = sqlite3.connect("game.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     c.execute("""
-    SELECT name, CAST(coins AS INTEGER)
+    SELECT name, coins
     FROM players
-    ORDER BY CAST(coins AS INTEGER) DESC
+    ORDER BY coins DESC
     LIMIT 10
     """)
 
@@ -165,7 +165,7 @@ def redeem():
     code = data["code"]
     name = data["name"]
 
-    conn = sqlite3.connect("game.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
     c.execute("SELECT reward, used FROM codes WHERE code=?", (code,))
@@ -190,13 +190,8 @@ def redeem():
 
     new_coins = player[0] + reward
 
-    c.execute("""
-    UPDATE players SET coins=? WHERE name=?
-    """, (new_coins, name))
-
-    c.execute("""
-    UPDATE codes SET used=1 WHERE code=?
-    """, (code,))
+    c.execute("UPDATE players SET coins=? WHERE name=?", (new_coins, name))
+    c.execute("UPDATE codes SET used=1 WHERE code=?", (code,))
 
     conn.commit()
     conn.close()
@@ -208,4 +203,4 @@ if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 5000))
 
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=5000)

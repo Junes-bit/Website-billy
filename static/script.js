@@ -46,7 +46,7 @@ function applySkin(value) {
 
     if (coinsEl) {
         coinsEl.style.color = value;
-        coinsEl.style.textShadow = `0 0 20px ${value}`;
+        coinsEl.style.textShadow = `0 0 30px ${value}`;
     }
 }
 
@@ -94,11 +94,12 @@ function startGame() {
             owned = data.owned || ["blue"];
 
             document.getElementById("nameScreen").style.display = "none";
-            document.getElementById("ui").classList.remove("hidden");
-            document.getElementById("game").classList.remove("hidden");
+            document.getElementById("app").classList.remove("hidden");
 
             applySkin(skin);
+            show("menu");
             update();
+            updateProfile();
         });
 }
 
@@ -110,26 +111,49 @@ function update() {
     if (powerEl) powerEl.innerText = "⚡ " + power + " pro Klick";
 
     updateUpgradePrices();
+    updateProfile();
 }
 
 
-// ---------------- MENU (FIXED ORB BUG) ----------------
+// ---------------- PAGE NAVIGATION ----------------
 function show(id) {
 
-    document.querySelectorAll(".menu")
-        .forEach(e => e.classList.add("hidden"));
+    document.querySelectorAll(".page")
+        .forEach(e => e.classList.remove("active"));
 
     const el = document.getElementById(id);
-    if (el) el.classList.remove("hidden");
+    if (el) el.classList.add("active");
+}
 
-    // 🔥 FIX: ORB HIDE / SHOW
-    const clickBtn = document.getElementById("click");
 
-    if (clickBtn) {
-        clickBtn.style.display = (id === "game") ? "block" : "none";
-    }
+// ---------------- PROFILE UPDATE ----------------
+function updateProfile() {
+    
+    const profileName = document.getElementById("profileName");
+    const profileCoins = document.getElementById("profileCoins");
+    const profilePower = document.getElementById("profilePower");
+    const profileSkin = document.getElementById("profileSkin");
 
-    if (id === "leaderboard") loadLB();
+    if (profileName) profileName.innerText = name;
+    if (profileCoins) profileCoins.innerText = coins;
+    if (profilePower) profilePower.innerText = power;
+    
+    // Get skin name
+    const skinNames = {
+        "#3b82f6": "Blau",
+        "#ef4444": "Rot",
+        "#22c55e": "Hellgrün",
+        "#f97316": "Orange",
+        "gold": "Gold",
+        "#38bdf8": "Diamant",
+        "#ff3b30": "Lava",
+        "#7dd3fc": "Ice",
+        "#84cc16": "Toxic",
+        "#ff4d9d": "Pink",
+        "#111827": "Void"
+    };
+    
+    if (profileSkin) profileSkin.innerText = skinNames[skin] || "Unbekannt";
 }
 
 
@@ -138,7 +162,7 @@ function selectSkin(value, id) {
 
     skin = value;
 
-    document.querySelectorAll("#shop .shopGrid:first-of-type .card")
+    document.querySelectorAll("#shop .shopGrid:nth-of-type(2) .card")
         .forEach(c => c.classList.remove("selected"));
 
     const el = document.getElementById(id);
@@ -146,6 +170,7 @@ function selectSkin(value, id) {
 
     applySkin(value);
     save();
+    updateProfile();
 }
 
 function buySkin(id, price, value) {
@@ -207,7 +232,7 @@ function updateUpgradePrices() {
 }
 
 
-// ---------------- CODE SYSTEM (FIXED UX) ----------------
+// ---------------- CODE SYSTEM ----------------
 function toggleCodeBox() {
 
     const popup = document.getElementById("codePopup");
@@ -217,7 +242,6 @@ function toggleCodeBox() {
 }
 
 
-// 🔥 FIX: input reset + better UX
 async function redeemCode() {
 
     const input = document.getElementById("codeInput");
@@ -241,7 +265,7 @@ async function redeemCode() {
     if (data.ok) {
         coins += data.reward;
         alert("🎉 +" + data.reward + " Coins!");
-        input.value = ""; // FIX
+        input.value = "";
         update();
         save();
     } else {
@@ -267,7 +291,17 @@ function save() {
 }
 
 
-// ---------------- LEADERBOARD (SAFE) ----------------
+// ---------------- LOGOUT ----------------
+function logout() {
+    
+    if (confirm("🚪 Wirklich ausloggen?")) {
+        localStorage.removeItem("activeUser");
+        location.reload();
+    }
+}
+
+
+// ---------------- LEADERBOARD ----------------
 function loadLB() {
 
     fetch("/leaderboard")
@@ -279,9 +313,9 @@ function loadLB() {
 
             list.innerHTML = "";
 
-            data.forEach(p => {
+            data.forEach((p, index) => {
                 const li = document.createElement("li");
-                li.innerText = `${p[0]} - ${p[1] ?? 0}`;
+                li.innerText = `${index + 1}. ${p[0]} - ${p[1] ?? 0} Coins`;
                 list.appendChild(li);
             });
         })
@@ -289,3 +323,11 @@ function loadLB() {
             console.log("Leaderboard error");
         });
 }
+
+// Leaderboard laden wenn man auf die Seite klickt
+document.addEventListener("DOMContentLoaded", () => {
+    const leaderboardBtn = document.querySelector('[onclick="show(\'leaderboard\')"]');
+    if (leaderboardBtn) {
+        leaderboardBtn.addEventListener("click", loadLB);
+    }
+});

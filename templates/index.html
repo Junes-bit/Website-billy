@@ -2,7 +2,6 @@
 <html lang="de">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -14,184 +13,128 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
 
 <!-- NAME SCREEN -->
 <div id="nameScreen">
-
     <h1>👤 Name</h1>
-
     <input id="nameInput" placeholder="Dein Name">
-
     <button onclick="startGame()">Start</button>
-
 </div>
 
 <!-- TOPBAR -->
 <div class="topbar hidden" id="ui">
-
     <button onclick="show('game')">🎮 <span>Spiel</span></button>
-
     <button onclick="show('shop')">🛒 <span>Shop</span></button>
-
     <button onclick="show('leaderboard')">🏆 <span>Ranking</span></button>
-
-    <!-- CODE BUTTON -->
     <button onclick="toggleCodeBox()">🎁 <span>Code</span></button>
-
 </div>
 
 <!-- CODE POPUP -->
 <div id="codePopup" class="popup hidden">
-
     <div class="popupBox">
-
         <h2>🎁 Code einlösen</h2>
-
         <input id="codeInput" placeholder="Code eingeben">
-
         <button onclick="redeemCode()">Einlösen</button>
-
         <button onclick="toggleCodeBox()">Schließen</button>
-
     </div>
-
 </div>
 
 <!-- GAME -->
 <div id="game" class="menu hidden">
-
     <div id="coins">0</div>
-
     <div id="power">⚡ 1 pro Klick</div>
 
-    <button id="click">CLICK</button>
-
+    <!-- FIX: kein Text mehr -->
+    <button id="click"></button>
 </div>
 
 <!-- SHOP -->
 <div id="shop" class="menu hidden">
-
     <h1>🛒 SHOP</h1>
 
     <h2>🎨 Skins</h2>
-
     <div class="shopGrid">
 
-        <div class="card selected"
-             id="blueSkin"
+        <div class="card selected" id="blueSkin"
              onclick="selectSkin('#3b82f6', 'blueSkin')">
             🔵 Blau
         </div>
 
-        <div class="card"
-             id="redSkin"
+        <div class="card" id="redSkin"
              onclick="buySkin('redSkin', 100, '#ef4444')">
-            🔴 Rot
-            <span class="price">100 Coins</span>
+            🔴 Rot <span class="price">100 Coins</span>
         </div>
 
-        <div class="card"
-             id="greenSkin"
+        <div class="card" id="greenSkin"
              onclick="buySkin('greenSkin', 250, '#22c55e')">
-            🟢 Hellgrün
-            <span class="price">250 Coins</span>
+            🟢 Hellgrün <span class="price">250 Coins</span>
         </div>
 
-        <div class="card"
-             id="orangeSkin"
+        <div class="card" id="orangeSkin"
              onclick="buySkin('orangeSkin', 400, '#f97316')">
-            🟠 Orange
-            <span class="price">400 Coins</span>
+            🟠 Orange <span class="price">400 Coins</span>
         </div>
 
-        <div class="card"
-             id="goldSkin"
+        <div class="card" id="goldSkin"
              onclick="buySkin('goldSkin', 600, 'gold')">
-            🟡 Gold
-            <span class="price">600 Coins</span>
+            🟡 Gold <span class="price">600 Coins</span>
         </div>
 
-        <div class="card"
-             id="diamondSkin"
+        <div class="card" id="diamondSkin"
              onclick="buySkin('diamondSkin', 750, '#38bdf8')">
-            💎 Diamant
-            <span class="price">750 Coins</span>
+            💎 Diamant <span class="price">750 Coins</span>
         </div>
 
-        <div class="card"
-             id="lavaSkin"
+        <div class="card" id="lavaSkin"
              onclick="buySkin('lavaSkin', 1000, '#ff3b30')">
-            🌋 Lava
-            <span class="price">1000 Coins</span>
+            🌋 Lava <span class="price">1000 Coins</span>
         </div>
 
-        <div class="card"
-             id="iceSkin"
+        <div class="card" id="iceSkin"
              onclick="buySkin('iceSkin', 1500, '#7dd3fc')">
-            ❄️ Ice
-            <span class="price">1500 Coins</span>
+            ❄️ Ice <span class="price">1500 Coins</span>
         </div>
 
-        <div class="card"
-             id="toxicSkin"
+        <div class="card" id="toxicSkin"
              onclick="buySkin('toxicSkin', 1500, '#84cc16')">
-            ☢️ Toxic
-            <span class="price">1500 Coins</span>
+            ☢️ Toxic <span class="price">1500 Coins</span>
         </div>
 
-        <div class="card"
-             id="pinkSkin"
+        <div class="card" id="pinkSkin"
              onclick="buySkin('pinkSkin', 2000, '#ff4d9d')">
-            💖 Pink
-            <span class="price">2000 Coins</span>
+            💖 Pink <span class="price">2000 Coins</span>
         </div>
 
-        <div class="card"
-             id="voidSkin"
+        <div class="card" id="voidSkin"
              onclick="buySkin('voidSkin', 2500, '#111827')">
-            🌑 Void
-            <span class="price">2500 Coins</span>
+            🌑 Void <span class="price">2500 Coins</span>
         </div>
-
     </div>
 
     <h2>⬆️ Upgrades</h2>
 
     <div class="shopGrid">
-
-        <div class="card"
-             onclick="buyUpgrade(getUpgradePrice(50),1)">
-            +1 Klick
-            <span id="u1"></span>
+        <div class="card" onclick="buyUpgrade(getUpgradePrice(50),1)">
+            +1 Klick <span id="u1"></span>
         </div>
 
-        <div class="card"
-             onclick="buyUpgrade(getUpgradePrice(150),5)">
-            +5 Klick
-            <span id="u2"></span>
+        <div class="card" onclick="buyUpgrade(getUpgradePrice(150),5)">
+            +5 Klick <span id="u2"></span>
         </div>
 
-        <div class="card"
-             onclick="buyUpgrade(getUpgradePrice(500),10)">
-            +10 Klick
-            <span id="u3"></span>
+        <div class="card" onclick="buyUpgrade(getUpgradePrice(500),10)">
+            +10 Klick <span id="u3"></span>
         </div>
-
     </div>
-
 </div>
 
 <!-- LEADERBOARD -->
 <div id="leaderboard" class="menu hidden">
-
     <h1>🏆 Leaderboard</h1>
-
     <ul id="list"></ul>
-
 </div>
 
 <script src="/static/script.js"></script>

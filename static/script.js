@@ -138,7 +138,6 @@ function updateProfile() {
     if (profileCoins) profileCoins.innerText = coins;
     if (profilePower) profilePower.innerText = power;
     
-    // Get skin name
     const skinNames = {
         "#3b82f6": "Blau",
         "#ef4444": "Rot",
@@ -162,20 +161,7 @@ function selectSkin(value, id) {
 
     skin = value;
 
-    function selectSkin(value, id) {
-
-    skin = value;
-
-    document.querySelectorAll("#skinsGrid .card")  // ← DIESE ZEILE!
-        .forEach(c => c.classList.remove("selected"));
-
-    const el = document.getElementById(id);
-    if (el) el.classList.add("selected");
-
-    applySkin(value);
-    save();
-    updateProfile();
-}
+    document.querySelectorAll("#skinsGrid .card")
         .forEach(c => c.classList.remove("selected"));
 
     const el = document.getElementById(id);
@@ -337,7 +323,6 @@ function loadLB() {
         });
 }
 
-// Leaderboard laden wenn man auf die Seite klickt
 document.addEventListener("DOMContentLoaded", () => {
     const leaderboardBtn = document.querySelector('[onclick="show(\'leaderboard\')"]');
     if (leaderboardBtn) {

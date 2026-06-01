@@ -1,3 +1,4 @@
+
 let name = "";
 
 let coins = 0;
@@ -6,39 +7,62 @@ let power = 1;
 let skin = "#3b82f6";
 let owned = ["blue"];
 
-const coinsEl = document.getElementById("coins");
-const powerEl = document.getElementById("power");
+let coinsEl;
+let powerEl;
+
+// ---------------- INIT (safe DOM load) ----------------
+document.addEventListener("DOMContentLoaded", () => {
+
+    coinsEl = document.getElementById("coins");
+    powerEl = document.getElementById("power");
+
+    const clickBtn = document.getElementById("click");
+
+    if (clickBtn) {
+        clickBtn.addEventListener("click", () => {
+            coins += power;
+            update();
+            save();
+        });
+    }
+});
+
 
 // ---------------- SKIN SYSTEM ----------------
-function applySkin(value){
+function applySkin(value) {
 
     const click = document.getElementById("click");
+
+    if (!click) return;
 
     click.style.background = "";
     click.style.backgroundImage = "";
 
-    // 🍕 IMAGE SKINS
-    if(value && value.endsWith(".png")){
+    // IMAGE SKINS
+    if (value && value.endsWith(".png")) {
 
         click.style.backgroundImage = `url('/static/${value}')`;
         click.style.backgroundSize = "cover";
         click.style.backgroundPosition = "center";
 
     } 
-    // 🎨 COLOR SKINS
+    // COLOR SKINS
     else {
         click.style.background = value;
     }
 
-    coinsEl.style.color = value;
-    coinsEl.style.textShadow = `0 0 20px ${value}`;
+    if (coinsEl) {
+        coinsEl.style.color = value;
+        coinsEl.style.textShadow = `0 0 20px ${value}`;
+    }
 }
 
+
 // ---------------- START GAME ----------------
-function startGame(){
+function startGame() {
 
     const input = document.getElementById("nameInput");
-    if(!input || !input.value) return;
+    if (!input || !input.value) return;
 
     name = input.value;
 
@@ -46,14 +70,14 @@ function startGame(){
 
     let pass = "";
 
-    if(!savedPass){
+    if (!savedPass) {
         pass = prompt("🔐 Neues Passwort setzen:");
-        if(!pass) return;
+        if (!pass) return;
 
         localStorage.setItem("pass_" + name, pass);
     } else {
         pass = prompt("🔐 Passwort eingeben:");
-        if(pass !== savedPass){
+        if (pass !== savedPass) {
             alert("❌ Falsches Passwort!");
             return;
         }
@@ -61,7 +85,7 @@ function startGame(){
 
     const deviceUser = localStorage.getItem("activeUser");
 
-    if(deviceUser && deviceUser !== name){
+    if (deviceUser && deviceUser !== name) {
         alert("❌ Dieses Gerät nutzt bereits einen Account!");
         return;
     }
@@ -69,92 +93,88 @@ function startGame(){
     localStorage.setItem("activeUser", name);
 
     fetch("/load/" + name)
-    .then(r => r.json())
-    .then(data => {
+        .then(r => r.json())
+        .then(data => {
 
-        coins = data.coins || 0;
-        power = data.power || 1;
-        skin = data.skin || "#3b82f6";
-        owned = data.owned || ["blue"];
+            coins = data.coins || 0;
+            power = data.power || 1;
+            skin = data.skin || "#3b82f6";
+            owned = data.owned || ["blue"];
 
-        document.getElementById("nameScreen").style.display = "none";
-        document.getElementById("ui").classList.remove("hidden");
-        document.getElementById("game").classList.remove("hidden");
+            document.getElementById("nameScreen").style.display = "none";
+            document.getElementById("ui").classList.remove("hidden");
+            document.getElementById("game").classList.remove("hidden");
 
-        applySkin(skin);
-        update();
-    })
-    .catch(() => {
+            applySkin(skin);
+            update();
+        })
+        .catch(() => {
 
-        document.getElementById("nameScreen").style.display = "none";
-        document.getElementById("ui").classList.remove("hidden");
-        document.getElementById("game").classList.remove("hidden");
+            document.getElementById("nameScreen").style.display = "none";
+            document.getElementById("ui").classList.remove("hidden");
+            document.getElementById("game").classList.remove("hidden");
 
-        applySkin(skin);
-        update();
-    });
+            applySkin(skin);
+            update();
+        });
 }
 
-// ---------------- CLICK ----------------
-document.getElementById("click").addEventListener("click", () => {
-
-    coins += power;
-    update();
-    save();
-});
 
 // ---------------- UPDATE ----------------
-function update(){
+function update() {
 
-    coinsEl.innerText = coins;
-    powerEl.innerText = "⚡ " + power + " pro Klick";
+    if (coinsEl) coinsEl.innerText = coins;
+    if (powerEl) powerEl.innerText = "⚡ " + power + " pro Klick";
 
     updateUpgradePrices();
 }
 
+
 // ---------------- MENU ----------------
-function show(id){
+function show(id) {
 
     document.querySelectorAll(".menu")
-    .forEach(e => e.classList.add("hidden"));
+        .forEach(e => e.classList.add("hidden"));
 
-    document.getElementById(id).classList.remove("hidden");
+    const el = document.getElementById(id);
+    if (el) el.classList.remove("hidden");
 
-    if(id === "leaderboard") loadLB();
+    if (id === "leaderboard") loadLB();
 }
 
+
 // ---------------- SKINS ----------------
-function selectSkin(value, id){
+function selectSkin(value, id) {
 
     skin = value;
 
-    document.querySelectorAll(".card")
-    .forEach(c => c.classList.remove("selected"));
+    document.querySelectorAll("#shop .card")
+        .forEach(c => c.classList.remove("selected"));
 
     const el = document.getElementById(id);
-    if(el) el.classList.add("selected");
+    if (el) el.classList.add("selected");
 
     applySkin(value);
-
     save();
 }
 
-function buySkin(id, price, value){
+
+function buySkin(id, price, value) {
 
     const el = document.getElementById(id);
 
-    if(owned.includes(id)){
+    if (owned.includes(id)) {
         selectSkin(value, id);
         return;
     }
 
-    if(coins >= price){
+    if (coins >= price) {
 
         coins -= price;
         owned.push(id);
 
-        const priceTag = el.querySelector(".price");
-        if(priceTag) priceTag.remove();
+        const priceTag = el?.querySelector(".price");
+        if (priceTag) priceTag.remove();
 
         selectSkin(value, id);
 
@@ -166,14 +186,15 @@ function buySkin(id, price, value){
     }
 }
 
+
 // ---------------- UPGRADES ----------------
-function getUpgradePrice(base){
+function getUpgradePrice(base) {
     return Math.floor(base * (1 + power * 0.15));
 }
 
-function buyUpgrade(price, add){
+function buyUpgrade(price, add) {
 
-    if(coins >= price){
+    if (coins >= price) {
 
         coins -= price;
         power += add;
@@ -186,27 +207,36 @@ function buyUpgrade(price, add){
     }
 }
 
+
 // ---------------- PRICE UI ----------------
-function updateUpgradePrices(){
+function updateUpgradePrices() {
 
     const u1 = document.getElementById("u1");
     const u2 = document.getElementById("u2");
     const u3 = document.getElementById("u3");
 
-    if(u1) u1.innerText = getUpgradePrice(50) + " Coins";
-    if(u2) u2.innerText = getUpgradePrice(150) + " Coins";
-    if(u3) u3.innerText = getUpgradePrice(500) + " Coins";
+    if (u1) u1.innerText = getUpgradePrice(50) + " Coins";
+    if (u2) u2.innerText = getUpgradePrice(150) + " Coins";
+    if (u3) u3.innerText = getUpgradePrice(500) + " Coins";
 }
 
 
+// ---------------- CODE SYSTEM ----------------
 function toggleCodeBox() {
+
     const popup = document.getElementById("codePopup");
+    if (!popup) return;
+
     popup.classList.toggle("hidden");
 }
 
+
 async function redeemCode() {
 
-    const code = document.getElementById("codeInput").value;
+    const input = document.getElementById("codeInput");
+    if (!input) return;
+
+    const code = input.value;
 
     const res = await fetch("/redeem", {
         method: "POST",
@@ -230,13 +260,15 @@ async function redeemCode() {
         alert(data.msg);
     }
 }
-// ---------------- SAVE ----------------
-function save(){
 
-    fetch("/save",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
+
+// ---------------- SAVE ----------------
+function save() {
+
+    fetch("/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
             name,
             coins,
             power,
@@ -246,22 +278,25 @@ function save(){
     });
 }
 
+
 // ---------------- LEADERBOARD ----------------
-function loadLB(){
+function loadLB() {
 
     fetch("/leaderboard")
-    .then(r => r.json())
-    .then(data => {
+        .then(r => r.json())
+        .then(data => {
 
-        const list = document.getElementById("list");
-        list.innerHTML = "";
+            const list = document.getElementById("list");
+            if (!list) return;
 
-        data.forEach(p => {
+            list.innerHTML = "";
 
-            const li = document.createElement("li");
-            li.innerText = p[0] + " - " + p[1];
+            data.forEach(p => {
 
-            list.appendChild(li);
+                const li = document.createElement("li");
+                li.innerText = p[0] + " - " + p[1];
+
+                list.appendChild(li);
+            });
         });
-    });
 }

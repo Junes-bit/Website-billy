@@ -7,7 +7,12 @@ body{
     user-select:none;
 }
 
-/* NAME SCREEN */
+/* ---------------- UTIL ---------------- */
+.hidden{
+    display:none !important;
+}
+
+/* ---------------- NAME SCREEN ---------------- */
 #nameScreen{
     height:100vh;
     display:flex;
@@ -31,7 +36,7 @@ body{
     text-align:center;
 }
 
-/* BUTTONS */
+/* ---------------- BUTTONS ---------------- */
 button{
     padding:12px 20px;
     border:none;
@@ -48,7 +53,7 @@ button:hover{
     background:#334155;
 }
 
-/* TOPBAR */
+/* ---------------- TOPBAR ---------------- */
 .topbar{
     display:flex;
     justify-content:center;
@@ -58,12 +63,21 @@ button:hover{
     backdrop-filter: blur(10px);
 }
 
-/* GAME */
+.topbar button{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.topbar span{
+    font-size:14px;
+    opacity:0.8;
+}
+
+/* ---------------- GAME ---------------- */
 .menu{
     padding-top:30px;
 }
-
-.hidden{ display:none; }
 
 #coins{
     font-size:90px;
@@ -73,7 +87,12 @@ button:hover{
     text-shadow:0 0 25px rgba(56,189,248,0.5);
 }
 
-/* 💎 CLICK BUTTON ANIMATION BACK */
+#power{
+    font-size:18px;
+    opacity:0.8;
+}
+
+/* CLICK BUTTON */
 #click{
     width:220px;
     height:220px;
@@ -82,13 +101,11 @@ button:hover{
     margin-top:40px;
 
     background:linear-gradient(45deg,#3b82f6,#06b6d4);
-
     box-shadow:
         0 0 40px rgba(59,130,246,0.6),
         inset 0 0 20px rgba(255,255,255,0.1);
 
     cursor:pointer;
-
     transition:transform 0.08s ease;
     animation: float 2.5s ease-in-out infinite;
 }
@@ -97,7 +114,7 @@ button:hover{
     transform:scale(0.92);
 }
 
-/* LEADERBOARD */
+/* ---------------- LEADERBOARD ---------------- */
 ul{
     list-style:none;
     padding:0;
@@ -111,111 +128,7 @@ li{
     border-radius:10px;
 }
 
-/* ANIMATIONS */
-@keyframes float{
-    0%{ transform:translateY(0px); }
-    50%{ transform:translateY(-8px); }
-    100%{ transform:translateY(0px); }
-}
-
-@keyframes fadeIn{
-    from{ opacity:0; transform:translateY(10px); }
-    to{ opacity:1; transform:translateY(0); }
-}
-
-/* MOBILE */
-@media(max-width:700px){
-
-    #click{
-        width:170px;
-        height:170px;
-    }
-
-    #coins{
-        font-size:60px;
-    }
-}
-
-.shopGrid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
-    gap:15px;
-    padding:20px;
-    max-width:600px;
-    margin:auto;
-}
-
-.card{
-    background:#1e293b;
-    padding:20px;
-    border-radius:15px;
-    cursor:pointer;
-    transition:0.2s;
-    font-weight:bold;
-    text-align:center;
-}
-
-.card span{
-    display:block;
-    margin-top:8px;
-    font-size:14px;
-    color:#94a3b8;
-}
-
-.card:hover{
-    transform:scale(1.05);
-    background:#334155;
-}
-
-.card{
-    position:relative;
-    transition:0.25s ease;
-}
-
-/* 💎 HOVER / SWIPE GLOW */
-.card::before{
-    content:"";
-    position:absolute;
-    inset:-2px;
-    border-radius:15px;
-    opacity:0;
-    transition:0.25s ease;
-    z-index:-1;
-    filter:blur(12px);
-}
-
-/* aktiv beim hover */
-.card:hover::before{
-    opacity:1;
-}
-
-/* ausgewählt */
-.card.selected::before{
-    opacity:1;
-}
-
-/* Glow Farbe kommt aus JS */
-.card{
-    --glow:#38bdf8;
-}
-
-.card::before{
-    background:var(--glow);
-}
-
-.topbar button{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-weight:600;
-}
-
-.topbar span{
-    font-size:14px;
-    opacity:0.8;
-}
-
-/* SHOP */
+/* ---------------- SHOP ---------------- */
 .shopGrid{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
@@ -225,6 +138,7 @@ li{
     margin:auto;
 }
 
+/* ---------------- CARD (FIXED ONLY ONCE) ---------------- */
 .card{
     background:#1e293b;
     padding:20px;
@@ -236,13 +150,14 @@ li{
     overflow:hidden;
 
     --glow:#38bdf8;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .card:hover{
     transform:scale(1.05);
 }
 
-/* glow */
+/* glow effect */
 .card::before{
     content:"";
     position:absolute;
@@ -276,7 +191,43 @@ li{
     font-size:14px;
 }
 
-/* mobile tap */
-.card{
-    -webkit-tap-highlight-color: transparent;
+/* ---------------- POPUP ---------------- */
+.popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.popupBox{
+    background:#0f172a;
+    padding:20px;
+    border-radius:15px;
+    width:300px;
+}
+
+/* ---------------- ANIMATIONS ---------------- */
+@keyframes float{
+    0%{ transform:translateY(0px); }
+    50%{ transform:translateY(-8px); }
+    100%{ transform:translateY(0px); }
+}
+
+@keyframes fadeIn{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+/* ---------------- MOBILE ---------------- */
+@media(max-width:700px){
+    #click{
+        width:170px;
+        height:170px;
+    }
+
+    #coins{
+        font-size:60px;
+    }
 }

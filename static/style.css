@@ -28,6 +28,7 @@ input{
     border-radius:12px;
     border:none;
     outline:none;
+    color: #000;
 }
 
 button{
@@ -327,6 +328,7 @@ ul{
     padding:0;
     max-width:400px;
     margin:20px auto;
+    width: 100%;
 }
 
 li{
@@ -389,11 +391,186 @@ li{
     padding:12px;
     margin:15px 0;
     box-sizing:border-box;
+    color: #000;
 }
 
 .popupBox button{
     width:100%;
     margin:10px 0;
+}
+
+/* ========== FRIENDS STYLES ========== */
+
+.friendsTabs{
+    display:flex;
+    gap:10px;
+    margin-bottom:30px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.friendsTab{
+    padding:10px 20px;
+    border-radius:8px;
+    background:rgba(59,130,246,0.1);
+    border:2px solid rgba(59,130,246,0.3);
+    cursor:pointer;
+    transition:all 0.2s;
+    font-weight:600;
+}
+
+.friendsTab.active{
+    background:rgba(59,130,246,0.3);
+    border-color:rgba(59,130,246,0.8);
+    color:#06b6d4;
+}
+
+.friendsTab:hover{
+    background:rgba(59,130,246,0.2);
+}
+
+.friendsList{
+    max-width:600px;
+    margin:0 auto;
+    width:100%;
+}
+
+.friendItem{
+    background:#1e293b;
+    padding:15px;
+    border-radius:12px;
+    margin:10px 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-left:4px solid #06b6d4;
+}
+
+.friendName{
+    font-weight:700;
+    font-size:16px;
+    text-align:left;
+    flex:1;
+}
+
+.friendActions{
+    display:flex;
+    gap:10px;
+}
+
+.friendActions button{
+    padding:8px 15px;
+    font-size:12px;
+    border-radius:6px;
+    transition:all 0.2s;
+}
+
+.acceptBtn{
+    background:#22c55e;
+}
+
+.acceptBtn:hover{
+    background:#16a34a;
+}
+
+.declineBtn{
+    background:#ef4444;
+}
+
+.declineBtn:hover{
+    background:#dc2626;
+}
+
+.profileBtn{
+    background:rgba(59,130,246,0.3);
+    border:1px solid rgba(59,130,246,0.5);
+}
+
+.profileBtn:hover{
+    background:rgba(59,130,246,0.5);
+}
+
+.removeBtn{
+    background:#ef4444;
+}
+
+.removeBtn:hover{
+    background:#dc2626;
+}
+
+.addFriendBox{
+    background:linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15));
+    border:2px solid rgba(59,130,246,0.3);
+    border-radius:16px;
+    padding:20px;
+    max-width:400px;
+    margin:0 auto 30px;
+    display:flex;
+    gap:10px;
+}
+
+.addFriendBox input{
+    flex:1;
+    padding:10px;
+    border-radius:8px;
+    border:none;
+    font-size:14px;
+    color: #000;
+}
+
+.addFriendBox button{
+    padding:10px 20px;
+    background:linear-gradient(135deg, #3b82f6, #06b6d4);
+    border:none;
+    border-radius:8px;
+    font-weight:700;
+}
+
+.emptyMessage{
+    text-align:center;
+    padding:30px;
+    opacity:0.6;
+    font-size:16px;
+}
+
+.friendProfilePopup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:2000;
+}
+
+.friendProfileBox{
+    background:#0f172a;
+    padding:30px;
+    border-radius:20px;
+    width:90%;
+    max-width:400px;
+    border:2px solid rgba(59,130,246,0.3);
+}
+
+.friendProfileBox h2{
+    margin-top:0;
+    color:#06b6d4;
+    font-size:28px;
+}
+
+.friendProfileBox p{
+    font-size:16px;
+    margin:15px 0;
+}
+
+.friendProfileBox span{
+    color:#38bdf8;
+    font-weight:700;
+}
+
+.friendProfileBox button{
+    width:100%;
+    margin-top:20px;
 }
 
 @media (max-width: 768px){
@@ -436,6 +613,21 @@ li{
     .content{
         padding:15px;
     }
+
+    .friendItem{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+    .friendActions{
+        width:100%;
+        flex-wrap:wrap;
+    }
+
+    .addFriendBox{
+        flex-direction:column;
+    }
 }
 
 @media (max-width: 480px){
@@ -470,5 +662,14 @@ li{
 
     .card{
         padding:12px;
+    }
+
+    .friendsTabs{
+        flex-direction:column;
+        gap:8px;
+    }
+
+    .friendsTab{
+        width:100%;
     }
 }

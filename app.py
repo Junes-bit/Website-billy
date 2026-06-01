@@ -120,10 +120,7 @@ def leaderboard():
     data = c.fetchall()
     conn.close()
 
-    return jsonify([
-        {"name": r[0], "coins": r[1]}
-        for r in data
-    ])
+    return jsonify(data)
 
 # ---------------- REDEEM ----------------
 @app.route("/redeem", methods=["POST"])

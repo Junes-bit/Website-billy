@@ -54,7 +54,7 @@
 
         <!-- MENU (HOME) -->
         <div id="menu" class="page active">
-            <h1>Orbz Klicker</h1>
+            <h1>🎮 Orbz Klicker</h1>
             
             <div class="gameModesGrid">
                 <!-- CLICKER MODE -->
@@ -145,7 +145,7 @@
             <h1>🛒 SHOP</h1>
 
             <h2>🎨 Skins</h2>
-            <div class="shopGrid">
+            <div class="shopGrid" id="skinsGrid">
 
                 <div class="card selected" id="blueSkin"
                      onclick="selectSkin('#3b82f6', 'blueSkin')">
@@ -205,7 +205,7 @@
 
             <h2>⬆️ Upgrades</h2>
 
-            <div class="shopGrid">
+            <div class="shopGrid" id="upgradesGrid">
                 <div class="card" onclick="buyUpgrade(getUpgradePrice(50),1)">
                     <span class="name">+1 Klick</span> <span id="u1" class="price"></span>
                 </div>

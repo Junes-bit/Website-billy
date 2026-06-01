@@ -162,7 +162,20 @@ function selectSkin(value, id) {
 
     skin = value;
 
-    document.querySelectorAll("#shop .shopGrid:nth-of-type(2) .card")
+    function selectSkin(value, id) {
+
+    skin = value;
+
+    document.querySelectorAll("#skinsGrid .card")  // ← DIESE ZEILE!
+        .forEach(c => c.classList.remove("selected"));
+
+    const el = document.getElementById(id);
+    if (el) el.classList.add("selected");
+
+    applySkin(value);
+    save();
+    updateProfile();
+}
         .forEach(c => c.classList.remove("selected"));
 
     const el = document.getElementById(id);

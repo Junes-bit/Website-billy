@@ -27,6 +27,19 @@ def init_db():
     )
     """)
 
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS friendships (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user1 TEXT NOT NULL,
+        user2 TEXT NOT NULL,
+        status TEXT DEFAULT 'pending',
+        requested_by TEXT NOT NULL,
+        UNIQUE(user1, user2),
+        FOREIGN KEY(user1) REFERENCES players(name),
+        FOREIGN KEY(user2) REFERENCES players(name)
+    )
+    """)
+
     codes = {
         "B4N3R": 1000,
         "R3M5F": 2500,
@@ -163,7 +176,178 @@ def redeem():
 
     return jsonify({"ok": True, "reward": reward})
 
-# ---------------- RUN ----------------
+# ============= FRIENDS SYSTEM =============
+
+# ADD FRIEND (Anfrage senden)
+@app.route("/add-friend", methods=["POST"])
+def add_friend():
+    data = request.json
+    my_name = data.get("myName")
+    friend_name = data.get("friendName")
+
+    if my_name == friend_name:
+        return jsonify({"ok": False, "msg": "Du kannst dich nicht selbst hinzufügen!"})
+
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    # Check ob Spieler existiert
+    c.execute("SELECT name FROM players WHERE name=?", (friend_name,))
+    if not c.fetchone():
+        conn.close()
+        return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
+
+    # Check ob schon Freunde oder Anfrage existiert
+    c.execute("""
+    SELECT status FROM friendships 
+    WHERE (user1=? AND user2=?) OR (user1=? AND user2=?)
+    """, (my_name, friend_name, friend_name, my_name))
+    
+    if c.fetchone():
+        conn.close()
+        return jsonify({"ok": False, "msg": "Anfrage bereits existiert"})
+
+    # Neue Anfrage eintragen
+    c.execute("""
+    INSERT INTO friendships (user1, user2, status, requested_by)
+    VALUES (?, ?, 'pending', ?)
+    """, (my_name, friend_name, my_name))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"ok": True, "msg": "Anfrage gesendet!"})
+
+
+# GET FRIENDS (alle 3 Listen)
+@app.route("/get-friends/<name>")
+def get_friends(name):
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    # AKZEPTIERTE FREUNDE
+    c.execute("""
+    SELECT CASE 
+        WHEN user1=? THEN user2 
+        ELSE user1 
+    END as friend_name
+    FROM friendships 
+    WHERE (user1=? OR user2=?) AND status='accepted'
+    """, (name, name, name))
+    
+    friends = [row[0] for row in c.fetchall()]
+
+    # AUSSTEHENDE ANFRAGEN (ich habe gesendet)
+    c.execute("""
+    SELECT user2 FROM friendships 
+    WHERE user1=? AND status='pending'
+    """, (name,))
+    
+    pending_sent = [row[0] for row in c.fetchall()]
+
+    # ERHALTENE ANFRAGEN (andere haben gesendet)
+    c.execute("""
+    SELECT user1 FROM friendships 
+    WHERE user2=? AND status='pending'
+    """, (name,))
+    
+    pending_received = [row[0] for row in c.fetchall()]
+
+    conn.close()
+
+    return jsonify({
+        "friends": friends,
+        "pendingSent": pending_sent,
+        "pendingReceived": pending_received
+    })
+
+
+# ACCEPT FRIEND REQUEST
+@app.route("/accept-friend", methods=["POST"])
+def accept_friend():
+    data = request.json
+    my_name = data.get("myName")
+    from_name = data.get("fromName")
+
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    c.execute("""
+    UPDATE friendships 
+    SET status='accepted'
+    WHERE user1=? AND user2=? AND status='pending'
+    """, (from_name, my_name))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"ok": True})
+
+
+# DECLINE FRIEND REQUEST
+@app.route("/decline-friend", methods=["POST"])
+def decline_friend():
+    data = request.json
+    my_name = data.get("myName")
+    from_name = data.get("fromName")
+
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    c.execute("""
+    DELETE FROM friendships 
+    WHERE user1=? AND user2=? AND status='pending'
+    """, (from_name, my_name))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"ok": True})
+
+
+# GET FRIEND PROFILE
+@app.route("/friend-profile/<name>")
+def friend_profile(name):
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    c.execute("SELECT name, coins, power, skin FROM players WHERE name=?", (name,))
+    row = c.fetchone()
+    conn.close()
+
+    if row:
+        return jsonify({
+            "name": row[0],
+            "coins": row[1],
+            "power": row[2],
+            "skin": row[3]
+        })
+
+    return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
+
+
+# REMOVE FRIEND
+@app.route("/remove-friend", methods=["POST"])
+def remove_friend():
+    data = request.json
+    my_name = data.get("myName")
+    friend_name = data.get("friendName")
+
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    c.execute("""
+    DELETE FROM friendships 
+    WHERE (user1=? AND user2=?) OR (user1=? AND user2=?)
+    """, (my_name, friend_name, friend_name, my_name))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"ok": True})
+
+
+# ============= RUN =============
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 500))
     app.run(host="0.0.0.0", port=port)

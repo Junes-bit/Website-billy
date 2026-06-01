@@ -27,6 +27,21 @@ def init_db():
     )
     """)
 
+    # 👉 Codes nur einmal einfügen
+    codes = {
+        "B4N3R": 1000,
+        "R3M5F": 2500,
+        "G7Z4N": 3000,
+        "G0ZFR": 5000,
+        "D1M3S": 10000
+    }
+
+    for code, reward in codes.items():
+        c.execute("""
+        INSERT OR IGNORE INTO codes (code, reward, used)
+        VALUES (?, ?, 0)
+        """, (code, reward))
+
     conn.commit()
     conn.close()
 
@@ -89,65 +104,37 @@ def load(name):
         "owned": ["blue"]
     })
 
-# ---------------- LEADERBOARD ----------------
-@app.route("/leaderboard")
-def leaderboard():
-
-    conn = sqlite3.connect("game.db")
-    c = conn.cursor()
-
-    c.execute("""
-    SELECT name, coins
-    FROM players
-    ORDER BY coins DESC
-    LIMIT 10
-    """)
-
-    data = c.fetchall()
-    conn.close()
-
-    return jsonify(data)
-
 # ---------------- REDEEM ----------------
 @app.route("/redeem", methods=["POST"])
 def redeem():
 
     data = request.json
-
-    code = data["code"]
-    name = data["name"]
+    code = data.get("code")
+    name = data.get("name")
 
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
-    # Code prüfen
     c.execute("SELECT reward, used FROM codes WHERE code=?", (code,))
     row = c.fetchone()
 
     if not row:
-        conn.close()
         return jsonify({"ok": False, "msg": "Ungültiger Code"})
 
     reward, used = row
 
     if used == 1:
-        conn.close()
         return jsonify({"ok": False, "msg": "Schon benutzt"})
 
-    # Spieler holen
     c.execute("SELECT coins FROM players WHERE name=?", (name,))
     player = c.fetchone()
 
     if not player:
-        conn.close()
         return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
 
     new_coins = player[0] + reward
 
-    # Update Coins
     c.execute("UPDATE players SET coins=? WHERE name=?", (new_coins, name))
-
-    # Code sperren
     c.execute("UPDATE codes SET used=1 WHERE code=?", (code,))
 
     conn.commit()

@@ -5,14 +5,15 @@ body{
     color:white;
     text-align:center;
     user-select:none;
+    overflow-x:hidden;
 }
 
-/* ---------------- UTIL ---------------- */
+/* FIX: hidden sauber */
 .hidden{
     display:none !important;
 }
 
-/* ---------------- NAME SCREEN ---------------- */
+/* NAME SCREEN */
 #nameScreen{
     height:100vh;
     display:flex;
@@ -22,22 +23,19 @@ body{
     gap:15px;
 }
 
-#nameScreen h1{
-    font-size:40px;
-    animation: fadeIn 0.8s ease;
-}
-
-#nameInput{
-    padding:12px 15px;
+/* INPUT FIX (dein „komischer Text“) */
+input{
+    font-family:'Inter', sans-serif;
     font-size:18px;
+    padding:12px;
     border-radius:12px;
     border:none;
     outline:none;
-    text-align:center;
 }
 
-/* ---------------- BUTTONS ---------------- */
+/* BUTTONS */
 button{
+    font-family:'Inter', sans-serif;
     padding:12px 20px;
     border:none;
     border-radius:12px;
@@ -53,7 +51,7 @@ button:hover{
     background:#334155;
 }
 
-/* ---------------- TOPBAR ---------------- */
+/* TOPBAR */
 .topbar{
     display:flex;
     justify-content:center;
@@ -63,58 +61,52 @@ button:hover{
     backdrop-filter: blur(10px);
 }
 
-.topbar button{
+/* GAME CENTER FIX (ORB PROBLEM) */
+#game{
     display:flex;
+    flex-direction:column;
     align-items:center;
-    gap:8px;
+    justify-content:center;
 }
 
-.topbar span{
-    font-size:14px;
-    opacity:0.8;
-}
-
-/* ---------------- GAME ---------------- */
-.menu{
-    padding-top:30px;
-}
-
+/* COINS */
 #coins{
     font-size:90px;
     font-weight:800;
     margin-top:40px;
     color:#38bdf8;
-    text-shadow:0 0 25px rgba(56,189,248,0.5);
 }
 
+/* POWER */
 #power{
     font-size:18px;
     opacity:0.8;
 }
 
-/* CLICK BUTTON */
+/* 🔥 ORB FIX (WICHTIG!) */
 #click{
     width:220px;
     height:220px;
     border-radius:50%;
     border:none;
+
     margin-top:40px;
 
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+
     background:linear-gradient(45deg,#3b82f6,#06b6d4);
+
     box-shadow:
         0 0 40px rgba(59,130,246,0.6),
         inset 0 0 20px rgba(255,255,255,0.1);
 
     cursor:pointer;
-    transition:transform 0.08s ease;
     animation: float 2.5s ease-in-out infinite;
 }
 
-#click:active{
-    transform:scale(0.92);
-}
-
-/* ---------------- LEADERBOARD ---------------- */
+/* LEADERBOARD FIX */
 ul{
     list-style:none;
     padding:0;
@@ -128,7 +120,7 @@ li{
     border-radius:10px;
 }
 
-/* ---------------- SHOP ---------------- */
+/* SHOP */
 .shopGrid{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
@@ -138,60 +130,15 @@ li{
     margin:auto;
 }
 
-/* ---------------- CARD ---------------- */
 .card{
     background:#1e293b;
     padding:20px;
     border-radius:16px;
     cursor:pointer;
     text-align:center;
-    transition:0.25s;
-    position:relative;
-    overflow:hidden;
-
-    --glow:#38bdf8;
-    -webkit-tap-highlight-color: transparent;
 }
 
-.card:hover{
-    transform:scale(1.05);
-}
-
-/* glow effect */
-.card::before{
-    content:"";
-    position:absolute;
-    inset:-2px;
-    border-radius:16px;
-    background:var(--glow);
-    filter:blur(18px);
-    opacity:0;
-    transition:0.25s;
-    z-index:-1;
-}
-
-.card:hover::before{
-    opacity:0.8;
-}
-
-.card.selected{
-    border:2px solid var(--glow);
-    box-shadow:0 0 25px var(--glow);
-}
-
-.card.selected::before{
-    opacity:1;
-}
-
-/* price */
-.price{
-    display:block;
-    margin-top:10px;
-    color:#94a3b8;
-    font-size:14px;
-}
-
-/* ---------------- POPUP (CODE MENU FIX) ---------------- */
+/* POPUP FIX */
 .popup{
     position:fixed;
     inset:0;
@@ -199,7 +146,6 @@ li{
     display:flex;
     justify-content:center;
     align-items:center;
-    z-index:999;
 }
 
 .popupBox{
@@ -209,38 +155,16 @@ li{
     width:300px;
 }
 
-/* 🔥 FIX INPUT SIZE */
+/* INPUT CODE FIX */
 #codeInput{
     width:100%;
-    padding:12px;
     font-size:18px;
-    border-radius:10px;
-    border:none;
-    outline:none;
-    text-align:center;
-    margin-top:10px;
+    padding:10px;
 }
 
-/* ---------------- ANIMATIONS ---------------- */
+/* ANIMATION */
 @keyframes float{
     0%{ transform:translateY(0px); }
     50%{ transform:translateY(-8px); }
     100%{ transform:translateY(0px); }
-}
-
-@keyframes fadeIn{
-    from{ opacity:0; transform:translateY(10px); }
-    to{ opacity:1; transform:translateY(0); }
-}
-
-/* ---------------- MOBILE ---------------- */
-@media(max-width:700px){
-    #click{
-        width:170px;
-        height:170px;
-    }
-
-    #coins{
-        font-size:60px;
-    }
 }

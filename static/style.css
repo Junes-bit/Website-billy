@@ -138,7 +138,7 @@ li{
     margin:auto;
 }
 
-/* ---------------- CARD (FIXED ONLY ONCE) ---------------- */
+/* ---------------- CARD ---------------- */
 .card{
     background:#1e293b;
     padding:20px;
@@ -191,7 +191,7 @@ li{
     font-size:14px;
 }
 
-/* ---------------- POPUP ---------------- */
+/* ---------------- POPUP (CODE MENU FIX) ---------------- */
 .popup{
     position:fixed;
     inset:0;
@@ -199,6 +199,7 @@ li{
     display:flex;
     justify-content:center;
     align-items:center;
+    z-index:999;
 }
 
 .popupBox{
@@ -206,6 +207,18 @@ li{
     padding:20px;
     border-radius:15px;
     width:300px;
+}
+
+/* 🔥 FIX INPUT SIZE */
+#codeInput{
+    width:100%;
+    padding:12px;
+    font-size:18px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    text-align:center;
+    margin-top:10px;
 }
 
 /* ---------------- ANIMATIONS ---------------- */

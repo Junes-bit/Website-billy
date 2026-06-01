@@ -198,6 +198,38 @@ function updateUpgradePrices(){
     if(u3) u3.innerText = getUpgradePrice(500) + " Coins";
 }
 
+
+function toggleCodeBox() {
+    const popup = document.getElementById("codePopup");
+    popup.classList.toggle("hidden");
+}
+
+async function redeemCode() {
+
+    const code = document.getElementById("codeInput").value;
+
+    const res = await fetch("/redeem", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            code: code,
+            name: name
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.ok) {
+        coins += data.reward;
+        alert("🎉 +" + data.reward + " Coins!");
+        update();
+        save();
+    } else {
+        alert(data.msg);
+    }
+}
 // ---------------- SAVE ----------------
 function save(){
 

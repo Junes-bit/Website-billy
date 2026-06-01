@@ -107,11 +107,29 @@
         </div>
 
         <!-- FRIENDS -->
-        <div id="friends" class="page">
-            <button class="backBtn" onclick="show('menu')">← Zurück</button>
-            <h1>👥 Freunde</h1>
-            <p>Coming Soon! 🚀</p>
-        </div>
+       <!-- FRIENDS -->
+<div id="friends" class="page">
+    <button class="backBtn" onclick="show('menu')">← Zurück</button>
+    <h1>👥 Freunde</h1>
+
+    <!-- ADD FRIEND BOX -->
+    <div class="addFriendBox">
+        <input id="friendInput" type="text" placeholder="Freund hinzufügen...">
+        <button onclick="addFriend()">➕ Hinzufügen</button>
+    </div>
+
+    <!-- TABS -->
+    <div class="friendsTabs">
+        <button class="friendsTab active" onclick="switchFriendsTab('friends')">👥 Freunde</button>
+        <button class="friendsTab" onclick="switchFriendsTab('sent')">⏳ Ausstehend</button>
+        <button class="friendsTab" onclick="switchFriendsTab('received')">✉️ Erhaltend</button>
+    </div>
+
+    <!-- FRIENDS LIST -->
+    <div class="friendsList" id="friendsList">
+        <div class="emptyMessage">Lade...</div>
+    </div>
+</div>
 
         <!-- WHEEL -->
         <div id="wheel" class="page">

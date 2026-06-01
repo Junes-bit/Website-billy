@@ -138,7 +138,7 @@ function selectSkin(value, id) {
 
     skin = value;
 
-    document.querySelectorAll("#shop .card")
+    document.querySelectorAll("#shop .shopGrid:first-of-type .card")
         .forEach(c => c.classList.remove("selected"));
 
     const el = document.getElementById(id);

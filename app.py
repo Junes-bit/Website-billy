@@ -27,7 +27,6 @@ def init_db():
     )
     """)
 
-    # 👉 Codes nur einmal einfügen
     codes = {
         "B4N3R": 1000,
         "R3M5F": 2500,
@@ -104,6 +103,28 @@ def load(name):
         "owned": ["blue"]
     })
 
+# ---------------- LEADERBOARD ----------------
+@app.route("/leaderboard")
+def leaderboard():
+
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    c.execute("""
+    SELECT name, coins
+    FROM players
+    ORDER BY coins DESC
+    LIMIT 10
+    """)
+
+    data = c.fetchall()
+    conn.close()
+
+    return jsonify([
+        {"name": r[0], "coins": r[1]}
+        for r in data
+    ])
+
 # ---------------- REDEEM ----------------
 @app.route("/redeem", methods=["POST"])
 def redeem():
@@ -119,17 +140,20 @@ def redeem():
     row = c.fetchone()
 
     if not row:
+        conn.close()
         return jsonify({"ok": False, "msg": "Ungültiger Code"})
 
     reward, used = row
 
     if used == 1:
+        conn.close()
         return jsonify({"ok": False, "msg": "Schon benutzt"})
 
     c.execute("SELECT coins FROM players WHERE name=?", (name,))
     player = c.fetchone()
 
     if not player:
+        conn.close()
         return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
 
     new_coins = player[0] + reward

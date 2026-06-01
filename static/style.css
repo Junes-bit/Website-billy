@@ -115,6 +115,21 @@ button:hover{
     to{ opacity:1; }
 }
 
+/* BACK BUTTON */
+.backBtn{
+    align-self:flex-start;
+    margin-bottom:20px;
+    background:rgba(59,130,246,0.2);
+    border:1px solid rgba(59,130,246,0.5);
+    padding:10px 15px;
+    font-size:14px;
+}
+
+.backBtn:hover{
+    background:rgba(59,130,246,0.4);
+    border-color:rgba(59,130,246,0.8);
+}
+
 /* MENU (HOME) */
 #menu h1{
     font-size:48px;
@@ -197,20 +212,6 @@ button:hover{
     justify-content:center;
     gap:30px;
     min-height:60vh;
-}
-
-.backBtn{
-    align-self:flex-start;
-    margin-bottom:20px;
-    background:rgba(59,130,246,0.2);
-    border:1px solid rgba(59,130,246,0.5);
-    padding:10px 15px;
-    font-size:14px;
-}
-
-.backBtn:hover{
-    background:rgba(59,130,246,0.4);
-    border-color:rgba(59,130,246,0.8);
 }
 
 /* COINS & POWER */

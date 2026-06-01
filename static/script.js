@@ -9,6 +9,15 @@ let owned = ["blue"];
 let coinsEl;
 let powerEl;
 
+// Current friends data
+let friendsData = {
+    friends: [],
+    pendingSent: [],
+    pendingReceived: []
+};
+
+let currentFriendsTab = "friends";
+
 // ---------------- INIT ----------------
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -123,6 +132,10 @@ function show(id) {
 
     const el = document.getElementById(id);
     if (el) el.classList.add("active");
+
+    if (id === "friends") {
+        loadFriends();
+    }
 }
 
 
@@ -297,6 +310,219 @@ function logout() {
         localStorage.removeItem("activeUser");
         location.reload();
     }
+}
+
+
+// ============= FRIENDS SYSTEM =============
+
+function loadFriends() {
+    fetch("/get-friends/" + name)
+        .then(r => r.json())
+        .then(data => {
+            friendsData = data;
+            renderFriendsTab(currentFriendsTab);
+        });
+}
+
+function switchFriendsTab(tab) {
+    currentFriendsTab = tab;
+    
+    document.querySelectorAll(".friendsTab")
+        .forEach(t => t.classList.remove("active"));
+    
+    document.querySelector(`.friendsTab[onclick="switchFriendsTab('${tab}')"]`)
+        ?.classList.add("active");
+    
+    renderFriendsTab(tab);
+}
+
+function renderFriendsTab(tab) {
+    const container = document.getElementById("friendsList");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (tab === "friends") {
+        if (friendsData.friends.length === 0) {
+            container.innerHTML = "<div class='emptyMessage'>Noch keine Freunde</div>";
+            return;
+        }
+
+        friendsData.friends.forEach(friend => {
+            const item = document.createElement("div");
+            item.className = "friendItem";
+            item.innerHTML = `
+                <div class="friendName">👤 ${friend}</div>
+                <div class="friendActions">
+                    <button class="profileBtn" onclick="showFriendProfile('${friend}')">Profil</button>
+                    <button class="removeBtn" onclick="removeFriend('${friend}')">Entfernen</button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+    
+    else if (tab === "sent") {
+        if (friendsData.pendingSent.length === 0) {
+            container.innerHTML = "<div class='emptyMessage'>Keine ausstehenden Anfragen</div>";
+            return;
+        }
+
+        friendsData.pendingSent.forEach(friend => {
+            const item = document.createElement("div");
+            item.className = "friendItem";
+            item.innerHTML = `
+                <div class="friendName">⏳ Anfrage an ${friend}</div>
+                <div class="friendActions">
+                    <button class="declineBtn" onclick="declineFriendRequest('${friend}', 'sent')">Stornieren</button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+    
+    else if (tab === "received") {
+        if (friendsData.pendingReceived.length === 0) {
+            container.innerHTML = "<div class='emptyMessage'>Keine eingegangenen Anfragen</div>";
+            return;
+        }
+
+        friendsData.pendingReceived.forEach(friend => {
+            const item = document.createElement("div");
+            item.className = "friendItem";
+            item.innerHTML = `
+                <div class="friendName">✉️ Anfrage von ${friend}</div>
+                <div class="friendActions">
+                    <button class="acceptBtn" onclick="acceptFriendRequest('${friend}')">Akzeptieren</button>
+                    <button class="declineBtn" onclick="declineFriendRequest('${friend}', 'received')">Ablehnen</button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+}
+
+function addFriend() {
+    const input = document.getElementById("friendInput");
+    if (!input || !input.value.trim()) {
+        alert("Name eingeben!");
+        return;
+    }
+
+    const friendName = input.value.trim();
+
+    fetch("/add-friend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            myName: name,
+            friendName: friendName
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("✅ Anfrage gesendet!");
+            input.value = "";
+            loadFriends();
+        } else {
+            alert("❌ " + data.msg);
+        }
+    });
+}
+
+function acceptFriendRequest(fromName) {
+    fetch("/accept-friend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            myName: name,
+            fromName: fromName
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("✅ Freund akzeptiert!");
+            loadFriends();
+        }
+    });
+}
+
+function declineFriendRequest(friendName, type) {
+    fetch("/decline-friend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            myName: name,
+            fromName: friendName
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("✅ Abgelehnt");
+            loadFriends();
+        }
+    });
+}
+
+function removeFriend(friendName) {
+    if (!confirm(`${friendName} wirklich entfernen?`)) return;
+
+    fetch("/remove-friend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            myName: name,
+            friendName: friendName
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("✅ Freund entfernt");
+            loadFriends();
+        }
+    });
+}
+
+function showFriendProfile(friendName) {
+    fetch("/friend-profile/" + friendName)
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok === false) {
+                alert("Profil nicht gefunden");
+                return;
+            }
+
+            const skinNames = {
+                "#3b82f6": "Blau",
+                "#ef4444": "Rot",
+                "#22c55e": "Hellgrün",
+                "#f97316": "Orange",
+                "gold": "Gold",
+                "#38bdf8": "Diamant",
+                "#ff3b30": "Lava",
+                "#7dd3fc": "Ice",
+                "#84cc16": "Toxic",
+                "#ff4d9d": "Pink",
+                "#111827": "Void"
+            };
+
+            const popup = document.createElement("div");
+            popup.className = "friendProfilePopup";
+            popup.innerHTML = `
+                <div class="friendProfileBox">
+                    <h2>👤 ${data.name}</h2>
+                    <p>💰 Coins: <span>${data.coins}</span></p>
+                    <p>⚡ Power: <span>${data.power}</span></p>
+                    <p>🎨 Skin: <span>${skinNames[data.skin] || "Unbekannt"}</span></p>
+                    <button onclick="this.parentElement.parentElement.remove()">Schließen</button>
+                </div>
+            `;
+            document.body.appendChild(popup);
+        });
 }
 
 

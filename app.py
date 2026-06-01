@@ -19,6 +19,14 @@ def init_db():
     )
     """)
 
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS codes (
+        code TEXT PRIMARY KEY,
+        reward INTEGER,
+        used INTEGER DEFAULT 0
+    )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -32,7 +40,11 @@ def home():
 # ---------------- SAVE ----------------
 @app.route("/save", methods=["POST"])
 def save():
-    data = request.json
+
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"ok": False, "msg": "Keine Daten"}), 400
 
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
@@ -42,11 +54,11 @@ def save():
     (name, coins, power, skin, owned)
     VALUES (?, ?, ?, ?, ?)
     """, (
-        data["name"],
-        int(data["coins"]),
-        int(data["power"]),
-        data["skin"],
-        ",".join(data["owned"])
+        data.get("name"),
+        int(data.get("coins", 0)),
+        int(data.get("power", 1)),
+        data.get("skin", "#3b82f6"),
+        ",".join(data.get("owned", ["blue"]))
     ))
 
     conn.commit()
@@ -100,18 +112,24 @@ def leaderboard():
 
     return jsonify(data)
 
-
+# ---------------- REDEEM ----------------
 @app.route("/redeem", methods=["POST"])
 def redeem():
 
-    data = request.json
-    code = data["code"]
-    name = data["name"]
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"ok": False, "msg": "Keine Daten"}), 400
+
+    code = data.get("code")
+    name = data.get("name")
+
+    if not code or not name:
+        return jsonify({"ok": False, "msg": "Code oder Name fehlt"}), 400
 
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
-    # Code prüfen
     c.execute("SELECT reward, used FROM codes WHERE code=?", (code,))
     row = c.fetchone()
 
@@ -125,7 +143,6 @@ def redeem():
         conn.close()
         return jsonify({"ok": False, "msg": "Schon benutzt"})
 
-    # Spieler holen
     c.execute("SELECT coins FROM players WHERE name=?", (name,))
     player = c.fetchone()
 
@@ -135,10 +152,8 @@ def redeem():
 
     new_coins = player[0] + reward
 
-    # Update Coins
     c.execute("UPDATE players SET coins=? WHERE name=?", (new_coins, name))
 
-    # Code sperren
     c.execute("UPDATE codes SET used=1 WHERE code=?", (code,))
 
     conn.commit()
@@ -148,5 +163,5 @@ def redeem():
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 500))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

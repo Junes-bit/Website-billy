@@ -1,4 +1,3 @@
-
 let name = "";
 
 let coins = 0;
@@ -10,7 +9,7 @@ let owned = ["blue"];
 let coinsEl;
 let powerEl;
 
-// ---------------- INIT (safe DOM load) ----------------
+// ---------------- INIT ----------------
 document.addEventListener("DOMContentLoaded", () => {
 
     coinsEl = document.getElementById("coins");
@@ -28,26 +27,20 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// ---------------- SKIN SYSTEM ----------------
+// ---------------- SKIN ----------------
 function applySkin(value) {
 
     const click = document.getElementById("click");
-
     if (!click) return;
 
     click.style.background = "";
     click.style.backgroundImage = "";
 
-    // IMAGE SKINS
     if (value && value.endsWith(".png")) {
-
         click.style.backgroundImage = `url('/static/${value}')`;
         click.style.backgroundSize = "cover";
         click.style.backgroundPosition = "center";
-
-    } 
-    // COLOR SKINS
-    else {
+    } else {
         click.style.background = value;
     }
 
@@ -58,7 +51,7 @@ function applySkin(value) {
 }
 
 
-// ---------------- START GAME ----------------
+// ---------------- START ----------------
 function startGame() {
 
     const input = document.getElementById("nameInput");
@@ -73,7 +66,6 @@ function startGame() {
     if (!savedPass) {
         pass = prompt("🔐 Neues Passwort setzen:");
         if (!pass) return;
-
         localStorage.setItem("pass_" + name, pass);
     } else {
         pass = prompt("🔐 Passwort eingeben:");
@@ -107,15 +99,6 @@ function startGame() {
 
             applySkin(skin);
             update();
-        })
-        .catch(() => {
-
-            document.getElementById("nameScreen").style.display = "none";
-            document.getElementById("ui").classList.remove("hidden");
-            document.getElementById("game").classList.remove("hidden");
-
-            applySkin(skin);
-            update();
         });
 }
 
@@ -130,7 +113,7 @@ function update() {
 }
 
 
-// ---------------- MENU ----------------
+// ---------------- MENU (FIXED ORB BUG) ----------------
 function show(id) {
 
     document.querySelectorAll(".menu")
@@ -138,6 +121,13 @@ function show(id) {
 
     const el = document.getElementById(id);
     if (el) el.classList.remove("hidden");
+
+    // 🔥 FIX: ORB HIDE / SHOW
+    const clickBtn = document.getElementById("click");
+
+    if (clickBtn) {
+        clickBtn.style.display = (id === "game") ? "block" : "none";
+    }
 
     if (id === "leaderboard") loadLB();
 }
@@ -157,7 +147,6 @@ function selectSkin(value, id) {
     applySkin(value);
     save();
 }
-
 
 function buySkin(id, price, value) {
 
@@ -195,20 +184,17 @@ function getUpgradePrice(base) {
 function buyUpgrade(price, add) {
 
     if (coins >= price) {
-
         coins -= price;
         power += add;
-
         update();
         save();
-
     } else {
         alert("Zu wenig Coins");
     }
 }
 
 
-// ---------------- PRICE UI ----------------
+// ---------------- PRICE ----------------
 function updateUpgradePrices() {
 
     const u1 = document.getElementById("u1");
@@ -221,7 +207,7 @@ function updateUpgradePrices() {
 }
 
 
-// ---------------- CODE SYSTEM ----------------
+// ---------------- CODE SYSTEM (FIXED UX) ----------------
 function toggleCodeBox() {
 
     const popup = document.getElementById("codePopup");
@@ -231,22 +217,23 @@ function toggleCodeBox() {
 }
 
 
+// 🔥 FIX: input reset + better UX
 async function redeemCode() {
 
     const input = document.getElementById("codeInput");
     if (!input) return;
 
-    const code = input.value;
+    const code = input.value.trim();
+
+    if (!code) {
+        alert("Code eingeben!");
+        return;
+    }
 
     const res = await fetch("/redeem", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            code: code,
-            name: name
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, name })
     });
 
     const data = await res.json();
@@ -254,6 +241,7 @@ async function redeemCode() {
     if (data.ok) {
         coins += data.reward;
         alert("🎉 +" + data.reward + " Coins!");
+        input.value = ""; // FIX
         update();
         save();
     } else {
@@ -279,7 +267,7 @@ function save() {
 }
 
 
-// ---------------- LEADERBOARD ----------------
+// ---------------- LEADERBOARD (SAFE) ----------------
 function loadLB() {
 
     fetch("/leaderboard")
@@ -292,11 +280,12 @@ function loadLB() {
             list.innerHTML = "";
 
             data.forEach(p => {
-
                 const li = document.createElement("li");
-                li.innerText = p[0] + " - " + p[1];
-
+                li.innerText = `${p[0]} - ${p[1] ?? 0}`;
                 list.appendChild(li);
             });
+        })
+        .catch(() => {
+            console.log("Leaderboard error");
         });
 }

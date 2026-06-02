@@ -140,17 +140,22 @@
 </div>
 
 
-        <!-- WHEEL -->
+       <!-- WHEEL -->
         <div id="wheel" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
             <h1>🎡 Glücksrad</h1>
+            <p>Coming Soon! 🚀</p>
         </div>
 
 
-        <!-- INVENTORY -->
+         <!-- INVENTORY -->
         <div id="inventory" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
             <h1>🎒 Inventar</h1>
+            <div class="shopGrid">
+                <h2>🎨 Skins</h2>
+                <div class="skinList" id="skinList"></div>
+            </div>
         </div>
 
 
@@ -158,14 +163,92 @@
         <div id="settings" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
             <h1>⚙️ Settings</h1>
+            <div class="settingsBox">
+                <button onclick="logout()">🚪 Ausloggen</button>
+            </div>
         </div>
-
 
         <!-- SHOP -->
         <div id="shop" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
-            <h1>🛒 Shop</h1>
+            <h1>🛒 SHOP</h1>
+
+            <h2>🎨 Skins</h2>
+            <div class="shopGrid" id="skinsGrid">
+
+                <div class="card selected" id="blueSkin"
+                     onclick="selectSkin('#3b82f6', 'blueSkin')">
+                    🔵 <span class="name">Blau</span>
+                </div>
+
+                <div class="card" id="redSkin"
+                     onclick="buySkin('redSkin', 100, '#ef4444')">
+                    🔴 <span class="name">Rot</span> <span class="price">100 Coins</span>
+                </div>
+
+                <div class="card" id="greenSkin"
+                     onclick="buySkin('greenSkin', 250, '#22c55e')">
+                    🟢 <span class="name">Hellgrün</span> <span class="price">250 Coins</span>
+                </div>
+
+                <div class="card" id="orangeSkin"
+                     onclick="buySkin('orangeSkin', 400, '#f97316')">
+                    🟠 <span class="name">Orange</span> <span class="price">400 Coins</span>
+                </div>
+
+                <div class="card" id="goldSkin"
+                     onclick="buySkin('goldSkin', 600, 'gold')">
+                    🟡 <span class="name">Gold</span> <span class="price">600 Coins</span>
+                </div>
+
+                <div class="card" id="diamondSkin"
+                     onclick="buySkin('diamondSkin', 750, '#38bdf8')">
+                    💎 <span class="name">Diamant</span> <span class="price">750 Coins</span>
+                </div>
+
+                <div class="card" id="lavaSkin"
+                     onclick="buySkin('lavaSkin', 1000, '#ff3b30')">
+                    🌋 <span class="name">Lava</span> <span class="price">1000 Coins</span>
+                </div>
+
+                <div class="card" id="iceSkin"
+                     onclick="buySkin('iceSkin', 1500, '#7dd3fc')">
+                    ❄️ <span class="name">Ice</span> <span class="price">1500 Coins</span>
+                </div>
+
+                <div class="card" id="toxicSkin"
+                     onclick="buySkin('toxicSkin', 1500, '#84cc16')">
+                    ☢️ <span class="name">Toxic</span> <span class="price">1500 Coins</span>
+                </div>
+
+                <div class="card" id="pinkSkin"
+                     onclick="buySkin('pinkSkin', 2000, '#ff4d9d')">
+                    💖 <span class="name">Pink</span> <span class="price">2000 Coins</span>
+                </div>
+
+                <div class="card" id="voidSkin"
+                     onclick="buySkin('voidSkin', 2500, '#111827')">
+                    🌑 <span class="name">Void</span> <span class="price">2500 Coins</span>
+                </div>
+            </div>
+
+            <h2>⬆️ Upgrades</h2>
+
+            <div class="shopGrid" id="upgradesGrid">
+                <div class="card" onclick="buyUpgrade(getUpgradePrice(50),1)">
+                    <span class="name">+1 Klick</span> <span id="u1" class="price"></span>
+                </div>
+
+                <div class="card" onclick="buyUpgrade(getUpgradePrice(150),5)">
+                    <span class="name">+5 Klick</span> <span id="u2" class="price"></span>
+                </div>
+
+                <div class="card" onclick="buyUpgrade(getUpgradePrice(500),10)">
+                    <span class="name">+10 Klick</span> <span id="u3" class="price"></span>
+                </div>
+            </div>
         </div>
+
 
 
         <!-- LEADERBOARD -->

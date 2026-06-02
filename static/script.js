@@ -596,13 +596,20 @@ function startRundenGame() {
     
     const rundenClickBtn = document.getElementById("rundenClick");
     rundenClickBtn.style.background = skin || "linear-gradient(45deg, #3b82f6, #06b6d4)";
+    rundenClickBtn.style.cursor = "pointer";
     
-    rundenClickBtn.addEventListener("click", () => {
+    // WICHTIG: Clone um alle alten Listener zu entfernen!
+    const newBtn = rundenClickBtn.cloneNode(true);
+    rundenClickBtn.parentNode.replaceChild(newBtn, rundenClickBtn);
+    
+    // Neuer Button mit frischem Listener
+    const freshBtn = document.getElementById("rundenClick");
+    freshBtn.onclick = function() {
         if (rundenState.isRunning) {
             rundenState.clicks++;
             document.getElementById("rundenClicks").innerText = rundenState.clicks;
         }
-    });
+    };
     
     updateRundenTimer();
 }

@@ -555,3 +555,116 @@ document.addEventListener("DOMContentLoaded", () => {
         leaderboardBtn.addEventListener("click", loadLB);
     }
 });
+// ============= RUNDEN SYSTEM =============
+
+let rundenState = {
+    difficulty: null,
+    timeLeft: 0,
+    clicks: 0,
+    isRunning: false,
+    countdownInterval: null,
+    gameInterval: null
+};
+
+function startRunden(difficulty, seconds) {
+    rundenState.difficulty = difficulty;
+    rundenState.timeLeft = seconds;
+    rundenState.clicks = 0;
+    
+    document.getElementById("rundenSelect").classList.add("hidden");
+    document.getElementById("rundenCountdown").classList.remove("hidden");
+    
+    let count = 3;
+    document.getElementById("countdownDisplay").innerText = count;
+    
+    rundenState.countdownInterval = setInterval(() => {
+        count--;
+        if (count > 0) {
+            document.getElementById("countdownDisplay").innerText = count;
+        } else {
+            clearInterval(rundenState.countdownInterval);
+            startRundenGame();
+        }
+    }, 1000);
+}
+
+function startRundenGame() {
+    document.getElementById("rundenCountdown").classList.add("hidden");
+    document.getElementById("rundenGame").classList.remove("hidden");
+    
+    rundenState.isRunning = true;
+    
+    const rundenClickBtn = document.getElementById("rundenClick");
+    rundenClickBtn.style.background = skin || "linear-gradient(45deg, #3b82f6, #06b6d4)";
+    
+    rundenClickBtn.addEventListener("click", () => {
+        if (rundenState.isRunning) {
+            rundenState.clicks++;
+            document.getElementById("rundenClicks").innerText = rundenState.clicks;
+        }
+    });
+    
+    updateRundenTimer();
+}
+
+function updateRundenTimer() {
+    const timerEl = document.getElementById("rundenTimer");
+    
+    rundenState.gameInterval = setInterval(() => {
+        timerEl.innerText = rundenState.timeLeft;
+        rundenState.timeLeft--;
+        
+        if (rundenState.timeLeft < 0) {
+            clearInterval(rundenState.gameInterval);
+            endRunden();
+        }
+    }, 1000);
+}
+
+function endRunden() {
+    rundenState.isRunning = false;
+    
+    document.getElementById("rundenGame").classList.add("hidden");
+    document.getElementById("rundenResults").classList.remove("hidden");
+    
+    document.getElementById("resultClicks").innerText = rundenState.clicks;
+    document.getElementById("resultTime").innerText = rundenState.difficulty;
+    
+    // Speichere Score
+    fetch("/save-round", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: name,
+            difficulty: rundenState.difficulty,
+            clicks: rundenState.clicks
+        })
+    });
+    
+    loadRoundLB("5s");
+}
+
+function switchRoundLB(difficulty) {
+    document.querySelectorAll(".lbTab")
+        .forEach(t => t.classList.remove("active"));
+    
+    document.querySelector(`.lbTab[onclick="switchRoundLB('${difficulty}')"]`)
+        ?.classList.add("active");
+    
+    loadRoundLB(difficulty);
+}
+
+function loadRoundLB(difficulty) {
+    fetch("/round-leaderboard/" + difficulty)
+        .then(r => r.json())
+        .then(data => {
+            const lb = document.getElementById("roundLB");
+            lb.innerHTML = "";
+            
+            data.forEach((player, index) => {
+                const li = document.createElement("li");
+                li.innerText = `${index + 1}. ${player[0]} - ${player[1]} Clicks`;
+                lb.appendChild(li);
+            });
+        });
+}

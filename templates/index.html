@@ -32,8 +32,19 @@
         <button onclick="show('settings')" class="nav-btn">⚙️ Settings</button>
         <button onclick="show('shop')" class="nav-btn">🛒 Shop</button>
         <button onclick="show('leaderboard')" class="nav-btn">🏆 Ranking</button>
+        <button onclick="toggleCodeBox()" class="nav-btn">🎁 Code</button>
     </nav>
 
+ <!-- CODE POPUP -->
+    <div id="codePopup" class="popup hidden">
+        <div class="popupBox">
+            <h2>🎁 Code einlösen</h2>
+            <input id="codeInput" placeholder="Code eingeben">
+            <button onclick="redeemCode()">Einlösen</button>
+            <button onclick="toggleCodeBox()">Schließen</button>
+        </div>
+    </div>
+    
     <div class="content">
 
         <!-- MENU -->

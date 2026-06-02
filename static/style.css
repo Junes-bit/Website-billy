@@ -829,3 +829,21 @@ li{
     max-width: 500px;
     margin: 20px auto;
 }
+
+.hidden {
+    display: none !important;
+}
+
+.rundenCountdown,
+.rundenGame,
+.rundenResults {
+    display: none;
+}
+
+.rundenCountdown.active,
+.rundenGame.active,
+.rundenResults.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

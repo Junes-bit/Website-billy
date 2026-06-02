@@ -8,10 +8,6 @@
 <title>Orbz Klicker</title>
 
 <link rel="stylesheet" href="/static/style.css">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 
@@ -24,10 +20,10 @@
     <button onclick="startGame()">Start</button>
 </div>
 
-<!-- MAIN APP (nach Login) -->
+<!-- APP -->
 <div id="app" class="app hidden">
 
-    <!-- TOP NAVBAR -->
+    <!-- NAVBAR -->
     <nav class="navbar">
         <button onclick="show('profile')" class="nav-btn">👤 Profil</button>
         <button onclick="show('friends')" class="nav-btn">👥 Freunde</button>
@@ -36,28 +32,16 @@
         <button onclick="show('settings')" class="nav-btn">⚙️ Settings</button>
         <button onclick="show('shop')" class="nav-btn">🛒 Shop</button>
         <button onclick="show('leaderboard')" class="nav-btn">🏆 Ranking</button>
-        <button onclick="toggleCodeBox()" class="nav-btn">🎁 Code</button>
     </nav>
 
-    <!-- CODE POPUP -->
-    <div id="codePopup" class="popup hidden">
-        <div class="popupBox">
-            <h2>🎁 Code einlösen</h2>
-            <input id="codeInput" placeholder="Code eingeben">
-            <button onclick="redeemCode()">Einlösen</button>
-            <button onclick="toggleCodeBox()">Schließen</button>
-        </div>
-    </div>
-
-    <!-- CONTENT AREA -->
     <div class="content">
 
-        <!-- MENU (HOME) -->
+        <!-- MENU -->
         <div id="menu" class="page active">
             <h1>🎮 Orbz Klicker</h1>
-            
+
             <div class="gameModesGrid">
-                <!-- CLICKER MODE -->
+
                 <div class="gameModeCard" onclick="show('clicker')">
                     <div class="modeEmoji">🔵</div>
                     <h2>Clicker</h2>
@@ -65,65 +49,20 @@
                     <button class="playBtn">▶️ PLAY</button>
                 </div>
 
-            <!-- RUNDEN GAME -->
-<div id="runden" class="page">
-    <button class="backBtn" onclick="show('menu')">← Zurück</button>
-    
-    <!-- DIFFICULTY SELECTION -->
-    <div id="rundenSelect" class="rundenSelect">
-        <h1>🎯 Runden-Modus</h1>
-        <p>Wähle eine Schwierigkeit:</p>
-        
-        <div class="difficultyGrid">
-            <button class="diffBtn" onclick="startRunden('5s', 5)">⚡ 5 Sekunden</button>
-            <button class="diffBtn" onclick="startRunden('10s', 10)">🔥 10 Sekunden</button>
-            <button class="diffBtn" onclick="startRunden('15s', 15)">💪 15 Sekunden</button>
-            <button class="diffBtn" onclick="startRunden('30s', 30)">🚀 30 Sekunden</button>
-            <button class="diffBtn" onclick="startRunden('1min', 60)">💎 1 Minute</button>
-        </div>
-    </div>
+                <div class="gameModeCard" onclick="show('runden')">
+                    <div class="modeEmoji">🎯</div>
+                    <h2>Runden</h2>
+                    <p>Meistere verschiedene Herausforderungen!</p>
+                    <button class="playBtn">▶️ PLAY</button>
+                </div>
 
-    <!-- COUNTDOWN -->
-    <div id="rundenCountdown" class="rundenCountdown hidden">
-        <h2>Vorbereitung...</h2>
-        <div id="countdownDisplay" class="countdownDisplay">3</div>
-    </div>
-
-    <!-- GAME -->
-    <div id="rundenGame" class="rundenGame hidden">
-        <div class="gameContainer">
-            <div id="rundenTimer" class="rundenTimer">60</div>
-            <div id="rundenClicks" class="rundenClicks">0</div>
-            <button id="rundenClick" class="rundenClickBtn"></button>
-        </div>
-    </div>
-
-    <!-- RESULTS -->
-    <div id="rundenResults" class="rundenResults hidden">
-        <h2>🏆 Ergebnis</h2>
-        <div class="resultBox">
-            <p>Clicks: <span id="resultClicks">0</span></p>
-            <p>Zeit: <span id="resultTime">5s</span></p>
+            </div>
         </div>
 
-        <h3>📊 Leaderboard</h3>
-        <div class="leaderboardTabs">
-            <button class="lbTab active" onclick="switchRoundLB('5s')">⚡ 5s</button>
-            <button class="lbTab" onclick="switchRoundLB('10s')">🔥 10s</button>
-            <button class="lbTab" onclick="switchRoundLB('15s')">💪 15s</button>
-            <button class="lbTab" onclick="switchRoundLB('30s')">🚀 30s</button>
-            <button class="lbTab" onclick="switchRoundLB('1min')">💎 1min</button>
-        </div>
-
-        <ul id="roundLB"></ul>
-
-        <button onclick="show('runden')">🔄 Nochmal</button>
-    </div>
-</div>
-
-        <!-- CLICKER GAME -->
+        <!-- CLICKER -->
         <div id="clicker" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
+
             <div class="gameContainer">
                 <div id="coins">0</div>
                 <div id="power">⚡ 1 pro Klick</div>
@@ -131,18 +70,41 @@
             </div>
         </div>
 
-        <!-- RUNDEN GAME (placeholder) -->
+                <!-- RUNDEN GAME (FIXED) -->
         <div id="runden" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
-            <div class="gameContainer">
-                <h2>🎯 Runden-Modus</h2>
-                <p>Coming Soon! 🚀</p>
+
+            <!-- SELECT -->
+            <div id="rundenSelect">
+                <h1>🎯 Runden-Modus</h1>
+
+                <button onclick="startRunden('5s',5)">5s</button>
+                <button onclick="startRunden('10s',10)">10s</button>
+                <button onclick="startRunden('15s',15)">15s</button>
+                <button onclick="startRunden('30s',30)">30s</button>
+                <button onclick="startRunden('1min',60)">1min</button>
+            </div>
+
+            <!-- GAME -->
+            <div id="rundenGame" class="hidden">
+                <h2 id="rundenTimer">0</h2>
+                <h3 id="rundenClicks">0</h3>
+                <button id="rundenClickBtn">CLICK</button>
+            </div>
+
+            <!-- RESULTS -->
+            <div id="rundenResults" class="hidden">
+                <h2>🏆 Ergebnis</h2>
+                <p>Clicks: <span id="resultClicks">0</span></p>
+                <button onclick="show('runden')">Nochmal</button>
             </div>
         </div>
+
 
         <!-- PROFILE -->
         <div id="profile" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
+
             <h1>👤 Profil</h1>
             <div class="profileCard">
                 <h2 id="profileName">Max</h2>
@@ -152,147 +114,56 @@
             </div>
         </div>
 
+
         <!-- FRIENDS -->
-       <!-- FRIENDS -->
-<div id="friends" class="page">
-    <button class="backBtn" onclick="show('menu')">← Zurück</button>
-    <h1>👥 Freunde</h1>
+        <div id="friends" class="page">
+            <button class="backBtn" onclick="show('menu')">← Zurück</button>
 
-    <!-- ADD FRIEND BOX -->
-    <div class="addFriendBox">
-        <input id="friendInput" type="text" placeholder="Freund hinzufügen...">
-        <button onclick="addFriend()">➕ Hinzufügen</button>
-    </div>
+            <h1>👥 Freunde</h1>
 
-    <!-- TABS -->
-    <div class="friendsTabs">
-        <button class="friendsTab active" onclick="switchFriendsTab('friends')">👥 Freunde</button>
-        <button class="friendsTab" onclick="switchFriendsTab('sent')">⏳ Ausstehend</button>
-        <button class="friendsTab" onclick="switchFriendsTab('received')">✉️ Erhaltend</button>
-    </div>
+            <input id="friendInput" placeholder="Freund hinzufügen...">
+            <button onclick="addFriend()">Hinzufügen</button>
 
-    <!-- FRIENDS LIST -->
-    <div class="friendsList" id="friendsList">
-        <div class="emptyMessage">Lade...</div>
-    </div>
-</div>
+            <div id="friendsList">Lade...</div>
+        </div>
+
 
         <!-- WHEEL -->
         <div id="wheel" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
             <h1>🎡 Glücksrad</h1>
-            <p>Coming Soon! 🚀</p>
         </div>
+
 
         <!-- INVENTORY -->
         <div id="inventory" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
             <h1>🎒 Inventar</h1>
-            <div class="shopGrid">
-                <h2>🎨 Skins</h2>
-                <div class="skinList" id="skinList"></div>
-            </div>
         </div>
+
 
         <!-- SETTINGS -->
         <div id="settings" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
             <h1>⚙️ Settings</h1>
-            <div class="settingsBox">
-                <button onclick="logout()">🚪 Ausloggen</button>
-            </div>
         </div>
+
 
         <!-- SHOP -->
         <div id="shop" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
-            <h1>🛒 SHOP</h1>
-
-            <h2>🎨 Skins</h2>
-            <div class="shopGrid" id="skinsGrid">
-
-                <div class="card selected" id="blueSkin"
-                     onclick="selectSkin('#3b82f6', 'blueSkin')">
-                    🔵 <span class="name">Blau</span>
-                </div>
-
-                <div class="card" id="redSkin"
-                     onclick="buySkin('redSkin', 100, '#ef4444')">
-                    🔴 <span class="name">Rot</span> <span class="price">100 Coins</span>
-                </div>
-
-                <div class="card" id="greenSkin"
-                     onclick="buySkin('greenSkin', 250, '#22c55e')">
-                    🟢 <span class="name">Hellgrün</span> <span class="price">250 Coins</span>
-                </div>
-
-                <div class="card" id="orangeSkin"
-                     onclick="buySkin('orangeSkin', 400, '#f97316')">
-                    🟠 <span class="name">Orange</span> <span class="price">400 Coins</span>
-                </div>
-
-                <div class="card" id="goldSkin"
-                     onclick="buySkin('goldSkin', 600, 'gold')">
-                    🟡 <span class="name">Gold</span> <span class="price">600 Coins</span>
-                </div>
-
-                <div class="card" id="diamondSkin"
-                     onclick="buySkin('diamondSkin', 750, '#38bdf8')">
-                    💎 <span class="name">Diamant</span> <span class="price">750 Coins</span>
-                </div>
-
-                <div class="card" id="lavaSkin"
-                     onclick="buySkin('lavaSkin', 1000, '#ff3b30')">
-                    🌋 <span class="name">Lava</span> <span class="price">1000 Coins</span>
-                </div>
-
-                <div class="card" id="iceSkin"
-                     onclick="buySkin('iceSkin', 1500, '#7dd3fc')">
-                    ❄️ <span class="name">Ice</span> <span class="price">1500 Coins</span>
-                </div>
-
-                <div class="card" id="toxicSkin"
-                     onclick="buySkin('toxicSkin', 1500, '#84cc16')">
-                    ☢️ <span class="name">Toxic</span> <span class="price">1500 Coins</span>
-                </div>
-
-                <div class="card" id="pinkSkin"
-                     onclick="buySkin('pinkSkin', 2000, '#ff4d9d')">
-                    💖 <span class="name">Pink</span> <span class="price">2000 Coins</span>
-                </div>
-
-                <div class="card" id="voidSkin"
-                     onclick="buySkin('voidSkin', 2500, '#111827')">
-                    🌑 <span class="name">Void</span> <span class="price">2500 Coins</span>
-                </div>
-            </div>
-
-            <h2>⬆️ Upgrades</h2>
-
-            <div class="shopGrid" id="upgradesGrid">
-                <div class="card" onclick="buyUpgrade(getUpgradePrice(50),1)">
-                    <span class="name">+1 Klick</span> <span id="u1" class="price"></span>
-                </div>
-
-                <div class="card" onclick="buyUpgrade(getUpgradePrice(150),5)">
-                    <span class="name">+5 Klick</span> <span id="u2" class="price"></span>
-                </div>
-
-                <div class="card" onclick="buyUpgrade(getUpgradePrice(500),10)">
-                    <span class="name">+10 Klick</span> <span id="u3" class="price"></span>
-                </div>
-            </div>
+            <h1>🛒 Shop</h1>
         </div>
+
 
         <!-- LEADERBOARD -->
         <div id="leaderboard" class="page">
             <button class="backBtn" onclick="show('menu')">← Zurück</button>
-            <h1>🏆 Leaderboard</h1>
+            <h1>🏆 Ranking</h1>
             <ul id="list"></ul>
         </div>
 
     </div>
-
 </div>
 
 <script src="/static/script.js"></script>

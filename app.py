@@ -40,6 +40,17 @@ def init_db():
     )
     """)
 
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS rounds (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        difficulty TEXT NOT NULL,
+        clicks INTEGER NOT NULL,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(name) REFERENCES players(name)
+    )
+    """)
+
     codes = {
         "B4N3R": 1000,
         "R3M5F": 2500,
@@ -178,7 +189,6 @@ def redeem():
 
 # ============= FRIENDS SYSTEM =============
 
-# ADD FRIEND (Anfrage senden)
 @app.route("/add-friend", methods=["POST"])
 def add_friend():
     data = request.json
@@ -191,13 +201,11 @@ def add_friend():
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
-    # Check ob Spieler existiert
     c.execute("SELECT name FROM players WHERE name=?", (friend_name,))
     if not c.fetchone():
         conn.close()
         return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
 
-    # Check ob schon Freunde oder Anfrage existiert
     c.execute("""
     SELECT status FROM friendships 
     WHERE (user1=? AND user2=?) OR (user1=? AND user2=?)
@@ -207,7 +215,6 @@ def add_friend():
         conn.close()
         return jsonify({"ok": False, "msg": "Anfrage bereits existiert"})
 
-    # Neue Anfrage eintragen
     c.execute("""
     INSERT INTO friendships (user1, user2, status, requested_by)
     VALUES (?, ?, 'pending', ?)
@@ -219,13 +226,11 @@ def add_friend():
     return jsonify({"ok": True, "msg": "Anfrage gesendet!"})
 
 
-# GET FRIENDS (alle 3 Listen)
 @app.route("/get-friends/<name>")
 def get_friends(name):
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
-    # AKZEPTIERTE FREUNDE
     c.execute("""
     SELECT CASE 
         WHEN user1=? THEN user2 
@@ -237,7 +242,6 @@ def get_friends(name):
     
     friends = [row[0] for row in c.fetchall()]
 
-    # AUSSTEHENDE ANFRAGEN (ich habe gesendet)
     c.execute("""
     SELECT user2 FROM friendships 
     WHERE user1=? AND status='pending'
@@ -245,7 +249,6 @@ def get_friends(name):
     
     pending_sent = [row[0] for row in c.fetchall()]
 
-    # ERHALTENE ANFRAGEN (andere haben gesendet)
     c.execute("""
     SELECT user1 FROM friendships 
     WHERE user2=? AND status='pending'
@@ -262,7 +265,6 @@ def get_friends(name):
     })
 
 
-# ACCEPT FRIEND REQUEST
 @app.route("/accept-friend", methods=["POST"])
 def accept_friend():
     data = request.json
@@ -284,7 +286,6 @@ def accept_friend():
     return jsonify({"ok": True})
 
 
-# DECLINE FRIEND REQUEST
 @app.route("/decline-friend", methods=["POST"])
 def decline_friend():
     data = request.json
@@ -305,7 +306,6 @@ def decline_friend():
     return jsonify({"ok": True})
 
 
-# GET FRIEND PROFILE
 @app.route("/friend-profile/<name>")
 def friend_profile(name):
     conn = sqlite3.connect("game.db")
@@ -326,7 +326,6 @@ def friend_profile(name):
     return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
 
 
-# REMOVE FRIEND
 @app.route("/remove-friend", methods=["POST"])
 def remove_friend():
     data = request.json
@@ -345,6 +344,47 @@ def remove_friend():
     conn.close()
 
     return jsonify({"ok": True})
+
+# ============= RUNDEN SYSTEM =============
+
+@app.route("/save-round", methods=["POST"])
+def save_round():
+    data = request.json
+    player_name = data.get("name")
+    difficulty = data.get("difficulty")
+    clicks = data.get("clicks")
+
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    c.execute("""
+    INSERT INTO rounds (name, difficulty, clicks)
+    VALUES (?, ?, ?)
+    """, (player_name, difficulty, clicks))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"ok": True})
+
+
+@app.route("/round-leaderboard/<difficulty>")
+def round_leaderboard(difficulty):
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+
+    c.execute("""
+    SELECT name, clicks
+    FROM rounds
+    WHERE difficulty=?
+    ORDER BY clicks DESC
+    LIMIT 10
+    """, (difficulty,))
+
+    data = c.fetchall()
+    conn.close()
+
+    return jsonify(data)
 
 
 # ============= RUN =============

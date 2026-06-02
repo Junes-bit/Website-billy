@@ -567,51 +567,67 @@ let rundenState = {
 };
 
 function startRunden(difficulty, seconds) {
-    rundenState.difficulty = difficulty;
-    rundenState.timeLeft = seconds;
-    rundenState.clicks = 0;
-    
+
     document.getElementById("rundenSelect").classList.add("hidden");
-    document.getElementById("rundenCountdown").classList.remove("hidden");
-    
+
+    const countdown = document.getElementById("rundenCountdown");
+    const game = document.getElementById("rundenGame");
+
+    countdown.classList.add("active");
+    countdown.classList.remove("hidden");
+
     let count = 3;
     document.getElementById("countdownDisplay").innerText = count;
-    
-    rundenState.countdownInterval = setInterval(() => {
+
+    let interval = setInterval(() => {
+
         count--;
+
         if (count > 0) {
             document.getElementById("countdownDisplay").innerText = count;
         } else {
-            clearInterval(rundenState.countdownInterval);
-            startRundenGame();
+            clearInterval(interval);
+            startGameNow(seconds);
         }
+
     }, 1000);
 }
 
-function startRundenGame() {
-    document.getElementById("rundenCountdown").classList.add("hidden");
-    document.getElementById("rundenGame").classList.remove("hidden");
-    
-    rundenState.isRunning = true;
-    
-    const rundenClickBtn = document.getElementById("rundenClick");
-    rundenClickBtn.style.background = skin || "linear-gradient(45deg, #3b82f6, #06b6d4)";
-    rundenClickBtn.style.cursor = "pointer";
-    
-    // WICHTIG: Clone um alle alten Listener zu entfernen!
-    const newBtn = rundenClickBtn.cloneNode(true);
-    rundenClickBtn.parentNode.replaceChild(newBtn, rundenClickBtn);
-    
-    // Neuer Button mit frischem Listener
-    const freshBtn = document.getElementById("rundenClick");
-    freshBtn.onclick = function() {
-        if (rundenState.isRunning) {
-            rundenState.clicks++;
-            document.getElementById("rundenClicks").innerText = rundenState.clicks;
-        }
+function startGameNow(seconds) {
+
+    document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenGame").classList.add("active");
+
+    let clicks = 0;
+    let time = seconds;
+
+    document.getElementById("rundenClicks").innerText = 0;
+    document.getElementById("rundenTimer").innerText = time;
+
+    const btn = document.getElementById("rundenClick");
+
+    btn.innerText = "🎯";
+
+    btn.onclick = () => {
+        clicks++;
+        document.getElementById("rundenClicks").innerText = clicks;
     };
-    
-    updateRundenTimer();
+
+    let timer = setInterval(() => {
+
+        time--;
+        document.getElementById("rundenTimer").innerText = time;
+
+        if (time <= 0) {
+            clearInterval(timer);
+
+            document.getElementById("rundenGame").classList.remove("active");
+            document.getElementById("rundenResults").classList.add("active");
+
+            document.getElementById("resultClicks").innerText = clicks;
+        }
+
+    }, 1000);
 }
 
 function updateRundenTimer() {

@@ -644,7 +644,7 @@ function endRunden() {
     document.getElementById("resultClicks").innerText = roundClicks;
 
     // Leaderboard laden für aktuellen Modus
-    //loadRoundLB(roundSeconds + "s");
+    loadRoundLB(roundSeconds + "s");
 
     // Save
     fetch("/save-round", {

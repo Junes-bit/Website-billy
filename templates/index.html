@@ -157,7 +157,7 @@
                     <div class="emptyMessage">Lade...</div>
                 </div>
             </div>
-                                            <!-- WHEEL -->
+                                                      <!-- WHEEL -->
             <div id="wheel" class="page">
                 <button class="backBtn" onclick="show('menu')">← Zurück</button>
                 <h1>🎡 Glücksrad</h1>
@@ -183,55 +183,57 @@
                         justify-content: center;
                         overflow: hidden;
                     ">
-                        <!-- Text: 1000 (0-72°) -->
+                        <!-- Text: 1000 (TOP - 0-72°) -->
                         <span style="
                             position: absolute;
                             font-weight: 800;
-                            font-size: 16px;
-                            top: 25px;
-                            transform: translateX(-50%);
+                            font-size: 18px;
+                            color: white;
+                            top: 20px;
                             left: 50%;
+                            transform: translateX(-50%);
                         ">1000</span>
 
-                        <!-- Text: 2000 (72-144°) -->
+                        <!-- Text: 2000 (OBEN-RECHTS - 72-144°) -->
                         <span style="
                             position: absolute;
                             font-weight: 800;
-                            font-size: 16px;
-                            top: 60px;
-                            right: 30px;
-                            transform: rotate(36deg);
-                            transform-origin: center;
+                            font-size: 18px;
+                            color: white;
+                            top: 45px;
+                            right: 25px;
                         ">2000</span>
 
-                        <!-- Text: 3000 (144-216°) -->
+                        <!-- Text: 3000 (RECHTS - 144-216°) -->
                         <span style="
                             position: absolute;
                             font-weight: 800;
-                            font-size: 16px;
+                            font-size: 18px;
+                            color: white;
                             right: 20px;
                             top: 50%;
-                            transform: translateY(-50%) rotate(108deg);
+                            transform: translateY(-50%);
                         ">3000</span>
 
-                        <!-- Text: 4000 (216-288°) -->
+                        <!-- Text: 4000 (UNTEN-RECHTS - 216-288°) -->
                         <span style="
                             position: absolute;
                             font-weight: 800;
-                            font-size: 16px;
-                            bottom: 60px;
-                            right: 30px;
-                            transform: rotate(180deg);
+                            font-size: 18px;
+                            color: white;
+                            bottom: 45px;
+                            right: 25px;
                         ">4000</span>
 
-                        <!-- Text: 5000 (288-360°) -->
+                        <!-- Text: 5000 (UNTEN - 288-360°) -->
                         <span style="
                             position: absolute;
                             font-weight: 800;
-                            font-size: 16px;
-                            bottom: 25px;
+                            font-size: 18px;
+                            color: white;
+                            bottom: 20px;
                             left: 50%;
-                            transform: translateX(-50%) rotate(252deg);
+                            transform: translateX(-50%);
                         ">5000</span>
                         
                         <!-- Mittelpunkt -->
@@ -261,15 +263,6 @@
                 </div>
 
                 <div id="wheelResult" class="popup hidden"></div>
-            </div>
-            <!-- INVENTORY -->
-            <div id="inventory" class="page">
-                <button class="backBtn" onclick="show('menu')">← Zurück</button>
-                <h1>🎒 Inventar</h1>
-                <div class="shopGrid">
-                    <h2>🎨 Skins</h2>
-                    <div class="skinList" id="skinList"></div>
-                </div>
             </div>
 
             <!-- SETTINGS -->

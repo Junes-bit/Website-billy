@@ -732,7 +732,7 @@ function loadRoundLB(mode) {
 
 // ============= GLÜCKSRAD SYSTEM =============
 
-function spinWheel() {
+ffunction spinWheel() {
     if (wheelSpinning) return;
 
     const lastSpin = localStorage.getItem("lastSpin_" + name);
@@ -756,13 +756,19 @@ function spinWheel() {
     if (!wheel) return;
 
     // Random Index (0-4)
-    const randomIndex = Math.floor(Math.random() * wheelRewards.length);
+    const randomIndex = Math.floor(Math.random() * 5);
     
-    // Jedes Feld = 72 Grad (360/5)
-    // Wir drehen SO DASS das Feld oben ist (bei 0 Grad)
-    const targetRotation = 360 * 5 + (360 - (randomIndex * 72 + 36));
+    // Berechnung: Das Rad dreht sich SO, dass Field[randomIndex] oben (270 Grad) endet
+    // Jedes Feld = 72 Grad breit
+    // Feld 0 startet bei 270° (oben), Feld 1 bei 342°, etc.
+    const fieldStartAngle = 270 + (randomIndex * 72);
+    const fieldCenterAngle = fieldStartAngle + 36;
+    
+    // Wir drehen das Rad um 5 volle Umdrehungen + bis das Feld oben ist
+    const spinRotations = 360 * 5;
+    const finalAngle = spinRotations + (360 - fieldCenterAngle);
 
-    wheel.style.transform = `rotate(${targetRotation}deg)`;
+    wheel.style.transform = `rotate(${finalAngle}deg)`;
 
     setTimeout(() => {
         const reward = wheelRewards[randomIndex];
@@ -770,7 +776,7 @@ function spinWheel() {
         update();
         save();
 
-        // Popup mit Animation
+        // Popup
         if (resultPopup) {
             resultPopup.innerHTML = `
                 <div class="wheelResultBox">
@@ -781,7 +787,6 @@ function spinWheel() {
             `;
             resultPopup.classList.remove("hidden");
 
-            // Reward-Animation
             const rewardBox = resultPopup.querySelector(".wheelRewardAmount");
             if (rewardBox) {
                 rewardBox.style.animation = "none";

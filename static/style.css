@@ -763,3 +763,20 @@ li{
     font-weight: 700;
     font-size: 28px;
 }
+
+.orbBtn {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+
+    background: radial-gradient(circle, #3b82f6, #1e3a8a);
+    box-shadow: 0 0 30px #3b82f6;
+
+    transition: transform 0.1s;
+}
+
+.orbBtn:active {
+    transform: scale(0.9);
+}

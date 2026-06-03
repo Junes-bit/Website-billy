@@ -158,13 +158,57 @@
                 </div>
             </div>
 
-            <!-- WHEEL -->
+                       <!-- WHEEL -->
             <div id="wheel" class="page">
                 <button class="backBtn" onclick="show('menu')">← Zurück</button>
                 <h1>🎡 Glücksrad</h1>
-                <p>Coming Soon! 🚀</p>
-            </div>
+                
+                <div class="wheelContainer">
+                    <svg id="fortuneWheel" class="wheel" viewBox="0 0 200 200">
+                        <!-- Feld 1: Rot (1000)-->
+                        <circle cx="100" cy="100" r="95" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.2"/>
+                        <path d="M 100,100 L 100,5 A 95,95 0 0,1 167.07,32.93 Z" fill="#ef4444"/>
+                        <text x="120" y="35" font-size="14" font-weight="800" fill="white" text-anchor="middle">1000</text>
 
+                        <!-- Feld 2: Orange (2000)-->
+                        <path d="M 100,100 L 167.07,32.93 A 95,95 0 0,1 195,100 Z" fill="#f97316"/>
+                        <text x="155" y="60" font-size="14" font-weight="800" fill="white" text-anchor="middle">2000</text>
+
+                        <!-- Feld 3: Grün (3000)-->
+                        <path d="M 100,100 L 195,100 A 95,95 0 0,1 167.07,167.07 Z" fill="#22c55e"/>
+                        <text x="155" y="140" font-size="14" font-weight="800" fill="white" text-anchor="middle">3000</text>
+
+                        <!-- Feld 4: Blau (4000)-->
+                        <path d="M 100,100 L 167.07,167.07 A 95,95 0 0,1 100,195 Z" fill="#3b82f6"/>
+                        <text x="120" y="165" font-size="14" font-weight="800" fill="white" text-anchor="middle">4000</text>
+
+                        <!-- Feld 5: Lila (5000)-->
+                        <path d="M 100,100 L 100,195 A 95,95 0 0,1 32.93,167.07 Z" fill="#a855f7"/>
+                        <text x="50" y="165" font-size="14" font-weight="800" fill="white" text-anchor="middle">5000</text>
+
+                        <!-- Mittelpunkt Kreis -->
+                        <circle cx="100" cy="100" r="15" fill="white"/>
+                    </svg>
+
+                    <div class="wheelPointer">▼</div>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <p id="wheelTimer" style="font-size: 18px; margin-bottom: 15px;">🎉 Dreh jetzt!</p>
+                    <button id="spinBtn" onclick="spinWheel()" style="
+                        padding: 15px 40px;
+                        font-size: 18px;
+                        background: linear-gradient(135deg, #3b82f6, #06b6d4);
+                        border-radius: 50px;
+                        font-weight: 800;
+                    ">
+                        🎡 DREHEN
+                    </button>
+                </div>
+
+                <div id="wheelResult" class="popup hidden">
+                </div>
+            </div>
             <!-- INVENTORY -->
             <div id="inventory" class="page">
                 <button class="backBtn" onclick="show('menu')">← Zurück</button>

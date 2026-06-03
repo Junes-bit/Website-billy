@@ -346,17 +346,38 @@ def remove_friend():
     return jsonify({"ok": True})
 
 # ============= RUNDEN SYSTEM =============
-
 @app.route("/save-round", methods=["POST"])
 def save_round():
     data = request.json
     player_name = data.get("name")
-    difficulty = data.get("difficulty")
+    difficulty = data.get("difficulty")  # z.B. "5s", "10s", "30s"
     clicks = data.get("clicks")
 
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
+    # Schau ob Spieler schon in dieser Kategorie existiert
+    c.execute("""
+    SELECT clicks FROM rounds
+    WHERE name=? AND difficulty=?
+    ORDER BY clicks DESC
+    LIMIT 1
+    """, (player_name, difficulty))
+    
+    existing = c.fetchone()
+
+    if existing and existing[0] >= clicks:
+        # Alter Score ist besser - nicht speichern
+        conn.close()
+        return jsonify({"ok": True, "msg": "Alter Score war besser"})
+
+    # Lösche alten Score wenn neuer besser ist
+    c.execute("""
+    DELETE FROM rounds
+    WHERE name=? AND difficulty=?
+    """, (player_name, difficulty))
+
+    # Speichere neuen Score
     c.execute("""
     INSERT INTO rounds (name, difficulty, clicks)
     VALUES (?, ?, ?)

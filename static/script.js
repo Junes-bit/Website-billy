@@ -642,11 +642,22 @@ function startGameNow(seconds) {
         }, 150);
     };
 
-    let time = seconds;
+      let time = seconds;
 
     roundTimer = setInterval(() => {
         time--;
         timerEl.innerText = time;
+
+        // ANIMATION: Timer groß + ROT + GLOW
+        timerEl.style.transform = "scale(1.3)";
+        timerEl.style.textShadow = `0 0 30px #ef4444, 0 0 60px #ef4444`;
+        timerEl.style.color = "#ef4444";
+        timerEl.style.fontSize = "70px";
+
+        setTimeout(() => {
+            timerEl.style.transform = "scale(1)";
+            timerEl.style.textShadow = `0 0 20px #ef4444`;
+        }, 300);
 
         if (time <= 0) {
             clearInterval(roundTimer);

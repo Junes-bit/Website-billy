@@ -592,17 +592,19 @@ function startRunden(difficulty, seconds) {
             display.innerText = "GO!";
 
             setTimeout(() => {
-    document.getElementById("rundenCountdown").classList.remove("active");
-    document.getElementById("rundenGame").classList.add("active");
+                document.getElementById("rundenCountdown").classList.remove("active");
+                document.getElementById("rundenGame").classList.add("active");
 
-    startGameNow(seconds);
-}, 1000);
+                startGameNow(seconds);
+            }, 1000);
+        }
+    }, 1000);
 }
+
+// ---------------- GAME START ----------------
 function startGameNow(seconds) {
 
     console.log("GAME STARTED");
-    document.getElementById("rundenCountdown").classList.remove("active");
-    document.getElementById("rundenGame").classList.add("active");
 
     let clicks = 0;
     let time = seconds;
@@ -613,8 +615,6 @@ function startGameNow(seconds) {
 
     clicksEl.innerText = 0;
     timerEl.innerText = time;
-
-    btn.innerText = "🎯";
 
     btn.onclick = () => {
         clicks++;
@@ -637,60 +637,30 @@ function startGameNow(seconds) {
 
     }, 1000);
 }
-function updateRundenTimer() {
-    const timerEl = document.getElementById("rundenTimer");
-    
-    rundenState.gameInterval = setInterval(() => {
-        timerEl.innerText = rundenState.timeLeft;
-        rundenState.timeLeft--;
-        
-        if (rundenState.timeLeft < 0) {
-            clearInterval(rundenState.gameInterval);
-            endRunden();
-        }
-    }, 1000);
-}
 
-function endRunden() {
-    rundenState.isRunning = false;
-    
-    document.getElementById("rundenGame").classList.add("hidden");
-    document.getElementById("rundenResults").classList.remove("hidden");
-    
-    document.getElementById("resultClicks").innerText = rundenState.clicks;
-    document.getElementById("resultTime").innerText = rundenState.difficulty;
-    
-    // Speichere Score
-    fetch("/save-round", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            name: name,
-            difficulty: rundenState.difficulty,
-            clicks: rundenState.clicks
-        })
-    });
-    
-    loadRoundLB("5s");
-}
-
+// ---------------- LEADERBOARD ----------------
 function switchRoundLB(difficulty) {
+
     document.querySelectorAll(".lbTab")
         .forEach(t => t.classList.remove("active"));
-    
+
     document.querySelector(`.lbTab[onclick="switchRoundLB('${difficulty}')"]`)
         ?.classList.add("active");
-    
+
     loadRoundLB(difficulty);
 }
 
 function loadRoundLB(difficulty) {
+
     fetch("/round-leaderboard/" + difficulty)
         .then(r => r.json())
         .then(data => {
+
             const lb = document.getElementById("roundLB");
+            if (!lb) return;
+
             lb.innerHTML = "";
-            
+
             data.forEach((player, index) => {
                 const li = document.createElement("li");
                 li.innerText = `${index + 1}. ${player[0]} - ${player[1]} Clicks`;

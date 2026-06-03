@@ -381,9 +381,12 @@ def round_leaderboard(difficulty):
     LIMIT 10
     """, (difficulty,))
 
-    data = c.fetchall()
+    rows = c.fetchall()
     conn.close()
 
+    # Convert to list of dicts
+    data = [{"name": row[0], "clicks": row[1]} for row in rows]
+    
     return jsonify(data)
 
 

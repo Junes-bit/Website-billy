@@ -602,6 +602,8 @@ const interval = setInterval(() => {
         }, 700);
     }
 }, 1000);
+
+}    
 function startGameNow(seconds) {
 
     document.getElementById("rundenCountdown").classList.remove("active");

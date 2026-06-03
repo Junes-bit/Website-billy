@@ -732,7 +732,7 @@ function loadRoundLB(mode) {
 
 // ============= GLÜCKSRAD SYSTEM =============
 
-ffunction spinWheel() {
+function spinWheel() {
     if (wheelSpinning) return;
 
     const lastSpin = localStorage.getItem("lastSpin_" + name);

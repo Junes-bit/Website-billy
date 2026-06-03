@@ -571,7 +571,7 @@ function startRunden(difficulty, seconds) {
     let count = 3;
     display.innerText = count;
 
-    const interval = setInterval(() => {
+    let interval = setInterval(() => {
 
         count--;
 
@@ -583,7 +583,7 @@ function startRunden(difficulty, seconds) {
             display.innerText = "GO!";
 
             setTimeout(() => {
-                startGameNow(seconds, difficulty);
+                startGameNow(seconds);
             }, 800);
         }
 
@@ -592,13 +592,7 @@ function startRunden(difficulty, seconds) {
 
 
 // ---------------- GAME START ----------------
-function startGameNow(seconds, difficulty) {
-
-    const game = document.getElementById("rundenGame");
-    const countdown = document.getElementById("rundenCountdown");
-
-    countdown.classList.remove("active");
-    game.classList.add("active");
+function startGameNow(seconds) {
 
     let clicks = 0;
     let time = seconds;
@@ -606,6 +600,10 @@ function startGameNow(seconds, difficulty) {
     const clicksEl = document.getElementById("rundenClicks");
     const timerEl = document.getElementById("rundenTimer");
     const btn = document.getElementById("rundenClick");
+
+    document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenGame").classList.add("active");
+    document.getElementById("rundenResults").classList.remove("active");
 
     clicksEl.innerText = 0;
     timerEl.innerText = time;
@@ -615,42 +613,44 @@ function startGameNow(seconds, difficulty) {
         clicksEl.innerText = clicks;
     };
 
-    const timer = setInterval(() => {
+    let timer = setInterval(() => {
 
         time--;
         timerEl.innerText = time;
 
         if (time <= 0) {
             clearInterval(timer);
-
-            game.classList.remove("active");
-            document.getElementById("rundenResults").classList.add("active");
-
-            document.getElementById("resultClicks").innerText = clicks;
-
-            // Leaderboard laden für Modus
-            loadRoundLB(difficulty);
+            endRunden(clicks, seconds);
         }
 
     }, 1000);
 }
 
 
-// ---------------- LEADERBOARD ----------------
-function loadRoundLB(difficulty) {
+// ---------------- END ----------------
+function endRunden(clicks, seconds) {
 
-    fetch("/round-leaderboard/" + difficulty)
-        .then(r => r.json())
-        .then(data => {
+    document.getElementById("rundenGame").classList.remove("active");
+    document.getElementById("rundenResults").classList.add("active");
 
-            const lb = document.getElementById("roundLB");
-            lb.innerHTML = "";
+    document.getElementById("resultClicks").innerText = clicks;
 
-            data.forEach((player, index) => {
+    // optional speichern
+    fetch("/save-round", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name,
+            difficulty: seconds,
+            clicks
+        })
+    });
 
-                const li = document.createElement("li");
-                li.innerText = `${index + 1}. ${player[0]} - ${player[1]} Clicks`;
-                lb.appendChild(li);
-            });
-        });
+    loadRoundLB(seconds + "s");
+}
+
+
+// ---------------- RESTART BUTTON ----------------
+function restartRunden(seconds) {
+    startRunden("restart", seconds);
 }

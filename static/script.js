@@ -604,26 +604,29 @@ function startRunden(difficulty, seconds) {
 function startGameNow(seconds) {
 
     document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenGame").classList.add("active");
 
     let clicks = 0;
     let time = seconds;
 
-    document.getElementById("rundenClicks").innerText = 0;
-    document.getElementById("rundenTimer").innerText = time;
-
+    const clicksEl = document.getElementById("rundenClicks");
+    const timerEl = document.getElementById("rundenTimer");
     const btn = document.getElementById("rundenClick");
+
+    clicksEl.innerText = 0;
+    timerEl.innerText = time;
 
     btn.innerText = "🎯";
 
     btn.onclick = () => {
         clicks++;
-        document.getElementById("rundenClicks").innerText = clicks;
+        clicksEl.innerText = clicks;
     };
 
     let timer = setInterval(() => {
 
         time--;
-        document.getElementById("rundenTimer").innerText = time;
+        timerEl.innerText = time;
 
         if (time <= 0) {
             clearInterval(timer);
@@ -636,7 +639,6 @@ function startGameNow(seconds) {
 
     }, 1000);
 }
-
 function updateRundenTimer() {
     const timerEl = document.getElementById("rundenTimer");
     

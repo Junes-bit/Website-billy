@@ -781,7 +781,7 @@ li{
     transform: scale(0.9);
 }
 
-/* ===== GLÜCKSRAD FIX (ohne HTML Änderung) ===== */
+/* ========== GLÜCKSRAD FIX (COMPLETE) ========== */
 
 .wheelContainer {
     position: relative;
@@ -797,6 +797,7 @@ li{
     width: 300px;
     height: 300px;
     border-radius: 50%;
+    position: relative;
 
     background: conic-gradient(
         #ef4444 0deg 72deg,
@@ -806,13 +807,15 @@ li{
         #a855f7 288deg 360deg
     );
 
-    position: relative;
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
 
-    /* 🔥 FIX für unscharfe Schrift */
-    transform: translateZ(0);
-    will-change: transform;
+    /* 🔥 FIX für Schriftqualität */
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .wheelPointer {
@@ -824,22 +827,76 @@ li{
     z-index: 10;
 }
 
-/* ===== DEINE INLINE SPANS FIXEN ===== */
+/* ===== DEINE INLINE TEXTE (SPAN FIX) ===== */
 
 .wheel span {
+    position: absolute;
     font-weight: 800;
     font-size: 18px;
     color: white;
 
-    /* 🔥 macht Schrift schärfer */
+    /* 🔥 macht Schrift sauber */
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+
     -webkit-font-smoothing: antialiased;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    -moz-osx-font-smoothing: grayscale;
 
     transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 /* Mittelpunkt */
 .wheel div {
     position: absolute;
     z-index: 10;
+}
+
+/* ===== BUTTON ===== */
+
+#spinBtn {
+    padding: 15px 40px;
+    font-size: 18px;
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    border-radius: 50px;
+    font-weight: 800;
+    width: 200px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#spinBtn:hover {
+    transform: scale(1.05);
+}
+
+#spinBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== RESULT POPUP ===== */
+
+.wheelResultBox {
+    text-align: center;
+    animation: popupAppear 0.4s ease-out;
+}
+
+@keyframes popupAppear {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.wheelRewardAmount {
+    font-size: 48px;
+    font-weight: 800;
+    color: #22c55e;
+    margin: 20px 0;
+}
+
+/* ===== GLOBAL SAFE FIX ===== */
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }

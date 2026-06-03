@@ -18,6 +18,11 @@ let friendsData = {
 
 let currentFriendsTab = "friends";
 
+// Glücksrad
+let wheelSpinning = false;
+let wheelRewards = [1000, 2000, 3000, 4000, 5000];
+let wheelColors = ["#ef4444", "#f97316", "#22c55e", "#3b82f6", "#a855f7"];
+
 // ---------------- INIT ----------------
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -33,6 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
             save();
         });
     }
+
+    // Glücksrad Timer laden
+    updateWheelCooldown();
+    setInterval(updateWheelCooldown, 1000);
 });
 
 
@@ -665,6 +674,7 @@ function startGameNow(seconds) {
         }
     }, 1000);
 }
+
 function endRunden() {
 
     document.getElementById("rundenGame").classList.remove("active");
@@ -717,4 +727,107 @@ function loadRoundLB(mode) {
         .catch(err => {
             console.log("Round LB error:", err);
         });
+}
+
+
+// ============= GLÜCKSRAD SYSTEM =============
+
+function spinWheel() {
+    if (wheelSpinning) return;
+
+    const lastSpin = localStorage.getItem("lastSpin_" + name);
+    const now = Date.now();
+
+    if (lastSpin) {
+        const timePassed = now - parseInt(lastSpin);
+        const oneDay = 24 * 60 * 60 * 1000;
+
+        if (timePassed < oneDay) {
+            alert("⏳ Komm in 24h wieder!");
+            return;
+        }
+    }
+
+    wheelSpinning = true;
+
+    const wheel = document.getElementById("fortuneWheel");
+    const resultPopup = document.getElementById("wheelResult");
+
+    if (!wheel) return;
+
+    // Random Rotation (360 * mehrere Umdrehungen + Target)
+    const randomIndex = Math.floor(Math.random() * wheelRewards.length);
+    const targetRotation = 360 * 5 + (randomIndex * (360 / wheelRewards.length));
+
+    wheel.style.transform = `rotate(${targetRotation}deg)`;
+
+    setTimeout(() => {
+        const reward = wheelRewards[randomIndex];
+        coins += reward;
+        update();
+        save();
+
+        // Popup mit Animation
+        if (resultPopup) {
+            resultPopup.innerHTML = `
+                <div class="wheelResultBox">
+                    <h2>🎉 GEWONNEN!</h2>
+                    <p class="wheelRewardAmount">+${reward} Coins</p>
+                    <button onclick="document.getElementById('wheelResult').classList.add('hidden')">Schließen</button>
+                </div>
+            `;
+            resultPopup.classList.remove("hidden");
+
+            // Reward-Animation
+            const rewardBox = resultPopup.querySelector(".wheelRewardAmount");
+            if (rewardBox) {
+                rewardBox.style.animation = "none";
+                setTimeout(() => {
+                    rewardBox.style.animation = "wheelRewardGlow 0.6s ease-out";
+                }, 10);
+            }
+        }
+
+        localStorage.setItem("lastSpin_" + name, now.toString());
+        wheelSpinning = false;
+        updateWheelCooldown();
+    }, 3000);
+}
+
+function updateWheelCooldown() {
+    const lastSpin = localStorage.getItem("lastSpin_" + name);
+    const btn = document.getElementById("spinBtn");
+    const timer = document.getElementById("wheelTimer");
+
+    if (!btn || !timer) return;
+
+    if (!lastSpin) {
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+        timer.innerHTML = "🎉 Dreh jetzt!";
+        return;
+    }
+
+    const now = Date.now();
+    const timePassed = now - parseInt(lastSpin);
+    const oneDay = 24 * 60 * 60 * 1000;
+    const timeLeft = oneDay - timePassed;
+
+    if (timeLeft <= 0) {
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+        timer.innerHTML = "🎉 Dreh jetzt!";
+    } else {
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        btn.style.cursor = "not-allowed";
+
+        const hours = Math.floor(timeLeft / (60 * 60 * 1000));
+        const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+        const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+
+        timer.innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
+    }
 }

@@ -687,5 +687,8 @@ function loadRoundLB(mode) {
                 li.innerText = `${i+1}. ${p.name} - ${p.clicks}`;
                 list.appendChild(li);
             });
+        })
+        .catch(err => {
+            console.log("Round LB error:", err);
         });
 }

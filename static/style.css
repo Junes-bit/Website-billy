@@ -781,7 +781,7 @@ li{
     transform: scale(0.9);
 }
 
-/* ========== GLÜCKSRAD STYLES ========== */
+/* ===== WHEEL FIX ===== */
 
 .wheelContainer {
     position: relative;
@@ -794,10 +794,26 @@ li{
 }
 
 .wheel {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.5));
-    transition: transform 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+
+    background: conic-gradient(
+        #ef4444 0deg 72deg,
+        #f97316 72deg 144deg,
+        #22c55e 144deg 216deg,
+        #3b82f6 216deg 288deg,
+        #a855f7 288deg 360deg
+    );
+
+    position: relative;
+
+    /* 🔥 FIX für unsaubere Schrift / Rendering */
+    transform: translateZ(0);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
 }
 
 .wheelPointer {
@@ -809,50 +825,55 @@ li{
     z-index: 10;
 }
 
-.wheelResultBox {
-    text-align: center;
-    animation: popupAppear 0.4s ease-out;
-}
+/* ===== LABELS ===== */
 
-@keyframes popupAppear {
-    from {
-        transform: scale(0.5);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.wheelRewardAmount {
-    font-size: 48px;
+.wheelLabel {
+    position: absolute;
     font-weight: 800;
-    color: #22c55e;
-    margin: 20px 0;
+    font-size: 18px;
+    color: white;
+
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+
+    /* 🔥 macht Schrift viel schärfer */
+    transform: translateZ(0);
 }
 
-@keyframes wheelRewardGlow {
-    0% {
-        transform: scale(1);
-        text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
-    }
-    50% {
-        transform: scale(1.3);
-        text-shadow: 0 0 40px rgba(34, 197, 94, 1);
-    }
-    100% {
-        transform: scale(1);
-        text-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
-    }
+/* Positionen sauber zentriert */
+.l1 { top: 20px; left: 50%; transform: translateX(-50%); }
+.l2 { top: 70px; right: 40px; }
+.l3 { right: 20px; top: 50%; transform: translateY(-50%); }
+.l4 { bottom: 70px; right: 40px; }
+.l5 { bottom: 20px; left: 50%; transform: translateX(-50%); }
+
+/* ===== CENTER ===== */
+
+.wheelCenter {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-#spinBtn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
+/* ===== BUTTON ===== */
 
-#spinBtn:disabled:hover {
-    transform: scale(1);
+.spinBtn {
+    padding: 15px 40px;
+    font-size: 18px;
     background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    border-radius: 50px;
+    font-weight: 800;
+    width: 200px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.spinBtn:hover {
+    transform: scale(1.05);
 }

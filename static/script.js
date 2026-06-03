@@ -555,114 +555,96 @@ document.addEventListener("DOMContentLoaded", () => {
         leaderboardBtn.addEventListener("click", loadLB);
     }
 });
-// ============= RUNDEN SYSTEM =============
+let roundClicks = 0;
+let roundSeconds = 0;
+let roundTimer = null;
 
-function startRunden(difficulty, seconds) {
+function startRunden(mode, seconds) {
 
-    document.getElementById("rundenResults").classList.add("hidden");
-    const countdown = document.getElementById("rundenCountdown");
-    const game = document.getElementById("rundenGame");
-    const display = document.getElementById("countdownDisplay");
+    roundClicks = 0;
+    roundSeconds = seconds;
 
     document.getElementById("rundenSelect").classList.add("hidden");
-
     document.getElementById("rundenResults").classList.remove("active");
-    game.classList.remove("active");
+
+    const countdown = document.getElementById("rundenCountdown");
+    const display = document.getElementById("countdownDisplay");
+
     countdown.classList.add("active");
 
-    let count = 3;
-    display.innerText = count;
+    let c = 3;
+    display.innerText = c;
 
     const interval = setInterval(() => {
-        count--;
+        c--;
 
-        if (count > 0) {
-            display.innerText = count;
+        if (c > 0) {
+            display.innerText = c;
         } else {
             clearInterval(interval);
             display.innerText = "GO!";
 
             setTimeout(() => {
-                startGameNow(difficulty, seconds);
-            }, 800);
+                startGameNow(seconds);
+            }, 600);
         }
-
     }, 1000);
 }
 
+function startGameNow(seconds) {
 
-// ---------------- GAME ----------------
-function startGameNow(difficulty, seconds) {
-
-    let clicks = 0;
-    let time = seconds;
+    document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenGame").classList.add("active");
 
     const clicksEl = document.getElementById("rundenClicks");
     const timerEl = document.getElementById("rundenTimer");
     const btn = document.getElementById("rundenClick");
 
-    document.getElementById("rundenCountdown").classList.remove("active");
-    document.getElementById("rundenGame").classList.add("active");
-    document.getElementById("rundenResults").classList.remove("active");
+    roundClicks = 0;
 
     clicksEl.innerText = 0;
-    timerEl.innerText = time;
+    timerEl.innerText = seconds;
 
     btn.onclick = () => {
-        clicks++;
-        clicksEl.innerText = clicks;
+        roundClicks++;
+        clicksEl.innerText = roundClicks;
     };
 
-    const timer = setInterval(() => {
+    let time = seconds;
+
+    roundTimer = setInterval(() => {
         time--;
         timerEl.innerText = time;
 
         if (time <= 0) {
-            clearInterval(timer);
-            endRunden(clicks, difficulty, seconds);
+            clearInterval(roundTimer);
+            endRunden();
         }
-
     }, 1000);
 }
 
+function endRunden() {
 
-// ---------------- END ----------------
-function endRunden(clicks, difficulty, seconds) {
-
-    // alles ausblenden
     document.getElementById("rundenGame").classList.remove("active");
-    document.getElementById("rundenCountdown").classList.remove("active");
-    document.getElementById("rundenSelect").classList.add("hidden");
+    document.getElementById("rundenResults").classList.add("active");
 
-    // results zeigen
-    const results = document.getElementById("rundenResults");
-    results.classList.remove("hidden");
-    results.classList.add("active");
+    document.getElementById("resultClicks").innerText = roundClicks;
 
-    document.getElementById("resultClicks").innerText = clicks;
+    // Leaderboard laden für aktuellen Modus
+    loadRoundLB(roundSeconds + "s");
 
-    // leaderboard laden
-    loadRoundLB(seconds + "s");
-
+    // Save
     fetch("/save-round", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
             name,
-            difficulty,
-            clicks
+            difficulty: roundSeconds + "s",
+            clicks: roundClicks
         })
     });
 }
 
-
-// ---------------- RESTART BUTTON ----------------
 function restartRunden() {
-
-    // RESET UI
-    document.getElementById("rundenResults").classList.add("hidden");
-    document.getElementById("rundenCountdown").classList.remove("active");
-    document.getElementById("rundenGame").classList.remove("active");
-
-    document.getElementById("rundenSelect").classList.remove("hidden");
+    startRunden("restart", roundSeconds);
 }

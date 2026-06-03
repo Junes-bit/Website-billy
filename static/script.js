@@ -642,7 +642,7 @@ function startGameNow(seconds) {
         }, 150);
     };
 
-      let time = seconds;
+    let time = seconds;
 
     roundTimer = setInterval(() => {
         time--;

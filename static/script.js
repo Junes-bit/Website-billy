@@ -666,9 +666,16 @@ function loadRoundLB(mode) {
     fetch("/round-leaderboard/" + mode)
         .then(r => r.json())
         .then(data => {
-            console.log("Round LB:", data);
+            const list = document.getElementById("roundLB");
+            if (!list) return;
+
+            list.innerHTML = "";
+
+            data.forEach((p, i) => {
+                const li = document.createElement("li");
+                li.innerText = `${i + 1}. ${p.name} - ${p.clicks}`;
+                list.appendChild(li);
+            });
         })
-        .catch(err => {
-            console.log("Round LB error", err);
-        });
+        .catch(err => console.log("Round LB error", err));
 }

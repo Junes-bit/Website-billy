@@ -555,17 +555,20 @@ document.addEventListener("DOMContentLoaded", () => {
         leaderboardBtn.addEventListener("click", loadLB);
     }
 });
+
 let roundClicks = 0;
 let roundSeconds = 0;
 let roundTimer = null;
+let currentRoundMode = "";
 
 function startRunden(mode, seconds) {
 
     roundClicks = 0;
     roundSeconds = seconds;
+    currentRoundMode = mode;
 
     document.getElementById("rundenSelect").classList.add("hidden");
-    document.getElementById("rundenResults").classList.remove("active");
+    document.getElementById("rundenResults").classList.add("hidden");
 
     const countdown = document.getElementById("rundenCountdown");
     const display = document.getElementById("countdownDisplay");
@@ -639,12 +642,13 @@ function startGameNow(seconds) {
 function endRunden() {
 
     document.getElementById("rundenGame").classList.remove("active");
+    document.getElementById("rundenResults").classList.remove("hidden");
     document.getElementById("rundenResults").classList.add("active");
 
     document.getElementById("resultClicks").innerText = roundClicks;
 
     // Leaderboard laden für aktuellen Modus
-    loadRoundLB(roundSeconds + "s");
+    loadRoundLB(currentRoundMode);
 
     // Save
     fetch("/save-round", {
@@ -652,14 +656,21 @@ function endRunden() {
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
             name,
-            difficulty: roundSeconds + "s",
+            difficulty: currentRoundMode,
             clicks: roundClicks
         })
     });
 }
 
 function restartRunden() {
-    startRunden("restart", roundSeconds);
+    startRunden(currentRoundMode, roundSeconds);
+}
+
+function exitRunden() {
+    document.getElementById("rundenSelect").classList.remove("hidden");
+    document.getElementById("rundenResults").classList.add("hidden");
+    document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenGame").classList.remove("active");
 }
 
 function loadRoundLB(mode) {

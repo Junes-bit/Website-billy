@@ -592,16 +592,15 @@ function startRunden(difficulty, seconds) {
             display.innerText = "GO!";
 
             setTimeout(() => {
-                countdown.classList.remove("active");
-                game.classList.add("active");
-                startGameNow(seconds);
-            }, 500);
-        }
+    document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenGame").classList.add("active");
 
-    }, 1000);
+    startGameNow(seconds);
+}, 1000);
 }
 function startGameNow(seconds) {
 
+    console.log("GAME STARTED");
     document.getElementById("rundenCountdown").classList.remove("active");
     document.getElementById("rundenGame").classList.add("active");
 

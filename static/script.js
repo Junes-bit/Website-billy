@@ -565,25 +565,24 @@ function startRunden(difficulty, seconds) {
 
     document.getElementById("rundenSelect").classList.add("hidden");
 
-    countdown.classList.add("active");
+    document.getElementById("rundenResults").classList.remove("active");
     game.classList.remove("active");
+    countdown.classList.add("active");
 
     let count = 3;
     display.innerText = count;
 
-    let interval = setInterval(() => {
-
+    const interval = setInterval(() => {
         count--;
 
         if (count > 0) {
             display.innerText = count;
         } else {
             clearInterval(interval);
-
             display.innerText = "GO!";
 
             setTimeout(() => {
-                startGameNow(seconds);
+                startGameNow(difficulty, seconds);
             }, 800);
         }
 
@@ -591,8 +590,8 @@ function startRunden(difficulty, seconds) {
 }
 
 
-// ---------------- GAME START ----------------
-function startGameNow(seconds) {
+// ---------------- GAME ----------------
+function startGameNow(difficulty, seconds) {
 
     let clicks = 0;
     let time = seconds;
@@ -613,14 +612,13 @@ function startGameNow(seconds) {
         clicksEl.innerText = clicks;
     };
 
-    let timer = setInterval(() => {
-
+    const timer = setInterval(() => {
         time--;
         timerEl.innerText = time;
 
         if (time <= 0) {
             clearInterval(timer);
-            endRunden(clicks, seconds);
+            endRunden(clicks, difficulty, seconds);
         }
 
     }, 1000);
@@ -628,25 +626,25 @@ function startGameNow(seconds) {
 
 
 // ---------------- END ----------------
-function endRunden(clicks, seconds) {
+function endRunden(clicks, difficulty, seconds) {
 
     document.getElementById("rundenGame").classList.remove("active");
     document.getElementById("rundenResults").classList.add("active");
 
     document.getElementById("resultClicks").innerText = clicks;
 
-    // optional speichern
+    // leaderboard direkt neu laden
+    loadRoundLB(seconds + "s");
+
     fetch("/save-round", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             name,
-            difficulty: seconds,
+            difficulty,
             clicks
         })
     });
-
-    loadRoundLB(seconds + "s");
 }
 
 

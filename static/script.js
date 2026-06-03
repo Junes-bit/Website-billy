@@ -93,7 +93,7 @@ function startGame() {
 
     localStorage.setItem("activeUser", name);
 
-    fetch("//" + name)
+    fetch("/load/" + name)
         .then(r => r.json())
         .then(data => {
 
@@ -308,7 +308,7 @@ function logout() {
     
     if (confirm("🚪 Wirklich ausloggen?")) {
         localStorage.removeItem("activeUser");
-        location.re();
+        location.reload();
     }
 }
 
@@ -549,7 +549,7 @@ function LB() {
         });
 }
 
-document.addEventListener("DOMContented", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const leaderboardBtn = document.querySelector('[onclick="show(\'leaderboard\')"]');
     if (leaderboardBtn) {
         leaderboardBtn.addEventListener("click", loadLB);
@@ -660,4 +660,15 @@ function endRunden() {
 
 function restartRunden() {
     startRunden("restart", roundSeconds);
+}
+
+function loadRoundLB(mode) {
+    fetch("/round-leaderboard/" + mode)
+        .then(r => r.json())
+        .then(data => {
+            console.log("Round LB:", data);
+        })
+        .catch(err => {
+            console.log("Round LB error", err);
+        });
 }

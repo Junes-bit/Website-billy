@@ -25,11 +25,11 @@
 
         <!-- TOP NAVBAR -->
         <nav class="navbar">
-            <button onclick="show('menu')" class="nav-btn">🏠 Home</button>
-            <button onclick="show('clicker')" class="nav-btn">🔵 Clicker</button>
-            <button onclick="show('runden')" class="nav-btn">🎯 Runden</button>
             <button onclick="show('profile')" class="nav-btn">👤 Profil</button>
             <button onclick="show('friends')" class="nav-btn">👥 Freunde</button>
+            <button onclick="show('wheel')" class="nav-btn">🎡 Glücksrad</button>
+            <button onclick="show('inventory')" class="nav-btn">🎒 Inventar</button>
+            <button onclick="show('settings')" class="nav-btn">⚙️ Settings</button>
             <button onclick="show('shop')" class="nav-btn">🛒 Shop</button>
             <button onclick="show('leaderboard')" class="nav-btn">🏆 Ranking</button>
             <button onclick="toggleCodeBox()" class="nav-btn">🎁 Code</button>
@@ -166,7 +166,31 @@
                     <div class="emptyMessage">Lade...</div>
                 </div>
             </div>
+<!-- WHEEL -->
+        <div id="wheel" class="page">
+            <button class="backBtn" onclick="show('menu')">← Zurück</button>
+            <h1>🎡 Glücksrad</h1>
+            <p>Coming Soon! 🚀</p>
+        </div>
 
+        <!-- INVENTORY -->
+        <div id="inventory" class="page">
+            <button class="backBtn" onclick="show('menu')">← Zurück</button>
+            <h1>🎒 Inventar</h1>
+            <div class="shopGrid">
+                <h2>🎨 Skins</h2>
+                <div class="skinList" id="skinList"></div>
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="settings" class="page">
+            <button class="backBtn" onclick="show('menu')">← Zurück</button>
+            <h1>⚙️ Settings</h1>
+            <div class="settingsBox">
+                <button onclick="logout()">🚪 Ausloggen</button>
+            </div>
+        </div>
             <!-- SHOP -->
             <div id="shop" class="page">
                 <button class="backBtn" onclick="show('menu')">← Zurück</button>

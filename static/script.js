@@ -527,7 +527,7 @@ function showFriendProfile(friendName) {
 
 
 // ---------------- LEADERBOARD ----------------
-function LB() {
+function loadLB() {
 
     fetch("/leaderboard")
         .then(r => r.json())

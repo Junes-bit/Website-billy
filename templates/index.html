@@ -78,63 +78,53 @@
                 </div>
             </div>
 
-            <!-- RUNDEN GAME -->
-            <div id="runden" class="page">
-                <button class="backBtn" onclick="show('menu')">← Zurück</button>
+          <!-- RUNDEN GAME -->
+<div id="runden" class="page">
 
-                <!-- DIFFICULTY SELECTION -->
-                <div id="rundenSelect" class="rundenSelect">
-                    <h1>🎯 Runden-Modus</h1>
-                    <p>Wähle eine Schwierigkeit:</p>
+    <button class="backBtn" onclick="show('menu')">← Zurück</button>
 
-                    <div class="difficultyGrid">
-                        <button class="diffBtn" onclick="startRunden('5s', 5)">⚡ 5 Sekunden</button>
-                        <button class="diffBtn" onclick="startRunden('10s', 10)">🔥 10 Sekunden</button>
-                        <button class="diffBtn" onclick="startRunden('15s', 15)">💪 15 Sekunden</button>
-                        <button class="diffBtn" onclick="startRunden('30s', 30)">🚀 30 Sekunden</button>
-                        <button class="diffBtn" onclick="startRunden('1min', 60)">💎 1 Minute</button>
-                    </div>
-                </div>
+    <!-- SELECT -->
+    <div id="rundenSelect" class="rundenSelect">
+        <h1>🎯 Runden-Modus</h1>
 
-                <!-- COUNTDOWN -->
-                <div id="rundenCountdown" class="rundenCountdown">
-                    <h2>Vorbereitung...</h2>
-                    <div id="countdownDisplay" class="countdownDisplay">3</div>
-                </div>
-
-                <!-- GAME -->
-                <div id="rundenGame" class="rundenGame">
-                    <div class="gameContainer">
-                        <div id="rundenTimer" class="rundenTimer">60</div>
-                        <div id="rundenClicks" class="rundenClicks">0</div>
-                        <button id="rundenClick" class="rundenClickBtn">KLICK!</button>
-                    </div>
-                </div>
-<div id="rundenResults" class="rundenResults">
-    <div class="resultBox">
-        <p>Clicks: <span id="resultClicks"></span></p>
+        <div class="difficultyGrid">
+            <button class="diffBtn" onclick="startRunden('5s', 5)">⚡ 5 Sekunden</button>
+            <button class="diffBtn" onclick="startRunden('10s', 10)">🔥 10 Sekunden</button>
+            <button class="diffBtn" onclick="startRunden('15s', 15)">💪 15 Sekunden</button>
+            <button class="diffBtn" onclick="startRunden('30s', 30)">🚀 30 Sekunden</button>
+            <button class="diffBtn" onclick="startRunden('1min', 60)">💎 1 Minute</button>
+        </div>
     </div>
 
-    <h2>🏆 Leaderboard</h2>
-    <ul id="roundLB"></ul>
+    <!-- COUNTDOWN -->
+    <div id="rundenCountdown" class="rundenCountdown">
+        <div id="countdownDisplay" class="countdownDisplay">3</div>
+    </div>
 
-    <button onclick="restartRunden()">🔁 Nochmal spielen</button>
+    <!-- GAME -->
+    <div id="rundenGame" class="rundenGame">
+        <div class="gameContainer">
+            <div id="rundenTimer" class="rundenTimer">0</div>
+            <div id="rundenClicks" class="rundenClicks">0</div>
+            <button id="rundenClick" class="rundenClickBtn">KLICK!</button>
+        </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="rundenResults" class="rundenResults hidden">
+
+        <div class="resultBox">
+            <p>Clicks: <span id="resultClicks"></span></p>
+        </div>
+
+        <h2>🏆 Leaderboard</h2>
+        <ul id="roundLB"></ul>
+
+        <!-- FIXED BUTTON -->
+        <button onclick="show('runden')">🔁 Nochmal spielen</button>
+    </div>
+
 </div>
-
-                    <h3>📊 Leaderboard</h3>
-                    <div class="leaderboardTabs">
-                        <button class="lbTab active" onclick="switchRoundLB('5s')">⚡ 5s</button>
-                        <button class="lbTab" onclick="switchRoundLB('10s')">🔥 10s</button>
-                        <button class="lbTab" onclick="switchRoundLB('15s')">💪 15s</button>
-                        <button class="lbTab" onclick="switchRoundLB('30s')">🚀 30s</button>
-                        <button class="lbTab" onclick="switchRoundLB('1min')">💎 1min</button>
-                    </div>
-
-                    <ul id="roundLB"></ul>
-
-                    <button onclick="show('runden')">🔄 Nochmal</button>
-                </div>
-            </div>
 
             <!-- PROFILE -->
             <div id="profile" class="page">

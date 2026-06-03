@@ -672,6 +672,7 @@ li{
     .friendsTab{
         width:100%;
     }
+    }
 /* ========== RUNDEN STYLES ========== */
 
 .rundenSelect {
@@ -771,11 +772,11 @@ li{
 }
 
 .rundenResults {
-    display: flex !important;
     flex-direction: column;
     align-items: center;
     gap: 20px;
 }
+
 
 .resultBox {
     background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15));

@@ -93,7 +93,7 @@ function startGame() {
 
     localStorage.setItem("activeUser", name);
 
-    fetch("/load/" + name)
+    fetch("//" + name)
         .then(r => r.json())
         .then(data => {
 
@@ -134,7 +134,7 @@ function show(id) {
     if (el) el.classList.add("active");
 
     if (id === "friends") {
-        loadFriends();
+        Friends();
     }
 }
 
@@ -308,14 +308,14 @@ function logout() {
     
     if (confirm("🚪 Wirklich ausloggen?")) {
         localStorage.removeItem("activeUser");
-        location.reload();
+        location.re();
     }
 }
 
 
 // ============= FRIENDS SYSTEM =============
 
-function loadFriends() {
+function Friends() {
     fetch("/get-friends/" + name)
         .then(r => r.json())
         .then(data => {
@@ -424,7 +424,7 @@ function addFriend() {
         if (data.ok) {
             alert("✅ Anfrage gesendet!");
             input.value = "";
-            loadFriends();
+            Friends();
         } else {
             alert("❌ " + data.msg);
         }
@@ -444,7 +444,7 @@ function acceptFriendRequest(fromName) {
     .then(data => {
         if (data.ok) {
             alert("✅ Freund akzeptiert!");
-            loadFriends();
+            Friends();
         }
     });
 }
@@ -462,7 +462,7 @@ function declineFriendRequest(friendName, type) {
     .then(data => {
         if (data.ok) {
             alert("✅ Abgelehnt");
-            loadFriends();
+            Friends();
         }
     });
 }
@@ -482,7 +482,7 @@ function removeFriend(friendName) {
     .then(data => {
         if (data.ok) {
             alert("✅ Freund entfernt");
-            loadFriends();
+            Friends();
         }
     });
 }
@@ -527,7 +527,7 @@ function showFriendProfile(friendName) {
 
 
 // ---------------- LEADERBOARD ----------------
-function loadLB() {
+function LB() {
 
     fetch("/leaderboard")
         .then(r => r.json())
@@ -549,7 +549,7 @@ function loadLB() {
         });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContented", () => {
     const leaderboardBtn = document.querySelector('[onclick="show(\'leaderboard\')"]');
     if (leaderboardBtn) {
         leaderboardBtn.addEventListener("click", loadLB);
@@ -644,7 +644,7 @@ function endRunden() {
     document.getElementById("resultClicks").innerText = roundClicks;
 
     // Leaderboard laden für aktuellen Modus
-    loadRoundLB(roundSeconds + "s");
+    //loadRoundLB(roundSeconds + "s");
 
     // Save
     fetch("/save-round", {

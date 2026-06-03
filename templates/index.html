@@ -110,14 +110,16 @@
                         <button id="rundenClick" class="rundenClickBtn">KLICK!</button>
                     </div>
                 </div>
+<div id="rundenResults" class="rundenResults">
+    <div class="resultBox">
+        <p>Clicks: <span id="resultClicks"></span></p>
+    </div>
 
-                <!-- RESULTS -->
-                <div id="rundenResults" class="rundenResults">
-                    <h2>🏆 Ergebnis</h2>
-                    <div class="resultBox">
-                        <p>Clicks: <span id="resultClicks">0</span></p>
-                        <p>Zeit: <span id="resultTime">5s</span></p>
-                    </div>
+    <h2>🏆 Leaderboard</h2>
+    <ul id="roundLB"></ul>
+
+    <button onclick="restartRunden()">🔁 Nochmal spielen</button>
+</div>
 
                     <h3>📊 Leaderboard</h3>
                     <div class="leaderboardTabs">

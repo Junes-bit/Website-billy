@@ -628,12 +628,19 @@ function startGameNow(difficulty, seconds) {
 // ---------------- END ----------------
 function endRunden(clicks, difficulty, seconds) {
 
+    // alles ausblenden
     document.getElementById("rundenGame").classList.remove("active");
-    document.getElementById("rundenResults").classList.add("active");
+    document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenSelect").classList.add("hidden");
+
+    // results zeigen
+    const results = document.getElementById("rundenResults");
+    results.classList.remove("hidden");
+    results.classList.add("active");
 
     document.getElementById("resultClicks").innerText = clicks;
 
-    // leaderboard direkt neu laden
+    // leaderboard laden
     loadRoundLB(seconds + "s");
 
     fetch("/save-round", {
@@ -649,6 +656,12 @@ function endRunden(clicks, difficulty, seconds) {
 
 
 // ---------------- RESTART BUTTON ----------------
-function restartRunden(seconds) {
-    startRunden("restart", seconds);
+function restartRunden() {
+
+    // RESET UI
+    document.getElementById("rundenResults").classList.add("hidden");
+    document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenGame").classList.remove("active");
+
+    document.getElementById("rundenSelect").classList.remove("hidden");
 }

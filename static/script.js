@@ -626,24 +626,21 @@ function startGameNow(seconds) {
     clicksEl.innerText = 0;
     timerEl.innerText = seconds;
 
-    btn.onclick = () => {
+       btn.onclick = () => {
         roundClicks++;
         clicksEl.innerText = roundClicks;
+
+        // ANIMATION: Nummer groß + BLAU + GLOW (wie Countdown)
+        clicksEl.style.transform = "scale(1.5)";
+        clicksEl.style.textShadow = `0 0 30px #3b82f6, 0 0 60px #3b82f6`;
+        clicksEl.style.color = "#3b82f6";
+        clicksEl.style.fontSize = "80px";
+
+        setTimeout(() => {
+            clicksEl.style.transform = "scale(1.2)";
+            clicksEl.style.textShadow = `0 0 20px #3b82f6`;
+        }, 150);
     };
-
-    let time = seconds;
-
-    roundTimer = setInterval(() => {
-        time--;
-        timerEl.innerText = time;
-
-        if (time <= 0) {
-            clearInterval(roundTimer);
-            endRunden();
-        }
-    }, 1000);
-}
-
 function endRunden() {
 
     document.getElementById("rundenGame").classList.remove("active");

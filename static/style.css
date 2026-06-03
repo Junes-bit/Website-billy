@@ -705,14 +705,7 @@ li{
     transform: translateY(-5px);
 }
 
-.rundenCountdown {
-    display: flex !important;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 60vh;
-    gap: 30px;
-}
+
 
 .countdownDisplay {
     font-size: 120px;

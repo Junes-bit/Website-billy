@@ -568,6 +568,10 @@ let rundenState = {
 
 function startRunden(difficulty, seconds) {
 
+    rundenState.difficulty = difficulty;
+    rundenState.timeLeft = seconds;
+    rundenState.clicks = 0;
+    
     const countdown = document.getElementById("rundenCountdown");
     const game = document.getElementById("rundenGame");
     const display = document.getElementById("countdownDisplay");
@@ -636,6 +640,21 @@ function startGameNow(seconds) {
         }
 
     }, 1000);
+}
+
+function restartRunden() {
+
+    // Reset UI
+    document.getElementById("rundenResults").classList.add("hidden");
+    document.getElementById("rundenSelect").classList.remove("hidden");
+
+    document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenGame").classList.remove("active");
+
+    // Reset State
+    rundenState.clicks = 0;
+    rundenState.timeLeft = 0;
+    rundenState.isRunning = false;
 }
 
 // ---------------- LEADERBOARD ----------------

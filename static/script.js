@@ -559,6 +559,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function startRunden(difficulty, seconds) {
 
+    document.getElementById("rundenResults").classList.add("hidden");
     const countdown = document.getElementById("rundenCountdown");
     const game = document.getElementById("rundenGame");
     const display = document.getElementById("countdownDisplay");

@@ -577,17 +577,21 @@ function startRunden(mode, seconds) {
 
    let c = 3;
 display.innerText = c;
+display.style.color = "#3b82f6";
+display.style.fontSize = "120px";
+display.style.fontWeight = "800";
 
 const interval = setInterval(() => {
     c--;
 
-    // Animation bei jedem Step
-    display.style.transform = "scale(1.3)";
-    display.style.opacity = "0.6";
+    // Animation bei jedem Step - GRÖSSER + BLAU + GLOW
+    display.style.transform = "scale(1.5)";
+    display.style.opacity = "1";
+    display.style.textShadow = `0 0 30px #3b82f6, 0 0 60px #3b82f6`;
 
     setTimeout(() => {
-        display.style.transform = "scale(1)";
-        display.style.opacity = "1";
+        display.style.transform = "scale(1.2)";
+        display.style.textShadow = `0 0 20px #3b82f6`;
     }, 150);
 
     if (c > 0) {
@@ -595,10 +599,11 @@ const interval = setInterval(() => {
     } else {
         clearInterval(interval);
 
-        display.innerText = "GO!";
+               display.innerText = "GO!";
 
-        display.style.transform = "scale(1.5)";
+        display.style.transform = "scale(2)";
         display.style.color = "#22c55e";
+        display.style.textShadow = `0 0 40px #22c55e, 0 0 80px #22c55e`;
 
         setTimeout(() => {
             startGameNow(seconds);

@@ -781,7 +781,7 @@ li{
     transform: scale(0.9);
 }
 
-/* ===== WHEEL FIX ===== */
+/* ===== GLÜCKSRAD FIX (ohne HTML Änderung) ===== */
 
 .wheelContainer {
     position: relative;
@@ -808,12 +808,11 @@ li{
 
     position: relative;
 
-    /* 🔥 FIX für unsaubere Schrift / Rendering */
+    /* 🔥 FIX für unscharfe Schrift */
     transform: translateZ(0);
+    will-change: transform;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-
-    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
 }
 
 .wheelPointer {
@@ -825,55 +824,22 @@ li{
     z-index: 10;
 }
 
-/* ===== LABELS ===== */
+/* ===== DEINE INLINE SPANS FIXEN ===== */
 
-.wheelLabel {
-    position: absolute;
+.wheel span {
     font-weight: 800;
     font-size: 18px;
     color: white;
 
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    /* 🔥 macht Schrift schärfer */
+    -webkit-font-smoothing: antialiased;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
 
-    /* 🔥 macht Schrift viel schärfer */
     transform: translateZ(0);
 }
 
-/* Positionen sauber zentriert */
-.l1 { top: 20px; left: 50%; transform: translateX(-50%); }
-.l2 { top: 70px; right: 40px; }
-.l3 { right: 20px; top: 50%; transform: translateY(-50%); }
-.l4 { bottom: 70px; right: 40px; }
-.l5 { bottom: 20px; left: 50%; transform: translateX(-50%); }
-
-/* ===== CENTER ===== */
-
-.wheelCenter {
+/* Mittelpunkt */
+.wheel div {
     position: absolute;
-    width: 30px;
-    height: 30px;
-    background: white;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-/* ===== BUTTON ===== */
-
-.spinBtn {
-    padding: 15px 40px;
-    font-size: 18px;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    border-radius: 50px;
-    font-weight: 800;
-    width: 200px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.spinBtn:hover {
-    transform: scale(1.05);
+    z-index: 10;
 }

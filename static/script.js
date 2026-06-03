@@ -626,7 +626,7 @@ function startGameNow(seconds) {
     clicksEl.innerText = 0;
     timerEl.innerText = seconds;
 
-       btn.onclick = () => {
+    btn.onclick = () => {
         roundClicks++;
         clicksEl.innerText = roundClicks;
 
@@ -641,6 +641,19 @@ function startGameNow(seconds) {
             clicksEl.style.textShadow = `0 0 20px #3b82f6`;
         }, 150);
     };
+
+    let time = seconds;
+
+    roundTimer = setInterval(() => {
+        time--;
+        timerEl.innerText = time;
+
+        if (time <= 0) {
+            clearInterval(roundTimer);
+            endRunden();
+        }
+    }, 1000);
+}
 function endRunden() {
 
     document.getElementById("rundenGame").classList.remove("active");

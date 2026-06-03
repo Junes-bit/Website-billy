@@ -568,39 +568,38 @@ let rundenState = {
 
 function startRunden(difficulty, seconds) {
 
-    document.getElementById("rundenSelect").classList.add("hidden");
-
     const countdown = document.getElementById("rundenCountdown");
+    const game = document.getElementById("rundenGame");
     const display = document.getElementById("countdownDisplay");
 
+    document.getElementById("rundenSelect").classList.add("hidden");
+
     countdown.classList.add("active");
-    countdown.classList.remove("hidden");
+    game.classList.remove("active");
+    display.innerText = "3";
 
     let count = 3;
-    display.innerText = count;
 
     let interval = setInterval(() => {
 
         count--;
 
-        if (count <= 0) {
+        if (count > 0) {
+            display.innerText = count;
+        } else {
             clearInterval(interval);
 
             display.innerText = "GO!";
 
             setTimeout(() => {
                 countdown.classList.remove("active");
+                game.classList.add("active");
                 startGameNow(seconds);
-            }, 400);
-
-            return;
+            }, 500);
         }
-
-        display.innerText = count;
 
     }, 1000);
 }
-
 function startGameNow(seconds) {
 
     document.getElementById("rundenCountdown").classList.remove("active");

@@ -4,7 +4,7 @@ let coins = 0;
 let power = 1;
 
 let skin = "#3b82f6";
-let owned = ["blue"];
+let owned = ["blueSkin"];
 
 let coinsEl;
 let powerEl;

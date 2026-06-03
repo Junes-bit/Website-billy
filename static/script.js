@@ -755,6 +755,55 @@ function spinWheel() {
 
     if (!wheel) return;
 
+    // Random Index (0-4)
+    const randomIndex = Math.floor(Math.random() * wheelRewards.length);
+    
+    // Jedes Feld = 72 Grad (360/5)
+    // Wir drehen SO DASS das Feld oben ist (bei 0 Grad)
+    const targetRotation = 360 * 5 + (360 - (randomIndex * 72 + 36));
+
+    wheel.style.transform = `rotate(${targetRotation}deg)`;
+
+    setTimeout(() => {
+        const reward = wheelRewards[randomIndex];
+        coins += reward;
+        update();
+        save();
+
+        // Popup mit Animation
+        if (resultPopup) {
+            resultPopup.innerHTML = `
+                <div class="wheelResultBox">
+                    <h2>🎉 GEWONNEN!</h2>
+                    <p class="wheelRewardAmount">+${reward} Coins</p>
+                    <button onclick="document.getElementById('wheelResult').classList.add('hidden')">Schließen</button>
+                </div>
+            `;
+            resultPopup.classList.remove("hidden");
+
+            // Reward-Animation
+            const rewardBox = resultPopup.querySelector(".wheelRewardAmount");
+            if (rewardBox) {
+                rewardBox.style.animation = "none";
+                setTimeout(() => {
+                    rewardBox.style.animation = "wheelRewardGlow 0.6s ease-out";
+                }, 10);
+            }
+        }
+
+        localStorage.setItem("lastSpin_" + name, now.toString());
+        wheelSpinning = false;
+        updateWheelCooldown();
+    }, 3000);
+}
+
+    wheelSpinning = true;
+
+    const wheel = document.getElementById("fortuneWheel");
+    const resultPopup = document.getElementById("wheelResult");
+
+    if (!wheel) return;
+
     // Random Rotation (360 * mehrere Umdrehungen + Target)
     const randomIndex = Math.floor(Math.random() * wheelRewards.length);
     const targetRotation = 360 * 5 + (randomIndex * (360 / wheelRewards.length));

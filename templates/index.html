@@ -78,49 +78,52 @@
                 </div>
             </div>
 
-<div id="runden" class="page">
+            <!-- RUNDEN GAME -->
+            <div id="runden" class="page">
 
-    <button class="backBtn" onclick="show('menu')">← Zurück</button>
+                <button class="backBtn" onclick="show('menu')">← Zurück</button>
 
-    <div id="rundenSelect" class="rundenSelect">
-        <h1>🎯 Runden-Modus</h1>
+                <div id="rundenSelect" class="rundenSelect">
+                    <h1>🎯 Runden-Modus</h1>
 
-        <div class="difficultyGrid">
-            <button onclick="startRunden('5s', 5)">5s</button>
-            <button onclick="startRunden('10s', 10)">10s</button>
-            <button onclick="startRunden('15s', 15)">15s</button>
-            <button onclick="startRunden('30s', 30)">30s</button>
-            <button onclick="startRunden('1min', 60)">1min</button>
-        </div>
-    </div>
+                    <div class="difficultyGrid">
+                        <button onclick="startRunden('5s', 5)">5s</button>
+                        <button onclick="startRunden('10s', 10)">10s</button>
+                        <button onclick="startRunden('15s', 15)">15s</button>
+                        <button onclick="startRunden('30s', 30)">30s</button>
+                        <button onclick="startRunden('1min', 60)">1min</button>
+                    </div>
+                </div>
 
-    <div id="rundenCountdown" class="rundenCountdown">
-        <div id="countdownDisplay">3</div>
-    </div>
+                <div id="rundenCountdown" class="rundenCountdown">
+                    <div id="countdownDisplay">3</div>
+                </div>
 
-    <div id="rundenGame" class="rundenGame">
-        <div class="gameContainer">
-            <div id="rundenTimer">60</div>
-            <div id="rundenClicks">0</div>
-           <button id="rundenClick" class="orbBtn"></button>
-        </div>
-    </div>
+                <div id="rundenGame" class="rundenGame">
+                    <div class="gameContainer">
+                        <div id="rundenTimer">60</div>
+                        <div id="rundenClicks">0</div>
+                        <button id="rundenClick" class="orbBtn"></button>
+                    </div>
+                </div>
 
-    <!-- 🔥 WICHTIG: NICHT IN GAME DIV -->
-    <div id="rundenResults" class="rundenResults hidden">
+                <!-- RESULTS SCREEN -->
+                <div id="rundenResults" class="rundenResults hidden">
+                    <div class="resultBox">
+                        <h2>🎉 Runde beendet!</h2>
+                        <p>Clicks: <span id="resultClicks">0</span></p>
+                    </div>
 
-        <div class="resultBox">
-            <p>Clicks: <span id="resultClicks"></span></p>
-        </div>
+                    <h2>🏆 Leaderboard</h2>
+                    <ul id="roundLB"></ul>
 
-        <h2>🏆 Leaderboard</h2>
-        <ul id="roundLB"></ul>
+                    <div class="resultButtons">
+                        <button onclick="restartRunden()" class="btnPrimary">🔁 Nochmal spielen</button>
+                        <button onclick="exitRunden()" class="btnSecondary">🏠 Zur Auswahl</button>
+                    </div>
+                </div>
 
-        <button onclick="restartRunden()">🔁 Nochmal spielen</button>
-        <button onclick="show('runden')">🏠 Zur Auswahl</button>
-    </div>
-
-</div> 
+            </div>
 
             <!-- PROFILE -->
             <div id="profile" class="page">
@@ -154,31 +157,33 @@
                     <div class="emptyMessage">Lade...</div>
                 </div>
             </div>
-<!-- WHEEL -->
-        <div id="wheel" class="page">
-            <button class="backBtn" onclick="show('menu')">← Zurück</button>
-            <h1>🎡 Glücksrad</h1>
-            <p>Coming Soon! 🚀</p>
-        </div>
 
-        <!-- INVENTORY -->
-        <div id="inventory" class="page">
-            <button class="backBtn" onclick="show('menu')">← Zurück</button>
-            <h1>🎒 Inventar</h1>
-            <div class="shopGrid">
-                <h2>🎨 Skins</h2>
-                <div class="skinList" id="skinList"></div>
+            <!-- WHEEL -->
+            <div id="wheel" class="page">
+                <button class="backBtn" onclick="show('menu')">← Zurück</button>
+                <h1>🎡 Glücksrad</h1>
+                <p>Coming Soon! 🚀</p>
             </div>
-        </div>
 
-        <!-- SETTINGS -->
-        <div id="settings" class="page">
-            <button class="backBtn" onclick="show('menu')">← Zurück</button>
-            <h1>⚙️ Settings</h1>
-            <div class="settingsBox">
-                <button onclick="logout()">🚪 Ausloggen</button>
+            <!-- INVENTORY -->
+            <div id="inventory" class="page">
+                <button class="backBtn" onclick="show('menu')">← Zurück</button>
+                <h1>🎒 Inventar</h1>
+                <div class="shopGrid">
+                    <h2>🎨 Skins</h2>
+                    <div class="skinList" id="skinList"></div>
+                </div>
             </div>
-        </div>
+
+            <!-- SETTINGS -->
+            <div id="settings" class="page">
+                <button class="backBtn" onclick="show('menu')">← Zurück</button>
+                <h1>⚙️ Settings</h1>
+                <div class="settingsBox">
+                    <button onclick="logout()">🚪 Ausloggen</button>
+                </div>
+            </div>
+
             <!-- SHOP -->
             <div id="shop" class="page">
                 <button class="backBtn" onclick="show('menu')">← Zurück</button>

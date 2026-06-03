@@ -780,3 +780,79 @@ li{
 .orbBtn:active {
     transform: scale(0.9);
 }
+
+/* ========== GLÜCKSRAD STYLES ========== */
+
+.wheelContainer {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 30px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wheel {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.5));
+    transition: transform 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.wheelPointer {
+    position: absolute;
+    top: -15px;
+    font-size: 30px;
+    color: #06b6d4;
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
+    z-index: 10;
+}
+
+.wheelResultBox {
+    text-align: center;
+    animation: popupAppear 0.4s ease-out;
+}
+
+@keyframes popupAppear {
+    from {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.wheelRewardAmount {
+    font-size: 48px;
+    font-weight: 800;
+    color: #22c55e;
+    margin: 20px 0;
+}
+
+@keyframes wheelRewardGlow {
+    0% {
+        transform: scale(1);
+        text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+    }
+    50% {
+        transform: scale(1.3);
+        text-shadow: 0 0 40px rgba(34, 197, 94, 1);
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+    }
+}
+
+#spinBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#spinBtn:disabled:hover {
+    transform: scale(1);
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+}

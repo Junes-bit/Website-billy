@@ -101,29 +101,24 @@
         <div id="countdownDisplay" class="countdownDisplay">3</div>
     </div>
 
-    <!-- GAME -->
-    <div id="rundenGame" class="rundenGame">
-        <div class="gameContainer">
-            <div id="rundenTimer" class="rundenTimer">0</div>
-            <div id="rundenClicks" class="rundenClicks">0</div>
-            <button id="rundenClick" class="rundenClickBtn">KLICK!</button>
-        </div>
+   <div id="rundenGame" class="rundenGame">
+    <div class="gameContainer">
+        <div id="rundenTimer">60</div>
+        <div id="rundenClicks">0</div>
+        <button id="rundenClick">KLICK!</button>
+    </div>
+</div>
+
+<div id="rundenResults" class="rundenResults hidden">
+    <div class="resultBox">
+        <p>Clicks: <span id="resultClicks"></span></p>
     </div>
 
-    <!-- RESULTS -->
-    <div id="rundenResults" class="rundenResults hidden">
+    <h2>🏆 Leaderboard</h2>
+    <ul id="roundLB"></ul>
 
-        <div class="resultBox">
-            <p>Clicks: <span id="resultClicks"></span></p>
-        </div>
-
-        <h2>🏆 Leaderboard</h2>
-        <ul id="roundLB"></ul>
-
-        <!-- FIXED BUTTON -->
-       <button onclick="restartRunden()">🔁 Nochmal spielen</button>
-    </div>
-
+    <button onclick="restartRunden()">🔁 Nochmal spielen</button>
+    <button onclick="show('runden')">🏠 Zur Auswahl</button>
 </div>
 
             <!-- PROFILE -->

@@ -157,37 +157,57 @@
                     <div class="emptyMessage">Lade...</div>
                 </div>
             </div>
-                    <!-- WHEEL -->
+                                <!-- WHEEL -->
             <div id="wheel" class="page">
                 <button class="backBtn" onclick="show('menu')">← Zurück</button>
                 <h1>🎡 Glücksrad</h1>
                 
                 <div class="wheelContainer">
                     <div class="wheelPointer">▼</div>
-                    <svg id="fortuneWheel" class="wheel" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
-                        <!-- Feld 0: Rot (1000) -->
-                        <path d="M 200,200 L 200,50 A 150,150 0 0,1 294.1,82.91 Z" fill="#ef4444" stroke="#fff" stroke-width="2"/>
-                        <text x="235" y="100" font-size="20" font-weight="800" fill="white" text-anchor="middle">1000</text>
-
-                        <!-- Feld 1: Orange (2000) -->
-                        <path d="M 200,200 L 294.1,82.91 A 150,150 0 0,1 347.55,117.08 Z" fill="#f97316" stroke="#fff" stroke-width="2"/>
-                        <text x="310" y="110" font-size="20" font-weight="800" fill="white" text-anchor="middle">2000</text>
-
-                        <!-- Feld 2: Grün (3000) -->
-                        <path d="M 200,200 L 347.55,117.08 A 150,150 0 0,1 347.55,282.92 Z" fill="#22c55e" stroke="#fff" stroke-width="2"/>
-                        <text x="340" y="200" font-size="20" font-weight="800" fill="white" text-anchor="middle">3000</text>
-
-                        <!-- Feld 3: Blau (4000) -->
-                        <path d="M 200,200 L 347.55,282.92 A 150,150 0 0,1 294.1,317.09 Z" fill="#3b82f6" stroke="#fff" stroke-width="2"/>
-                        <text x="310" y="310" font-size="20" font-weight="800" fill="white" text-anchor="middle">4000</text>
-
-                        <!-- Feld 4: Lila (5000) -->
-                        <path d="M 200,200 L 294.1,317.09 A 150,150 0 0,1 200,50 Z" fill="#a855f7" stroke="#fff" stroke-width="2"/>
-                        <text x="225" y="280" font-size="20" font-weight="800" fill="white" text-anchor="middle">5000</text>
-
+                    <div id="fortuneWheel" class="wheel" style="
+                        width: 300px;
+                        height: 300px;
+                        border-radius: 50%;
+                        position: relative;
+                        background: conic-gradient(
+                            #ef4444 0deg 72deg,
+                            #f97316 72deg 144deg,
+                            #22c55e 144deg 216deg,
+                            #3b82f6 216deg 288deg,
+                            #a855f7 288deg 360deg
+                        );
+                        box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+                        transition: transform 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">
+                        <!-- Text Labels -->
+                        <div style="
+                            position: absolute;
+                            width: 100%;
+                            height: 100%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">
+                            <span style="position: absolute; top: 15px; font-weight: 800; font-size: 16px;">1000</span>
+                            <span style="position: absolute; right: 20px; top: 50px; font-weight: 800; font-size: 16px;">2000</span>
+                            <span style="position: absolute; right: 15px; top: 50%; font-weight: 800; font-size: 16px;">3000</span>
+                            <span style="position: absolute; right: 20px; bottom: 50px; font-weight: 800; font-size: 16px;">4000</span>
+                            <span style="position: absolute; bottom: 15px; font-weight: 800; font-size: 16px;">5000</span>
+                        </div>
+                        
                         <!-- Mittelpunkt -->
-                        <circle cx="200" cy="200" r="25" fill="white" stroke="#333" stroke-width="2"/>
-                    </svg>
+                        <div style="
+                            width: 30px;
+                            height: 30px;
+                            background: white;
+                            border-radius: 50%;
+                            position: relative;
+                            z-index: 10;
+                        "></div>
+                    </div>
                 </div>
 
                 <div style="margin-top: 40px; text-align: center;">

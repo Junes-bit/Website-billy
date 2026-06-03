@@ -576,21 +576,30 @@ function startRunden(difficulty, seconds) {
     countdown.classList.add("active");
     countdown.classList.remove("hidden");
 
-    let count = 3;
+   let count = 3;
+
+document.getElementById("countdownDisplay").innerText = count;
+
+let interval = setInterval(() => {
+
+    count--;
+
+    if (count === 0) {
+        clearInterval(interval);
+
+        // optional: kurzer "GO" Moment
+        document.getElementById("countdownDisplay").innerText = "GO!";
+
+        setTimeout(() => {
+            startGameNow(seconds);
+        }, 300);
+
+        return;
+    }
+
     document.getElementById("countdownDisplay").innerText = count;
 
-    let interval = setInterval(() => {
-
-        count--;
-
-        if (count > 0) {
-            document.getElementById("countdownDisplay").innerText = count;
-        } else {
-            clearInterval(interval);
-            startGameNow(seconds);
-        }
-
-    }, 1000);
+}, 1000);
 }
 
 function startGameNow(seconds) {

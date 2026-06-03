@@ -572,25 +572,36 @@ function startRunden(mode, seconds) {
 
     countdown.classList.add("active");
 
-    let c = 3;
-    display.innerText = c;
+   let c = 3;
+display.innerText = c;
 
-    const interval = setInterval(() => {
-        c--;
+const interval = setInterval(() => {
+    c--;
 
-        if (c > 0) {
-            display.innerText = c;
-        } else {
-            clearInterval(interval);
-            display.innerText = "GO!";
+    // Animation bei jedem Step
+    display.style.transform = "scale(1.3)";
+    display.style.opacity = "0.6";
 
-            setTimeout(() => {
-                startGameNow(seconds);
-            }, 600);
-        }
-    }, 1000);
-}
+    setTimeout(() => {
+        display.style.transform = "scale(1)";
+        display.style.opacity = "1";
+    }, 150);
 
+    if (c > 0) {
+        display.innerText = c;
+    } else {
+        clearInterval(interval);
+
+        display.innerText = "GO!";
+
+        display.style.transform = "scale(1.5)";
+        display.style.color = "#22c55e";
+
+        setTimeout(() => {
+            startGameNow(seconds);
+        }, 700);
+    }
+}, 1000);
 function startGameNow(seconds) {
 
     document.getElementById("rundenCountdown").classList.remove("active");

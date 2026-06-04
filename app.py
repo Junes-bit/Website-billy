@@ -19,12 +19,9 @@ UPLOAD_FOLDER = 'static/uploads/profiles'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-# ---------------- INIT DB ----------------
+# ✅ NEUE INIT_DB FUNKTION
 def init_db():
-    # Alte DB löschen wenn sie existiert
-    if os.path.exists("game.db"):
-        os.remove("game.db")
-    
+    """Erstellt nur die Tabellen, wenn sie noch nicht existieren"""
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
@@ -74,6 +71,7 @@ def init_db():
     )
     """)
 
+    # ✅ Codes nur einmal einfügen, nicht jedesmal
     codes = {
         "B4N3R": 1000,
         "R3M5F": 2500,

@@ -155,6 +155,7 @@ function update() {
     if (powerEl) powerEl.innerText = "⚡ " + power + " pro Klick";
     updateUpgradePrices();
     updateProfile();
+    renderWheelSkins();
 }
 
 // ============= PAGE NAVIGATION ================
@@ -292,6 +293,34 @@ function selectFavoriteSkin(color) {
     renderFavoriteSkinGrid();
     save();
     updateProfile();
+}
+
+// ============= RENDER WHEEL SKINS ================
+function renderWheelSkins() {
+    const wheelSkinList = [
+        { id: "lavaSkin", name: "Lava", color: "#ff3b30" },
+        { id: "iceSkin", name: "Ice", color: "#7dd3fc" },
+        { id: "toxicSkin", name: "Toxic", color: "#84cc16" },
+        { id: "pinkSkin", name: "Pink", color: "#ff4d9d" },
+        { id: "voidSkin", name: "Void", color: "#111827" }
+    ];
+    
+    wheelSkinList.forEach(skin => {
+        const container = document.getElementById(skin.id + "Card");
+        if (!container) return;
+        
+        if (owned.includes(skin.id)) {
+            container.innerHTML = `
+                <div class="card" id="${skin.id}" onclick="selectSkin('${skin.color}', '${skin.id}')">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: ${skin.color};"></div>
+                    <span class="name">${skin.name}</span>
+                    <span class="price">🎡 Glücksrad</span>
+                </div>
+            `;
+        } else {
+            container.innerHTML = "";
+        }
+    });
 }
 
 // ============= SKINS ================
@@ -757,7 +786,7 @@ function loadRoundLB(mode) {
         .catch(err => console.log("Round LB error:", err));
 }
 
-// ============= GLÜCKSRAD =============
+// ============= GLÜCKSRAD (WHEEL REWARDS) =============
 function spinWheel() {
     if (wheelSpinning) return;
 
@@ -785,25 +814,50 @@ function spinWheel() {
     wheel.style.transform = `rotate(${finalAngle}deg)`;
 
     setTimeout(() => {
-        const reward = wheelRewards[randomIndex];
-        coins += reward;
-        update();
-        save();
-
-        if (resultPopup) {
-            resultPopup.innerHTML = `
-                <div class="wheelResultBox">
-                    <h2>🎉 GEWONNEN!</h2>
-                    <p class="wheelRewardAmount">+${reward} Coins</p>
-                    <button onclick="document.getElementById('wheelResult').classList.add('hidden')">Schließen</button>
-                </div>
-            `;
-            resultPopup.classList.remove("hidden");
-        }
-
-        localStorage.setItem("lastSpin_" + name, now.toString());
-        wheelSpinning = false;
-        updateWheelCooldown();
+        // 🎡 Sende zum Server
+        fetch("/spin-wheel", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                name,
+                rewardIndex: randomIndex
+            })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                coins += data.coinsReward;
+                owned = data.newOwned;
+                
+                const skinNames = {
+                    "lavaSkin": "Lava",
+                    "iceSkin": "Ice",
+                    "toxicSkin": "Toxic",
+                    "pinkSkin": "Pink",
+                    "voidSkin": "Void"
+                };
+                
+                if (resultPopup) {
+                    resultPopup.innerHTML = `
+                        <div class="wheelResultBox">
+                            <h2>🎉 GEWONNEN!</h2>
+                            <p class="wheelRewardAmount">+${data.coinsReward} Coins</p>
+                            <p style="color: #06b6d4; font-size: 24px; font-weight: 800;">
+                                🎨 Neuer Skin: ${skinNames[data.skinReward]}
+                            </p>
+                            <button onclick="document.getElementById('wheelResult').classList.add('hidden')">Schließen</button>
+                        </div>
+                    `;
+                    resultPopup.classList.remove("hidden");
+                }
+                
+                update();
+                save();
+                localStorage.setItem("lastSpin_" + name, now.toString());
+                wheelSpinning = false;
+                updateWheelCooldown();
+            }
+        });
     }, 3000);
 }
 

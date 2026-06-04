@@ -6,7 +6,6 @@ let power = 1;
 let skin = "#3b82f6";
 let owned = ["blueSkin"];
 let favoriteSkin = "#3b82f6";
-let profileImage = "";
 let playtimeSeconds = 0;
 
 let coinsEl;
@@ -102,12 +101,6 @@ function autoLoadGame(playerName) {
                 favoriteSkin = data.favoriteSkin;
             } else {
                 favoriteSkin = skin;
-            }
-
-            if (data && data.profileImage !== undefined) {
-                profileImage = data.profileImage;
-            } else {
-                profileImage = "";
             }
 
             if (data && data.playtime !== undefined) {
@@ -212,9 +205,8 @@ function startGame() {
             coins = data.coins || 0;
             power = data.power || 1;
             skin = data.skin || "#3b82f6";
-            owned = data.owned || ["blue"];
+            owned = data.owned || ["blueSkin"];
             favoriteSkin = data.favoriteSkin || skin;
-            profileImage = data.profileImage || "";
             playtimeSeconds = data.playtime || 0;
 
             document.getElementById("nameScreen").style.display = "none";
@@ -231,6 +223,7 @@ function startGame() {
             localStorage.removeItem("activeUser");
         });
 }
+
 // ============= UPDATE ================
 function update() {
 
@@ -281,10 +274,8 @@ function updateProfile() {
     const profilePower = document.getElementById("profilePower");
     const profileSkin = document.getElementById("profileSkin");
     const profilePlaytime = document.getElementById("profilePlaytime");
-    const profileImageDisplay = document.getElementById("profileImageDisplay");
     const favoriteSkinOrb = document.getElementById("favoriteSkinOrb");
     const favoriteSkinName = document.getElementById("favoriteSkinName");
-    const previewImage = document.getElementById("previewImage");
 
     if (profileName) profileName.innerText = name;
     if (profileCoins) profileCoins.innerText = coins;
@@ -306,15 +297,6 @@ function updateProfile() {
     };
     
     if (profileSkin) profileSkin.innerText = skinNames[skin] || "Unbekannt";
-    
-    // Profilbild anzeigen
-    if (profileImageDisplay && profileImage) {
-        profileImageDisplay.src = profileImage;
-    }
-
-    if (previewImage && profileImage) {
-        previewImage.src = profileImage;
-    }
 
     // Lieblingsskin Orb
     if (favoriteSkinOrb) {
@@ -390,60 +372,6 @@ function renderFavoriteSkinGrid() {
         grid.appendChild(div);
     });
 }
-
-// ============= PROFILE IMAGE UPLOAD ================
-function previewProfileImage() {
-    const input = document.getElementById("profileImageInput");
-    const preview = document.getElementById("previewImage");
-
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-function saveProfileImage() {
-    const input = document.getElementById("profileImageInput");
-    
-    if (!input.files || !input.files[0]) {
-        alert("Bitte wähle ein Bild!");
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const base64Image = e.target.result;
-
-        fetch("/upload-profile-image", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                name: name,
-                imageData: base64Image
-            })
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.ok) {
-                profileImage = data.image;
-                alert("✅ Profilbild gespeichert!");
-                updateProfile();
-                save();
-            } else {
-                alert("❌ " + data.msg);
-            }
-        })
-        .catch(err => {
-            console.error("Fehler beim Upload:", err);
-            alert("❌ Upload-Fehler");
-        });
-    };
-    reader.readAsDataURL(input.files[0]);
-}
-
 
 // ============= SKINS ================
 function selectSkin(value, id) {
@@ -574,8 +502,7 @@ function save() {
             power,
             skin,
             owned,
-            favoriteSkin,
-            profileImage
+            favoriteSkin
         })
     })
     .then(r => r.json())
@@ -615,7 +542,7 @@ function switchFriendsTab(tab) {
     document.querySelectorAll(".friendsTab")
         .forEach(t => t.classList.remove("active"));
     
-    document.querySelector(`.friendsTab[onclick="switchFriendsTab('${tab}')"]`)
+    document.querySelector(`.friendsTab[onclick="switchFriendsTab('${tab}')"]
         ?.classList.add("active");
     
     renderFriendsTab(tab);
@@ -835,7 +762,7 @@ function loadLB() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const leaderboardBtn = document.querySelector('[onclick="show(\'leaderboard\')"]');
+    const leaderboardBtn = document.querySelector('[onclick="show(\'leaderboard\')"]
     if (leaderboardBtn) {
         leaderboardBtn.addEventListener("click", loadLB);
     }
@@ -1103,4 +1030,11 @@ function updateWheelCooldown() {
 
         timer.innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
     }
+}
+
+function selectFavoriteSkin(color) {
+    favoriteSkin = color;
+    renderFavoriteSkinGrid();
+    save();
+    updateProfile();
 }

@@ -165,6 +165,7 @@ function applySkin(value) {
 
 
 // ============= START ================
+// ============= START ================
 function startGame() {
 
     const input = document.getElementById("nameInput");
@@ -198,9 +199,14 @@ function startGame() {
     localStorage.setItem("activeUser", name);
 
     fetch("/load/" + name)
-        .then(r => r.json())
+        .then(r => {
+            if (!r.ok) {
+                console.error("Server Error:", r.status);
+                throw new Error("Server Error");
+            }
+            return r.json();
+        })
         .then(data => {
-
             coins = data.coins || 0;
             power = data.power || 1;
             skin = data.skin || "#3b82f6";
@@ -216,10 +222,13 @@ function startGame() {
             show("menu");
             update();
             updateProfile();
+        })
+        .catch(err => {
+            console.error("❌ Login Error:", err);
+            alert("❌ Fehler beim Login!");
+            localStorage.removeItem("activeUser");
         });
 }
-
-
 // ============= UPDATE ================
 function update() {
 

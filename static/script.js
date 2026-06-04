@@ -1,8 +1,6 @@
 let name = "";
-
 let coins = 0;
 let power = 1;
-
 let skin = "#3b82f6";
 let owned = ["blueSkin"];
 let favoriteSkin = "#3b82f6";
@@ -11,7 +9,6 @@ let playtimeSeconds = 0;
 let coinsEl;
 let powerEl;
 
-// Current friends data
 let friendsData = {
     friends: [],
     pendingSent: [],
@@ -20,19 +17,15 @@ let friendsData = {
 
 let currentFriendsTab = "friends";
 
-// Glücksrad
 let wheelSpinning = false;
 let wheelRewards = [1000, 2000, 3000, 4000, 5000];
-let wheelColors = ["#ef4444", "#f97316", "#22c55e", "#3b82f6", "#a855f7"];
 
 // ============= INIT ================
 document.addEventListener("DOMContentLoaded", () => {
-
     coinsEl = document.getElementById("coins");
     powerEl = document.getElementById("power");
 
     const clickBtn = document.getElementById("click");
-
     if (clickBtn) {
         clickBtn.addEventListener("click", () => {
             coins += power;
@@ -41,133 +34,73 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 👇 AUTO-LOAD: NUR wenn die App schon sichtbar ist (also schon eingeloggt)
     setTimeout(() => {
         const app = document.getElementById("app");
         const nameScreen = document.getElementById("nameScreen");
         
-        // Nur autoload wenn nameScreen versteckt ist (also schon eingeloggt waren)
         if (app && nameScreen && nameScreen.style.display === "none") {
             const activeUser = localStorage.getItem("activeUser");
             if (activeUser) {
-                console.log("🔄 Lade Spielstand für:", activeUser);
                 autoLoadGame(activeUser);
             }
         }
     }, 100);
 
-    // Glücksrad Timer laden
     updateWheelCooldown();
     setInterval(updateWheelCooldown, 1000);
 });
 
-// ============= AUTO-LOAD FUNKTION ================
+// ============= AUTO-LOAD ================
 function autoLoadGame(playerName) {
     name = playerName;
     
     fetch("/load/" + playerName)
-        .then(r => {
-            console.log("📡 Server Response Status:", r.status);
-            return r.json();
-        })
+        .then(r => r.json())
         .then(data => {
-            console.log("✅ Daten vom Server:", data);
-            
-            if (data && data.coins !== undefined) {
-                coins = data.coins;
-            } else {
-                coins = 0;
-            }
-            
-            if (data && data.power !== undefined) {
-                power = data.power;
-            } else {
-                power = 1;
-            }
-            
-            if (data && data.skin !== undefined) {
-                skin = data.skin;
-            } else {
-                skin = "#3b82f6";
-            }
-            
-            if (data && data.owned !== undefined && Array.isArray(data.owned)) {
-                owned = data.owned;
-            } else {
-                owned = ["blueSkin"];
-            }
-
-            if (data && data.favoriteSkin !== undefined) {
-                favoriteSkin = data.favoriteSkin;
-            } else {
-                favoriteSkin = skin;
-            }
-
-            if (data && data.playtime !== undefined) {
-                playtimeSeconds = data.playtime;
-            } else {
-                playtimeSeconds = 0;
-            }
-
-            console.log("💾 Geladen - Coins:", coins, "Power:", power, "FavoriteSkin:", favoriteSkin);
+            coins = data.coins || 0;
+            power = data.power || 1;
+            skin = data.skin || "#3b82f6";
+            owned = data.owned || ["blueSkin"];
+            favoriteSkin = data.favoriteSkin || skin;
+            playtimeSeconds = data.playtime || 0;
 
             applySkin(skin);
             show("menu");
             update();
             updateProfile();
-            
-            console.log("✅ Spielstand vollständig wiederhergestellt!");
         })
         .catch(err => {
-            console.error("❌ Fehler beim Laden:", err);
-            alert("⚠️ Fehler beim Laden des Spielstands");
+            console.error("Fehler beim Laden:", err);
+            alert("Fehler beim Laden des Spielstands");
         });
 }
 
-// ============= AUTO-SAVE ALLE 10 SEKUNDEN ================
+// ============= AUTO-SAVE ================
 setInterval(() => {
     if (name) {
-        console.log("💾 Auto-Save - Coins:", coins, "Power:", power);
         save();
     }
 }, 10000);
 
-
 // ============= SKIN ================
 function applySkin(value) {
-
     const click = document.getElementById("click");
     if (!click) return;
 
-    click.style.background = "";
-    click.style.backgroundImage = "";
-
-    if (value && value.endsWith(".png")) {
-        click.style.backgroundImage = `url('/static/${value}')`;
-        click.style.backgroundSize = "cover";
-        click.style.backgroundPosition = "center";
-    } else {
-        click.style.background = value;
-    }
-
+    click.style.background = value;
     if (coinsEl) {
         coinsEl.style.color = value;
         coinsEl.style.textShadow = `0 0 30px ${value}`;
     }
 }
 
-
-
-// ============= START ================
+// ============= START GAME ================
 function startGame() {
-
     const input = document.getElementById("nameInput");
     if (!input || !input.value) return;
 
     name = input.value;
-
     const savedPass = localStorage.getItem("pass_" + name);
-
     let pass = "";
 
     if (!savedPass) {
@@ -182,11 +115,9 @@ function startGame() {
         }
     }
 
-    // 🔄 Mehrere Accounts erlauben - mit Bestätigung bei Wechsel
     const deviceUser = localStorage.getItem("activeUser");
-
     if (deviceUser && deviceUser !== name) {
-        if (!confirm(`🔄 Zu Account "${name}" wechseln?`)) {
+        if (!confirm(`Zu Account "${name}" wechseln?`)) {
             return;
         }
     }
@@ -194,13 +125,7 @@ function startGame() {
     localStorage.setItem("activeUser", name);
 
     fetch("/load/" + name)
-        .then(r => {
-            if (!r.ok) {
-                console.error("Server Error:", r.status);
-                throw new Error("Server Error");
-            }
-            return r.json();
-        })
+        .then(r => r.json())
         .then(data => {
             coins = data.coins || 0;
             power = data.power || 1;
@@ -218,41 +143,33 @@ function startGame() {
             updateProfile();
         })
         .catch(err => {
-            console.error("❌ Login Error:", err);
-            alert("❌ Fehler beim Login!");
+            console.error("Login Error:", err);
+            alert("Fehler beim Login!");
             localStorage.removeItem("activeUser");
         });
 }
 
 // ============= UPDATE ================
 function update() {
-
     if (coinsEl) coinsEl.innerText = coins;
     if (powerEl) powerEl.innerText = "⚡ " + power + " pro Klick";
-
     updateUpgradePrices();
     updateProfile();
 }
 
-
 // ============= PAGE NAVIGATION ================
 function show(id) {
-
-    document.querySelectorAll(".page")
-        .forEach(e => e.classList.remove("active"));
-
+    document.querySelectorAll(".page").forEach(e => e.classList.remove("active"));
     const el = document.getElementById(id);
     if (el) el.classList.add("active");
 
     if (id === "friends") {
         Friends();
     }
-
     if (id === "profileEdit") {
         renderFavoriteSkinGrid();
     }
 }
-
 
 // ============= PLAYTIME FORMAT ================
 function formatPlaytime(seconds) {
@@ -265,10 +182,8 @@ function formatPlaytime(seconds) {
     return `${days}T ${hours}H ${minutes}min`;
 }
 
-
 // ============= PROFILE UPDATE ================
 function updateProfile() {
-    
     const profileName = document.getElementById("profileName");
     const profileCoins = document.getElementById("profileCoins");
     const profilePower = document.getElementById("profilePower");
@@ -298,7 +213,6 @@ function updateProfile() {
     
     if (profileSkin) profileSkin.innerText = skinNames[skin] || "Unbekannt";
 
-    // Lieblingsskin Orb
     if (favoriteSkinOrb) {
         favoriteSkinOrb.style.background = favoriteSkin;
         favoriteSkinOrb.style.width = "100px";
@@ -306,7 +220,6 @@ function updateProfile() {
         favoriteSkinOrb.style.borderRadius = "50%";
         favoriteSkinOrb.style.margin = "20px auto";
         favoriteSkinOrb.style.boxShadow = `0 0 40px ${favoriteSkin}`;
-        favoriteSkinOrb.style.animation = "pulse 2s infinite";
     }
 
     if (favoriteSkinName) {
@@ -314,7 +227,7 @@ function updateProfile() {
     }
 }
 
-
+// ============= FAVORITE SKIN GRID ================
 function renderFavoriteSkinGrid() {
     const grid = document.getElementById("favoriteSkinGrid");
     if (!grid) return;
@@ -335,13 +248,11 @@ function renderFavoriteSkinGrid() {
         { name: "Void", color: "#111827", id: "voidSkin" }
     ];
 
-    // ✅ FIX: Wenn owned leer ist, gib wenigstens den blauen Skin
     if (!owned || owned.length === 0) {
         owned = ["blueSkin"];
     }
 
     skins.forEach(skin => {
-        // ✅ Nur owned skins zeigen
         if (!owned.includes(skin.id)) return;
 
         const div = document.createElement("div");
@@ -373,49 +284,43 @@ function renderFavoriteSkinGrid() {
     });
 }
 
+function selectFavoriteSkin(color) {
+    favoriteSkin = color;
+    renderFavoriteSkinGrid();
+    save();
+    updateProfile();
+}
+
 // ============= SKINS ================
 function selectSkin(value, id) {
-
     skin = value;
-
-    document.querySelectorAll("#skinsGrid .card")
-        .forEach(c => c.classList.remove("selected"));
-
+    document.querySelectorAll("#skinsGrid .card").forEach(c => c.classList.remove("selected"));
     const el = document.getElementById(id);
     if (el) el.classList.add("selected");
-
     applySkin(value);
     save();
     updateProfile();
 }
 
 function buySkin(id, price, value) {
-
     const el = document.getElementById(id);
-
     if (owned.includes(id)) {
         selectSkin(value, id);
         return;
     }
 
     if (coins >= price) {
-
         coins -= price;
         owned.push(id);
-
         const priceTag = el?.querySelector(".price");
         if (priceTag) priceTag.remove();
-
         selectSkin(value, id);
-
         update();
         save();
-
     } else {
         alert("Nicht genug Coins");
     }
 }
-
 
 // ============= UPGRADES ================
 function getUpgradePrice(base) {
@@ -423,7 +328,6 @@ function getUpgradePrice(base) {
 }
 
 function buyUpgrade(price, add) {
-
     if (coins >= price) {
         coins -= price;
         power += add;
@@ -434,10 +338,7 @@ function buyUpgrade(price, add) {
     }
 }
 
-
-// ============= PRICE ================
 function updateUpgradePrices() {
-
     const u1 = document.getElementById("u1");
     const u2 = document.getElementById("u2");
     const u3 = document.getElementById("u3");
@@ -447,24 +348,18 @@ function updateUpgradePrices() {
     if (u3) u3.innerText = getUpgradePrice(500) + " Coins";
 }
 
-
 // ============= CODE SYSTEM ================
 function toggleCodeBox() {
-
     const popup = document.getElementById("codePopup");
     if (!popup) return;
-
     popup.classList.toggle("hidden");
 }
 
-
 async function redeemCode() {
-
     const input = document.getElementById("codeInput");
     if (!input) return;
 
     const code = input.value.trim();
-
     if (!code) {
         alert("Code eingeben!");
         return;
@@ -477,7 +372,6 @@ async function redeemCode() {
     });
 
     const data = await res.json();
-
     if (data.ok) {
         coins += data.reward;
         alert("🎉 +" + data.reward + " Coins!");
@@ -489,10 +383,8 @@ async function redeemCode() {
     }
 }
 
-
 // ============= SAVE ================
 function save() {
-
     fetch("/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -511,22 +403,18 @@ function save() {
             console.log("✅ Spielstand gespeichert!");
         }
     })
-    .catch(err => console.error("❌ Speicherfehler:", err));
+    .catch(err => console.error("Speicherfehler:", err));
 }
-
 
 // ============= LOGOUT ================
 function logout() {
-    
     if (confirm("🚪 Wirklich ausloggen?")) {
         localStorage.removeItem("activeUser");
         location.reload();
     }
 }
 
-
 // ============= FRIENDS SYSTEM =============
-
 function Friends() {
     fetch("/get-friends/" + name)
         .then(r => r.json())
@@ -538,13 +426,8 @@ function Friends() {
 
 function switchFriendsTab(tab) {
     currentFriendsTab = tab;
-    
-    document.querySelectorAll(".friendsTab")
-        .forEach(t => t.classList.remove("active"));
-    
-    document.querySelector(`.friendsTab[onclick="switchFriendsTab('${tab}')"]
-        ?.classList.add("active");
-    
+    document.querySelectorAll(".friendsTab").forEach(t => t.classList.remove("active"));
+    document.querySelector(`.friendsTab[onclick="switchFriendsTab('${tab}')"]`)?.classList.add("active");
     renderFriendsTab(tab);
 }
 
@@ -559,7 +442,6 @@ function renderFriendsTab(tab) {
             container.innerHTML = "<div class='emptyMessage'>Noch keine Freunde</div>";
             return;
         }
-
         friendsData.friends.forEach(friend => {
             const item = document.createElement("div");
             item.className = "friendItem";
@@ -573,13 +455,11 @@ function renderFriendsTab(tab) {
             container.appendChild(item);
         });
     }
-    
     else if (tab === "sent") {
         if (friendsData.pendingSent.length === 0) {
             container.innerHTML = "<div class='emptyMessage'>Keine ausstehenden Anfragen</div>";
             return;
         }
-
         friendsData.pendingSent.forEach(friend => {
             const item = document.createElement("div");
             item.className = "friendItem";
@@ -592,13 +472,11 @@ function renderFriendsTab(tab) {
             container.appendChild(item);
         });
     }
-    
     else if (tab === "received") {
         if (friendsData.pendingReceived.length === 0) {
             container.innerHTML = "<div class='emptyMessage'>Keine eingegangenen Anfragen</div>";
             return;
         }
-
         friendsData.pendingReceived.forEach(friend => {
             const item = document.createElement("div");
             item.className = "friendItem";
@@ -622,14 +500,10 @@ function addFriend() {
     }
 
     const friendName = input.value.trim();
-
     fetch("/add-friend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            myName: name,
-            friendName: friendName
-        })
+        body: JSON.stringify({ myName: name, friendName: friendName })
     })
     .then(r => r.json())
     .then(data => {
@@ -647,10 +521,7 @@ function acceptFriendRequest(fromName) {
     fetch("/accept-friend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            myName: name,
-            fromName: fromName
-        })
+        body: JSON.stringify({ myName: name, fromName: fromName })
     })
     .then(r => r.json())
     .then(data => {
@@ -665,10 +536,7 @@ function declineFriendRequest(friendName, type) {
     fetch("/decline-friend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            myName: name,
-            fromName: friendName
-        })
+        body: JSON.stringify({ myName: name, fromName: friendName })
     })
     .then(r => r.json())
     .then(data => {
@@ -681,14 +549,10 @@ function declineFriendRequest(friendName, type) {
 
 function removeFriend(friendName) {
     if (!confirm(`${friendName} wirklich entfernen?`)) return;
-
     fetch("/remove-friend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            myName: name,
-            friendName: friendName
-        })
+        body: JSON.stringify({ myName: name, friendName: friendName })
     })
     .then(r => r.json())
     .then(data => {
@@ -709,17 +573,10 @@ function showFriendProfile(friendName) {
             }
 
             const skinNames = {
-                "#3b82f6": "Blau",
-                "#ef4444": "Rot",
-                "#22c55e": "Hellgrün",
-                "#f97316": "Orange",
-                "gold": "Gold",
-                "#38bdf8": "Diamant",
-                "#ff3b30": "Lava",
-                "#7dd3fc": "Ice",
-                "#84cc16": "Toxic",
-                "#ff4d9d": "Pink",
-                "#111827": "Void"
+                "#3b82f6": "Blau", "#ef4444": "Rot", "#22c55e": "Hellgrün",
+                "#f97316": "Orange", "gold": "Gold", "#38bdf8": "Diamant",
+                "#ff3b30": "Lava", "#7dd3fc": "Ice", "#84cc16": "Toxic",
+                "#ff4d9d": "Pink", "#111827": "Void"
             };
 
             const popup = document.createElement("div");
@@ -737,44 +594,30 @@ function showFriendProfile(friendName) {
         });
 }
 
-
 // ============= LEADERBOARD ================
 function loadLB() {
-
     fetch("/leaderboard")
         .then(r => r.json())
         .then(data => {
-
             const list = document.getElementById("list");
             if (!list) return;
-
             list.innerHTML = "";
-
             data.forEach((p, index) => {
                 const li = document.createElement("li");
                 li.innerText = `${index + 1}. ${p[0]} - ${p[1] ?? 0} Coins`;
                 list.appendChild(li);
             });
         })
-        .catch(() => {
-            console.log("Leaderboard error");
-        });
+        .catch(() => console.log("Leaderboard error"));
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const leaderboardBtn = document.querySelector('[onclick="show(\'leaderboard\')"]');  // ✅ Semikolon + Klammer!
-    if (leaderboardBtn) {
-        leaderboardBtn.addEventListener("click", loadLB);
-    }
-});
-
+// ============= RUNDEN SYSTEM =============
 let roundClicks = 0;
 let roundSeconds = 0;
 let roundTimer = null;
 let currentRoundMode = "";
 
 function startRunden(mode, seconds) {
-
     roundClicks = 0;
     roundSeconds = seconds;
     currentRoundMode = mode;
@@ -784,47 +627,25 @@ function startRunden(mode, seconds) {
 
     const countdown = document.getElementById("rundenCountdown");
     const display = document.getElementById("countdownDisplay");
-
     countdown.classList.add("active");
 
-   let c = 3;
-display.innerText = c;
-display.style.color = "#3b82f6";
-display.style.fontSize = "120px";
-display.style.fontWeight = "800";
+    let c = 3;
+    display.innerText = c;
+    display.style.color = "#3b82f6";
 
-const interval = setInterval(() => {
-    c--;
-
-    display.style.transform = "scale(1.5)";
-    display.style.opacity = "1";
-    display.style.textShadow = `0 0 30px #3b82f6, 0 0 60px #3b82f6`;
-
-    setTimeout(() => {
-        display.style.transform = "scale(1.2)";
-        display.style.textShadow = `0 0 20px #3b82f6`;
-    }, 150);
-
-    if (c > 0) {
+    const interval = setInterval(() => {
+        c--;
         display.innerText = c;
-    } else {
-        clearInterval(interval);
+        if (c <= 0) {
+            clearInterval(interval);
+            display.innerText = "GO!";
+            display.style.color = "#22c55e";
+            setTimeout(() => startGameNow(seconds), 700);
+        }
+    }, 1000);
+}
 
-        display.innerText = "GO!";
-
-        display.style.transform = "scale(2)";
-        display.style.color = "#22c55e";
-        display.style.textShadow = `0 0 40px #22c55e, 0 0 80px #22c55e`;
-
-        setTimeout(() => {
-            startGameNow(seconds);
-        }, 700);
-    }
-}, 1000);
-
-}    
 function startGameNow(seconds) {
-
     document.getElementById("rundenCountdown").classList.remove("active");
     document.getElementById("rundenGame").classList.add("active");
 
@@ -833,41 +654,18 @@ function startGameNow(seconds) {
     const btn = document.getElementById("rundenClick");
 
     roundClicks = 0;
-
     clicksEl.innerText = 0;
     timerEl.innerText = seconds;
 
     btn.onclick = () => {
         roundClicks++;
         clicksEl.innerText = roundClicks;
-
-        clicksEl.style.transform = "scale(1.5)";
-        clicksEl.style.textShadow = `0 0 30px #3b82f6, 0 0 60px #3b82f6`;
-        clicksEl.style.color = "#3b82f6";
-        clicksEl.style.fontSize = "80px";
-
-        setTimeout(() => {
-            clicksEl.style.transform = "scale(1.2)";
-            clicksEl.style.textShadow = `0 0 20px #3b82f6`;
-        }, 150);
     };
 
     let time = seconds;
-
     roundTimer = setInterval(() => {
         time--;
         timerEl.innerText = time;
-
-        timerEl.style.transform = "scale(1.3)";
-        timerEl.style.textShadow = `0 0 30px #ef4444, 0 0 60px #ef4444`;
-        timerEl.style.color = "#ef4444";
-        timerEl.style.fontSize = "70px";
-
-        setTimeout(() => {
-            timerEl.style.transform = "scale(1)";
-            timerEl.style.textShadow = `0 0 20px #ef4444`;
-        }, 300);
-
         if (time <= 0) {
             clearInterval(roundTimer);
             endRunden();
@@ -876,23 +674,15 @@ function startGameNow(seconds) {
 }
 
 function endRunden() {
-
     document.getElementById("rundenGame").classList.remove("active");
-    document.getElementById("rundenResults").classList.remove("hidden");
     document.getElementById("rundenResults").classList.add("active");
-
     document.getElementById("resultClicks").innerText = roundClicks;
-
     loadRoundLB(currentRoundMode);
 
     fetch("/save-round", {
         method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            name,
-            difficulty: currentRoundMode,
-            clicks: roundClicks
-        })
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ name, difficulty: currentRoundMode, clicks: roundClicks })
     });
 }
 
@@ -913,23 +703,16 @@ function loadRoundLB(mode) {
         .then(data => {
             const list = document.getElementById("roundLB");
             if (!list) return;
-
             list.innerHTML = "";
-
             data.forEach((p, i) => {
                 const li = document.createElement("li");
-                li.innerText = `${i+1}. ${p.name} - ${p.clicks}`;
+                li.innerText = `${i + 1}. ${p.name} - ${p.clicks}`;
                 list.appendChild(li);
             });
-        })
-        .catch(err => {
-            console.log("Round LB error:", err);
         });
 }
 
-
-// ============= GLÜCKSRAD SYSTEM =============
-
+// ============= GLÜCKSRAD =============
 function spinWheel() {
     if (wheelSpinning) return;
 
@@ -939,7 +722,6 @@ function spinWheel() {
     if (lastSpin) {
         const timePassed = now - parseInt(lastSpin);
         const oneDay = 24 * 60 * 60 * 1000;
-
         if (timePassed < oneDay) {
             alert("⏳ Komm in 24h wieder!");
             return;
@@ -947,19 +729,13 @@ function spinWheel() {
     }
 
     wheelSpinning = true;
-
     const wheel = document.getElementById("fortuneWheel");
     const resultPopup = document.getElementById("wheelResult");
 
     if (!wheel) return;
 
     const randomIndex = Math.floor(Math.random() * 5);
-    
-    const fieldStartAngle = 270 + (randomIndex * 72);
-    const fieldCenterAngle = fieldStartAngle + 36;
-    
-    const spinRotations = 360 * 5;
-    const finalAngle = spinRotations + (360 - fieldCenterAngle);
+    const finalAngle = 360 * 5 + (360 - (270 + randomIndex * 72 + 36));
 
     wheel.style.transform = `rotate(${finalAngle}deg)`;
 
@@ -978,14 +754,6 @@ function spinWheel() {
                 </div>
             `;
             resultPopup.classList.remove("hidden");
-
-            const rewardBox = resultPopup.querySelector(".wheelRewardAmount");
-            if (rewardBox) {
-                rewardBox.style.animation = "none";
-                setTimeout(() => {
-                    rewardBox.style.animation = "wheelRewardGlow 0.6s ease-out";
-                }, 10);
-            }
         }
 
         localStorage.setItem("lastSpin_" + name, now.toString());
@@ -1004,7 +772,6 @@ function updateWheelCooldown() {
     if (!lastSpin) {
         btn.disabled = false;
         btn.style.opacity = "1";
-        btn.style.cursor = "pointer";
         timer.innerHTML = "🎉 Dreh jetzt!";
         return;
     }
@@ -1017,24 +784,13 @@ function updateWheelCooldown() {
     if (timeLeft <= 0) {
         btn.disabled = false;
         btn.style.opacity = "1";
-        btn.style.cursor = "pointer";
         timer.innerHTML = "🎉 Dreh jetzt!";
     } else {
         btn.disabled = true;
         btn.style.opacity = "0.5";
-        btn.style.cursor = "not-allowed";
-
         const hours = Math.floor(timeLeft / (60 * 60 * 1000));
         const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
         const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
-
         timer.innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
     }
-}
-
-function selectFavoriteSkin(color) {
-    favoriteSkin = color;
-    renderFavoriteSkinGrid();
-    save();
-    updateProfile();
 }

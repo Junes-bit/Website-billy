@@ -5,6 +5,9 @@ let power = 1;
 
 let skin = "#3b82f6";
 let owned = ["blueSkin"];
+let favoriteSkin = "#3b82f6";
+let profileImage = "";
+let playtimeSeconds = 0;
 
 let coinsEl;
 let powerEl;
@@ -58,38 +61,80 @@ document.addEventListener("DOMContentLoaded", () => {
     updateWheelCooldown();
     setInterval(updateWheelCooldown, 1000);
 });
+
 // ============= AUTO-LOAD FUNKTION ================
 function autoLoadGame(playerName) {
     name = playerName;
     
-    fetch("/load/" + name)
-        .then(r => r.json())
+    fetch("/load/" + playerName)
+        .then(r => {
+            console.log("📡 Server Response Status:", r.status);
+            return r.json();
+        })
         .then(data => {
-            coins = data.coins || 0;
-            power = data.power || 1;
-            skin = data.skin || "#3b82f6";
-            owned = data.owned || ["blue"];
+            console.log("✅ Daten vom Server:", data);
+            
+            if (data && data.coins !== undefined) {
+                coins = data.coins;
+            } else {
+                coins = 0;
+            }
+            
+            if (data && data.power !== undefined) {
+                power = data.power;
+            } else {
+                power = 1;
+            }
+            
+            if (data && data.skin !== undefined) {
+                skin = data.skin;
+            } else {
+                skin = "#3b82f6";
+            }
+            
+            if (data && data.owned !== undefined && Array.isArray(data.owned)) {
+                owned = data.owned;
+            } else {
+                owned = ["blue"];
+            }
 
-            document.getElementById("nameScreen").style.display = "none";
-            document.getElementById("app").classList.remove("hidden");
+            if (data && data.favoriteSkin !== undefined) {
+                favoriteSkin = data.favoriteSkin;
+            } else {
+                favoriteSkin = skin;
+            }
+
+            if (data && data.profileImage !== undefined) {
+                profileImage = data.profileImage;
+            } else {
+                profileImage = "";
+            }
+
+            if (data && data.playtime !== undefined) {
+                playtimeSeconds = data.playtime;
+            } else {
+                playtimeSeconds = 0;
+            }
+
+            console.log("💾 Geladen - Coins:", coins, "Power:", power, "FavoriteSkin:", favoriteSkin);
 
             applySkin(skin);
             show("menu");
             update();
             updateProfile();
             
-            console.log("✅ Spielstand wiederhergestellt!");
+            console.log("✅ Spielstand vollständig wiederhergestellt!");
         })
         .catch(err => {
             console.error("❌ Fehler beim Laden:", err);
-            localStorage.removeItem("activeUser");
-            location.reload();
+            alert("⚠️ Fehler beim Laden des Spielstands");
         });
 }
 
 // ============= AUTO-SAVE ALLE 10 SEKUNDEN ================
 setInterval(() => {
-    if (name) {  // Nur speichern wenn Spieler angemeldet ist
+    if (name) {
+        console.log("💾 Auto-Save - Coins:", coins, "Power:", power);
         save();
     }
 }, 10000);
@@ -160,6 +205,9 @@ function startGame() {
             power = data.power || 1;
             skin = data.skin || "#3b82f6";
             owned = data.owned || ["blue"];
+            favoriteSkin = data.favoriteSkin || skin;
+            profileImage = data.profileImage || "";
+            playtimeSeconds = data.playtime || 0;
 
             document.getElementById("nameScreen").style.display = "none";
             document.getElementById("app").classList.remove("hidden");
@@ -195,6 +243,22 @@ function show(id) {
     if (id === "friends") {
         Friends();
     }
+
+    if (id === "profileEdit") {
+        renderFavoriteSkinGrid();
+    }
+}
+
+
+// ============= PLAYTIME FORMAT ================
+function formatPlaytime(seconds) {
+    const days = Math.floor(seconds / (24 * 3600));
+    const remaining = seconds % (24 * 3600);
+    const hours = Math.floor(remaining / 3600);
+    const remaining2 = remaining % 3600;
+    const minutes = Math.floor(remaining2 / 60);
+    
+    return `${days}T ${hours}H ${minutes}min`;
 }
 
 
@@ -205,10 +269,16 @@ function updateProfile() {
     const profileCoins = document.getElementById("profileCoins");
     const profilePower = document.getElementById("profilePower");
     const profileSkin = document.getElementById("profileSkin");
+    const profilePlaytime = document.getElementById("profilePlaytime");
+    const profileImageDisplay = document.getElementById("profileImageDisplay");
+    const favoriteSkinOrb = document.getElementById("favoriteSkinOrb");
+    const favoriteSkinName = document.getElementById("favoriteSkinName");
+    const previewImage = document.getElementById("previewImage");
 
     if (profileName) profileName.innerText = name;
     if (profileCoins) profileCoins.innerText = coins;
     if (profilePower) profilePower.innerText = power;
+    if (profilePlaytime) profilePlaytime.innerText = formatPlaytime(playtimeSeconds);
     
     const skinNames = {
         "#3b82f6": "Blau",
@@ -225,6 +295,160 @@ function updateProfile() {
     };
     
     if (profileSkin) profileSkin.innerText = skinNames[skin] || "Unbekannt";
+    
+    // Profilbild anzeigen
+    if (profileImageDisplay && profileImage) {
+        profileImageDisplay.src = profileImage;
+    }
+
+    if (previewImage && profileImage) {
+        previewImage.src = profileImage;
+    }
+
+    // Lieblingsskin Orb
+    if (favoriteSkinOrb) {
+        favoriteSkinOrb.style.background = favoriteSkin;
+        favoriteSkinOrb.style.width = "100px";
+        favoriteSkinOrb.style.height = "100px";
+        favoriteSkinOrb.style.borderRadius = "50%";
+        favoriteSkinOrb.style.margin = "20px auto";
+        favoriteSkinOrb.style.boxShadow = `0 0 40px ${favoriteSkin}`;
+        favoriteSkinOrb.style.animation = "pulse 2s infinite";
+    }
+
+    if (favoriteSkinName) {
+        favoriteSkinName.innerText = skinNames[favoriteSkin] || "Unbekannt";
+    }
+}
+
+
+// ============= FAVORITE SKIN GRID ================
+function renderFavoriteSkinGrid() {
+    const grid = document.getElementById("favoriteSkinGrid");
+    if (!grid) return;
+
+    grid.innerHTML = "";
+
+    const skins = [
+        { name: "Blau", color: "#3b82f6", id: "blueSkin" },
+        { name: "Rot", color: "#ef4444", id: "redSkin" },
+        { name: "Hellgrün", color: "#22c55e", id: "greenSkin" },
+        { name: "Orange", color: "#f97316", id: "orangeSkin" },
+        { name: "Gold", color: "gold", id: "goldSkin" },
+        { name: "Diamant", color: "#38bdf8", id: "diamondSkin" },
+        { name: "Lava", color: "#ff3b30", id: "lavaSkin" },
+        { name: "Ice", color: "#7dd3fc", id: "iceSkin" },
+        { name: "Toxic", color: "#84cc16", id: "toxicSkin" },
+        { name: "Pink", color: "#ff4d9d", id: "pinkSkin" },
+        { name: "Void", color: "#111827", id: "voidSkin" }
+    ];
+
+    skins.forEach(skin => {
+        // Nur owned skins zeigen
+        if (!owned.includes(skin.id)) return;
+
+        const div = document.createElement("div");
+        div.className = "favoriteSkinCard";
+        if (favoriteSkin === skin.color) {
+            div.classList.add("selected");
+        }
+
+        div.style.cssText = `
+            width: 80px;
+            height: 80px;
+            background: ${skin.color};
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px ${skin.color};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+        `;
+
+        div.onclick = () => selectFavoriteSkin(skin.color);
+        div.innerText = skin.name.charAt(0);
+
+        grid.appendChild(div);
+    });
+}
+
+function selectFavoriteSkin(color) {
+    favoriteSkin = color;
+    
+    fetch("/update-favorite-skin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: name,
+            favoriteSkin: color
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            console.log("✅ Lieblingsskin gespeichert!");
+            updateProfile();
+            renderFavoriteSkinGrid();
+        }
+    });
+}
+
+
+// ============= PROFILE IMAGE UPLOAD ================
+function previewProfileImage() {
+    const input = document.getElementById("profileImageInput");
+    const preview = document.getElementById("previewImage");
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function saveProfileImage() {
+    const input = document.getElementById("profileImageInput");
+    
+    if (!input.files || !input.files[0]) {
+        alert("Bitte wähle ein Bild!");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64Image = e.target.result;
+
+        fetch("/upload-profile-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                imageData: base64Image
+            })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                profileImage = data.image;
+                alert("✅ Profilbild gespeichert!");
+                updateProfile();
+                save();
+            } else {
+                alert("❌ " + data.msg);
+            }
+        })
+        .catch(err => {
+            console.error("Fehler beim Upload:", err);
+            alert("❌ Upload-Fehler");
+        });
+    };
+    reader.readAsDataURL(input.files[0]);
 }
 
 
@@ -356,9 +580,18 @@ function save() {
             coins,
             power,
             skin,
-            owned
+            owned,
+            favoriteSkin,
+            profileImage
         })
-    }).catch(err => console.error("❌ Speicherfehler:", err));
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            console.log("✅ Spielstand gespeichert!");
+        }
+    })
+    .catch(err => console.error("❌ Speicherfehler:", err));
 }
 
 
@@ -643,7 +876,6 @@ display.style.fontWeight = "800";
 const interval = setInterval(() => {
     c--;
 
-    // Animation bei jedem Step - GRÖSSER + BLAU + GLOW
     display.style.transform = "scale(1.5)";
     display.style.opacity = "1";
     display.style.textShadow = `0 0 30px #3b82f6, 0 0 60px #3b82f6`;
@@ -658,7 +890,7 @@ const interval = setInterval(() => {
     } else {
         clearInterval(interval);
 
-               display.innerText = "GO!";
+        display.innerText = "GO!";
 
         display.style.transform = "scale(2)";
         display.style.color = "#22c55e";
@@ -689,7 +921,6 @@ function startGameNow(seconds) {
         roundClicks++;
         clicksEl.innerText = roundClicks;
 
-        // ANIMATION: Nummer groß + BLAU + GLOW (wie Countdown)
         clicksEl.style.transform = "scale(1.5)";
         clicksEl.style.textShadow = `0 0 30px #3b82f6, 0 0 60px #3b82f6`;
         clicksEl.style.color = "#3b82f6";
@@ -707,7 +938,6 @@ function startGameNow(seconds) {
         time--;
         timerEl.innerText = time;
 
-        // ANIMATION: Timer groß + ROT + GLOW
         timerEl.style.transform = "scale(1.3)";
         timerEl.style.textShadow = `0 0 30px #ef4444, 0 0 60px #ef4444`;
         timerEl.style.color = "#ef4444";
@@ -733,10 +963,8 @@ function endRunden() {
 
     document.getElementById("resultClicks").innerText = roundClicks;
 
-    // Leaderboard laden für aktuellen Modus
     loadRoundLB(currentRoundMode);
 
-    // Save
     fetch("/save-round", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
@@ -805,16 +1033,11 @@ function spinWheel() {
 
     if (!wheel) return;
 
-    // Random Index (0-4)
     const randomIndex = Math.floor(Math.random() * 5);
     
-    // Berechnung: Das Rad dreht sich SO, dass Field[randomIndex] oben (270 Grad) endet
-    // Jedes Feld = 72 Grad breit
-    // Feld 0 startet bei 270° (oben), Feld 1 bei 342°, etc.
     const fieldStartAngle = 270 + (randomIndex * 72);
     const fieldCenterAngle = fieldStartAngle + 36;
     
-    // Wir drehen das Rad um 5 volle Umdrehungen + bis das Feld oben ist
     const spinRotations = 360 * 5;
     const finalAngle = spinRotations + (360 - fieldCenterAngle);
 
@@ -826,7 +1049,6 @@ function spinWheel() {
         update();
         save();
 
-        // Popup
         if (resultPopup) {
             resultPopup.innerHTML = `
                 <div class="wheelResultBox">

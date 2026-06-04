@@ -333,7 +333,6 @@ function updateProfile() {
 }
 
 
-// ============= FAVORITE SKIN GRID ================
 function renderFavoriteSkinGrid() {
     const grid = document.getElementById("favoriteSkinGrid");
     if (!grid) return;
@@ -354,8 +353,13 @@ function renderFavoriteSkinGrid() {
         { name: "Void", color: "#111827", id: "voidSkin" }
     ];
 
+    // ✅ FIX: Wenn owned leer ist, gib wenigstens den blauen Skin
+    if (!owned || owned.length === 0) {
+        owned = ["blueSkin"];
+    }
+
     skins.forEach(skin => {
-        // Nur owned skins zeigen
+        // ✅ Nur owned skins zeigen
         if (!owned.includes(skin.id)) return;
 
         const div = document.createElement("div");
@@ -386,28 +390,6 @@ function renderFavoriteSkinGrid() {
         grid.appendChild(div);
     });
 }
-
-function selectFavoriteSkin(color) {
-    favoriteSkin = color;
-    
-    fetch("/update-favorite-skin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            name: name,
-            favoriteSkin: color
-        })
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.ok) {
-            console.log("✅ Lieblingsskin gespeichert!");
-            updateProfile();
-            renderFavoriteSkinGrid();
-        }
-    });
-}
-
 
 // ============= PROFILE IMAGE UPLOAD ================
 function previewProfileImage() {

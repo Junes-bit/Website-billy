@@ -129,11 +129,73 @@
             <div id="profile" class="page">
                 <button class="backBtn" onclick="show('menu')">← Zurück</button>
                 <h1>👤 Profil</h1>
+                
                 <div class="profileCard">
-                    <h2 id="profileName">Max</h2>
-                    <p>💰 Coins: <span id="profileCoins">0</span></p>
-                    <p>⚡ Power: <span id="profilePower">1</span></p>
-                    <p>🎨 Skin: <span id="profileSkin">Blau</span></p>
+                    <!-- Profil Header mit Bild -->
+                    <div class="profileHeader">
+                        <div class="profileImageContainer">
+                            <img id="profileImageDisplay" src="/static/default-profile.png" alt="Profil" class="profileImage">
+                            <button onclick="show('profileEdit')" class="editProfileBtn">✏️</button>
+                        </div>
+                        <div class="profileInfo">
+                            <h2 id="profileName">Max</h2>
+                            <p>⏱️ Playtime: <span id="profilePlaytime">0T 0H 0min</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="profileStats">
+                        <div class="stat">
+                            <p>💰 Coins</p>
+                            <p id="profileCoins">0</p>
+                        </div>
+                        <div class="stat">
+                            <p>⚡ Power</p>
+                            <p id="profilePower">1</p>
+                        </div>
+                        <div class="stat">
+                            <p>🎨 Aktueller Skin</p>
+                            <p id="profileSkin">Blau</p>
+                        </div>
+                    </div>
+
+                    <!-- Lieblingsskin Orb -->
+                    <div class="favoriteSkinSection">
+                        <h3>⭐ Lieblingsskin</h3>
+                        <div id="favoriteSkinOrb" class="favoriteSkinOrb"></div>
+                        <p id="favoriteSkinName">Blau</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE EDIT -->
+            <div id="profileEdit" class="page">
+                <button class="backBtn" onclick="show('profile')">← Zurück</button>
+                <h1>✏️ Profil bearbeiten</h1>
+
+                <div class="editProfileCard">
+                    <!-- Profilbild Upload -->
+                    <div class="uploadSection">
+                        <h3>📸 Profilbild</h3>
+                        <div class="profileImageUpload">
+                            <img id="previewImage" src="/static/default-profile.png" alt="Preview" class="previewImage">
+                            <input type="file" id="profileImageInput" accept="image/*" onchange="previewProfileImage()">
+                            <button onclick="document.getElementById('profileImageInput').click()" class="uploadBtn">
+                                📤 Bild auswählen
+                            </button>
+                            <button onclick="saveProfileImage()" class="uploadBtn" style="background: #22c55e;">
+                                ✅ Speichern
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lieblingsskin Auswahl -->
+                    <div class="favoriteSection">
+                        <h3>⭐ Lieblingsskin auswählen</h3>
+                        <div class="favoriteSkinGrid" id="favoriteSkinGrid">
+                            <!-- Wird mit JavaScript gefüllt -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -157,7 +219,8 @@
                     <div class="emptyMessage">Lade...</div>
                 </div>
             </div>
-                                                      <!-- WHEEL -->
+
+            <!-- WHEEL -->
             <div id="wheel" class="page">
                 <button class="backBtn" onclick="show('menu')">← Zurück</button>
                 <h1>🎡 Glücksrad</h1>

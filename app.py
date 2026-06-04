@@ -484,6 +484,53 @@ def round_leaderboard(difficulty):
     
     return jsonify(data)
 
+# ============= GLÜCKSRAD REWARD SYSTEM =============
+@app.route("/spin-wheel", methods=["POST"])
+def spin_wheel():
+    data = request.json
+    player_name = data.get("name")
+    reward_index = data.get("rewardIndex")
+    
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+    
+    # Hole den Skin basierend auf Index
+    skins_by_index = {
+        0: "lavaSkin",
+        1: "iceSkin", 
+        2: "toxicSkin",
+        3: "pinkSkin",
+        4: "voidSkin"
+    }
+    
+    skin_id = skins_by_index.get(reward_index)
+    coins_reward = [1000, 2000, 3000, 4000, 5000][reward_index]
+    
+    # Hole aktuellen owned Status
+    c.execute("SELECT owned FROM players WHERE name=?", (player_name,))
+    row = c.fetchone()
+    owned_list = row[0].split(",") if row and row[0] else ["blueSkin"]
+    
+    # Füge Skin hinzu wenn nicht vorhanden
+    if skin_id not in owned_list:
+        owned_list.append(skin_id)
+    
+    # Update
+    c.execute("""
+    UPDATE players 
+    SET coins = coins + ?, owned = ?
+    WHERE name=?
+    """, (coins_reward, ",".join(owned_list), player_name))
+    
+    conn.commit()
+    conn.close()
+    
+    return jsonify({
+        "ok": True, 
+        "coinsReward": coins_reward,
+        "skinReward": skin_id,
+        "newOwned": owned_list
+    })
 
 # ============= RUN =============
 if __name__ == "__main__":

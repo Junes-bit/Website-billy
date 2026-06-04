@@ -33,7 +33,6 @@ def init_db():
         skin TEXT,
         owned TEXT,
         favoriteSkin TEXT,
-        profileImage TEXT,
         playtimeSeconds INTEGER DEFAULT 0,
         lastSaveTime DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -135,8 +134,8 @@ def save():
 
     c.execute("""
     INSERT OR REPLACE INTO players
-    (name, coins, power, skin, owned, favoriteSkin, profileImage, playtimeSeconds, lastSaveTime)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (name, coins, power, skin, owned, favoriteSkin, playtimeSeconds, lastSaveTime)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data["name"],
         int(data["coins"]),
@@ -144,7 +143,6 @@ def save():
         data["skin"],
         ",".join(data["owned"]),
         data.get("favoriteSkin", data["skin"]),
-        data.get("profileImage", ""),
         playtime,
         datetime.now().isoformat()
     ))
@@ -167,15 +165,17 @@ def load(name):
     conn.close()
 
     if row:
-        playtime_info = calculate_playtime(row[8] or 0)
+        playtime_info = calculate_playtime(row[6] or 0)
+        # ✅ FIX: owned zu Array konvertieren mit "blueSkin"
+        owned_list = row[4].split(",") if row[4] else ["blueSkin"]
+        
         return jsonify({
             "coins": row[1],
             "power": row[2],
             "skin": row[3],
-            "owned": row[4].split(",") if row[4] else ["blue"],
+            "owned": owned_list,
             "favoriteSkin": row[5] or row[3],
-            "profileImage": row[6] or "",
-            "playtime": row[8] or 0,
+            "playtime": row[6] or 0,
             "playtimeFormatted": playtime_info["formatted"]
         })
 
@@ -183,48 +183,11 @@ def load(name):
         "coins": 0,
         "power": 1,
         "skin": "#3b82f6",
-        "owned": ["blue"],
+        "owned": ["blueSkin"],
         "favoriteSkin": "#3b82f6",
-        "profileImage": "",
         "playtime": 0,
         "playtimeFormatted": "0T 0H 0min"
     })
-
-# ============= PROFILE IMAGE UPLOAD ================
-@app.route("/upload-profile-image", methods=["POST"])
-def upload_profile_image():
-    try:
-        data = request.json
-        player_name = data.get("name")
-        image_data = data.get("imageData")  # Base64 string
-        
-        if not player_name or not image_data:
-            return jsonify({"ok": False, "msg": "Name oder Bild fehlt"})
-        
-        # Entferne data:image/...;base64, prefix
-        if "," in image_data:
-            image_data = image_data.split(",")[1]
-        
-        # Dekodiere und speichere
-        image_bytes = base64.b64decode(image_data)
-        filename = f"{player_name}_{datetime.now().timestamp()}.png"
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        
-        with open(filepath, "wb") as f:
-            f.write(image_bytes)
-        
-        # Speichere Pfad in DB
-        conn = sqlite3.connect("game.db")
-        c = conn.cursor()
-        c.execute("UPDATE players SET profileImage=? WHERE name=?", 
-                  (f"/static/uploads/profiles/{filename}", player_name))
-        conn.commit()
-        conn.close()
-        
-        return jsonify({"ok": True, "image": f"/static/uploads/profiles/{filename}"})
-    
-    except Exception as e:
-        return jsonify({"ok": False, "msg": str(e)})
 
 # ============= UPDATE FAVORITE SKIN ================
 @app.route("/update-favorite-skin", methods=["POST"])
@@ -426,7 +389,7 @@ def friend_profile(name):
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
-    c.execute("SELECT name, coins, power, skin, favoriteSkin, profileImage FROM players WHERE name=?", (name,))
+    c.execute("SELECT name, coins, power, skin, favoriteSkin FROM players WHERE name=?", (name,))
     row = c.fetchone()
     conn.close()
 
@@ -436,8 +399,7 @@ def friend_profile(name):
             "coins": row[1],
             "power": row[2],
             "skin": row[3],
-            "favoriteSkin": row[4] or row[3],
-            "profileImage": row[5] or ""
+            "favoriteSkin": row[4] or row[3]
         })
 
     return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})

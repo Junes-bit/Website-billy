@@ -4,6 +4,14 @@ import os
 
 app = Flask(__name__)
 
+# ============= CACHE DISABLE =============
+@app.after_request
+def disable_cache(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 # ---------------- INIT DB ----------------
 def init_db():
     conn = sqlite3.connect("game.db")

@@ -164,7 +164,7 @@ function applySkin(value) {
 }
 
 
-// ============= START ================
+
 // ============= START ================
 function startGame() {
 
@@ -189,11 +189,13 @@ function startGame() {
         }
     }
 
+    // 🔄 Mehrere Accounts erlauben - mit Bestätigung bei Wechsel
     const deviceUser = localStorage.getItem("activeUser");
 
     if (deviceUser && deviceUser !== name) {
-        alert("❌ Dieses Gerät nutzt bereits einen Account!");
-        return;
+        if (!confirm(`🔄 Zu Account "${name}" wechseln?`)) {
+            return;
+        }
     }
 
     localStorage.setItem("activeUser", name);

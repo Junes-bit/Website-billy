@@ -23,7 +23,7 @@ let wheelSpinning = false;
 let wheelRewards = [1000, 2000, 3000, 4000, 5000];
 let wheelColors = ["#ef4444", "#f97316", "#22c55e", "#3b82f6", "#a855f7"];
 
-// ---------------- INIT ----------------
+// ============= INIT ================
 document.addEventListener("DOMContentLoaded", () => {
 
     coinsEl = document.getElementById("coins");
@@ -39,13 +39,55 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // 👇 AUTO-LOAD: Spielstand wiederherstellen wenn Seite neu geladen wird
+    const activeUser = localStorage.getItem("activeUser");
+    if (activeUser) {
+        autoLoadGame(activeUser);
+    }
+
     // Glücksrad Timer laden
     updateWheelCooldown();
     setInterval(updateWheelCooldown, 1000);
 });
 
+// ============= AUTO-LOAD FUNKTION ================
+function autoLoadGame(playerName) {
+    name = playerName;
+    
+    fetch("/load/" + name)
+        .then(r => r.json())
+        .then(data => {
+            coins = data.coins || 0;
+            power = data.power || 1;
+            skin = data.skin || "#3b82f6";
+            owned = data.owned || ["blue"];
 
-// ---------------- SKIN ----------------
+            document.getElementById("nameScreen").style.display = "none";
+            document.getElementById("app").classList.remove("hidden");
+
+            applySkin(skin);
+            show("menu");
+            update();
+            updateProfile();
+            
+            console.log("✅ Spielstand wiederhergestellt!");
+        })
+        .catch(err => {
+            console.error("❌ Fehler beim Laden:", err);
+            localStorage.removeItem("activeUser");
+            location.reload();
+        });
+}
+
+// ============= AUTO-SAVE ALLE 10 SEKUNDEN ================
+setInterval(() => {
+    if (name) {  // Nur speichern wenn Spieler angemeldet ist
+        save();
+    }
+}, 10000);
+
+
+// ============= SKIN ================
 function applySkin(value) {
 
     const click = document.getElementById("click");
@@ -69,7 +111,7 @@ function applySkin(value) {
 }
 
 
-// ---------------- START ----------------
+// ============= START ================
 function startGame() {
 
     const input = document.getElementById("nameInput");
@@ -122,7 +164,7 @@ function startGame() {
 }
 
 
-// ---------------- UPDATE ----------------
+// ============= UPDATE ================
 function update() {
 
     if (coinsEl) coinsEl.innerText = coins;
@@ -133,7 +175,7 @@ function update() {
 }
 
 
-// ---------------- PAGE NAVIGATION ----------------
+// ============= PAGE NAVIGATION ================
 function show(id) {
 
     document.querySelectorAll(".page")
@@ -148,7 +190,7 @@ function show(id) {
 }
 
 
-// ---------------- PROFILE UPDATE ----------------
+// ============= PROFILE UPDATE ================
 function updateProfile() {
     
     const profileName = document.getElementById("profileName");
@@ -178,7 +220,7 @@ function updateProfile() {
 }
 
 
-// ---------------- SKINS ----------------
+// ============= SKINS ================
 function selectSkin(value, id) {
 
     skin = value;
@@ -222,7 +264,7 @@ function buySkin(id, price, value) {
 }
 
 
-// ---------------- UPGRADES ----------------
+// ============= UPGRADES ================
 function getUpgradePrice(base) {
     return Math.floor(base * (1 + power * 0.15));
 }
@@ -240,7 +282,7 @@ function buyUpgrade(price, add) {
 }
 
 
-// ---------------- PRICE ----------------
+// ============= PRICE ================
 function updateUpgradePrices() {
 
     const u1 = document.getElementById("u1");
@@ -253,7 +295,7 @@ function updateUpgradePrices() {
 }
 
 
-// ---------------- CODE SYSTEM ----------------
+// ============= CODE SYSTEM ================
 function toggleCodeBox() {
 
     const popup = document.getElementById("codePopup");
@@ -295,7 +337,7 @@ async function redeemCode() {
 }
 
 
-// ---------------- SAVE ----------------
+// ============= SAVE ================
 function save() {
 
     fetch("/save", {
@@ -308,11 +350,11 @@ function save() {
             skin,
             owned
         })
-    });
+    }).catch(err => console.error("❌ Speicherfehler:", err));
 }
 
 
-// ---------------- LOGOUT ----------------
+// ============= LOGOUT ================
 function logout() {
     
     if (confirm("🚪 Wirklich ausloggen?")) {
@@ -535,7 +577,7 @@ function showFriendProfile(friendName) {
 }
 
 
-// ---------------- LEADERBOARD ----------------
+// ============= LEADERBOARD ================
 function loadLB() {
 
     fetch("/leaderboard")

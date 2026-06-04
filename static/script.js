@@ -762,7 +762,7 @@ function loadLB() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const leaderboardBtn = document.querySelector('[onclick="show(\'leaderboard\')"]
+    const leaderboardBtn = document.querySelector('[onclick="show(\'leaderboard\')"]');  // ✅ Semikolon + Klammer!
     if (leaderboardBtn) {
         leaderboardBtn.addEventListener("click", loadLB);
     }

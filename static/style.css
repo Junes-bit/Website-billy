@@ -781,24 +781,13 @@ li{
     transform: scale(0.9);
 }
 
-/* ========== GLÜCKSRAD FIX (COMPLETE) ========== */
-
-.wheelContainer {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    margin: 30px auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+/* ========== GLÜCKSRAD ZAHLEN FIX ========== */
 
 .wheel {
     width: 300px;
     height: 300px;
     border-radius: 50%;
     position: relative;
-
     background: conic-gradient(
         #ef4444 0deg 72deg,
         #f97316 72deg 144deg,
@@ -806,29 +795,54 @@ li{
         #3b82f6 216deg 288deg,
         #a855f7 288deg 360deg
     );
-
     box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
-
-    /* 🔥 FIX für Schriftqualität */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: geometricPrecision;
-
-    transform: translateZ(0);
-    backface-visibility: hidden;
 }
 
-.wheelPointer {
+.wheel span {
     position: absolute;
-    top: -15px;
-    font-size: 30px;
-    color: #06b6d4;
-    text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
-    z-index: 10;
+    font-weight: 800;
+    font-size: 18px;
+    color: white;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 50%;
+    top: 50%;
+    transform-origin: center;
 }
 
-/* ===== DEINE INLINE TEXTE (SPAN FIX) ===== */
+/* Feld 1: 1000 Coins - oben */
+.wheel span:nth-child(1) {
+    transform: translate(-50%, -130px);
+}
 
+/* Feld 2: 2000 Coins - rechts oben */
+.wheel span:nth-child(2) {
+    transform: translate(-50%, -50%) rotate(72deg) translateY(-110px) rotate(-72deg);
+}
+
+/* Feld 3: 3000 Coins - rechts unten */
+.wheel span:nth-child(3) {
+    transform: translate(-50%, -50%) rotate(144deg) translateY(-110px) rotate(-144deg);
+}
+
+/* Feld 4: 4000 Coins - unten */
+.wheel span:nth-child(4) {
+    transform: translate(-50%, -50%) rotate(216deg) translateY(-110px) rotate(-216deg);
+}
+
+/* Feld 5: 5000 Coins - links */
+.wheel span:nth-child(5) {
+    transform: translate(-50%, -50%) rotate(288deg) translateY(-110px) rotate(-288deg);
+}
 .wheel span {
     position: absolute;
     font-weight: 800;

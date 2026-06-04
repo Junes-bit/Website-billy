@@ -21,6 +21,10 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 # ---------------- INIT DB ----------------
 def init_db():
+    # Alte DB löschen wenn sie existiert
+    if os.path.exists("game.db"):
+        os.remove("game.db")
+    
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 

@@ -39,17 +39,25 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 👇 AUTO-LOAD: Spielstand wiederherstellen wenn Seite neu geladen wird
-    const activeUser = localStorage.getItem("activeUser");
-    if (activeUser) {
-        autoLoadGame(activeUser);
-    }
+    // 👇 AUTO-LOAD: NUR wenn die App schon sichtbar ist (also schon eingeloggt)
+    setTimeout(() => {
+        const app = document.getElementById("app");
+        const nameScreen = document.getElementById("nameScreen");
+        
+        // Nur autoload wenn nameScreen versteckt ist (also schon eingeloggt waren)
+        if (app && nameScreen && nameScreen.style.display === "none") {
+            const activeUser = localStorage.getItem("activeUser");
+            if (activeUser) {
+                console.log("🔄 Lade Spielstand für:", activeUser);
+                autoLoadGame(activeUser);
+            }
+        }
+    }, 100);
 
     // Glücksrad Timer laden
     updateWheelCooldown();
     setInterval(updateWheelCooldown, 1000);
 });
-
 // ============= AUTO-LOAD FUNKTION ================
 function autoLoadGame(playerName) {
     name = playerName;

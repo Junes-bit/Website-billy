@@ -95,7 +95,7 @@ function autoLoadGame(playerName) {
             if (data && data.owned !== undefined && Array.isArray(data.owned)) {
                 owned = data.owned;
             } else {
-                owned = ["blue"];
+                owned = ["blueSkin"];
             }
 
             if (data && data.favoriteSkin !== undefined) {

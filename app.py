@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 import sqlite3
 import os
+from datetime import datetime
+import base64
 
 app = Flask(__name__)
 
@@ -11,6 +13,11 @@ def disable_cache(response):
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
     return response
+
+# ============= UPLOADS FOLDER =============
+UPLOAD_FOLDER = 'static/uploads/profiles'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 # ---------------- INIT DB ----------------
 def init_db():
@@ -23,7 +30,11 @@ def init_db():
         coins INTEGER,
         power INTEGER,
         skin TEXT,
-        owned TEXT
+        owned TEXT,
+        favoriteSkin TEXT,
+        profileImage TEXT,
+        playtimeSeconds INTEGER DEFAULT 0,
+        lastSaveTime DATETIME DEFAULT CURRENT_TIMESTAMP
     )
     """)
 
@@ -83,7 +94,23 @@ init_db()
 def home():
     return render_template("index.html")
 
-# ---------------- SAVE ----------------
+# ============= PLAYTIME CALCULATION =============
+def calculate_playtime(seconds):
+    """Konvertiert Sekunden in Tage, Stunden, Minuten Format"""
+    days = seconds // (24 * 3600)
+    remaining = seconds % (24 * 3600)
+    hours = remaining // 3600
+    remaining = remaining % 3600
+    minutes = remaining // 60
+    
+    return {
+        "days": days,
+        "hours": hours,
+        "minutes": minutes,
+        "formatted": f"{days}T {hours}H {minutes}min"
+    }
+
+# ============= SAVE ================
 @app.route("/save", methods=["POST"])
 def save():
     data = request.json
@@ -91,16 +118,33 @@ def save():
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
+    # Hole alte Daten für Playtime-Berechnung
+    c.execute("SELECT playtimeSeconds, lastSaveTime FROM players WHERE name=?", (data["name"],))
+    row = c.fetchone()
+    
+    playtime = 0
+    if row:
+        old_playtime = row[0] or 0
+        last_save = datetime.fromisoformat(row[1]) if row[1] else datetime.now()
+        time_diff = (datetime.now() - last_save).total_seconds()
+        playtime = old_playtime + int(time_diff)
+    else:
+        playtime = 0
+
     c.execute("""
     INSERT OR REPLACE INTO players
-    (name, coins, power, skin, owned)
-    VALUES (?, ?, ?, ?, ?)
+    (name, coins, power, skin, owned, favoriteSkin, profileImage, playtimeSeconds, lastSaveTime)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data["name"],
         int(data["coins"]),
         int(data["power"]),
         data["skin"],
-        ",".join(data["owned"])
+        ",".join(data["owned"]),
+        data.get("favoriteSkin", data["skin"]),
+        data.get("profileImage", ""),
+        playtime,
+        datetime.now().isoformat()
     ))
 
     conn.commit()
@@ -108,7 +152,7 @@ def save():
 
     return jsonify({"ok": True})
 
-# ---------------- LOAD ----------------
+# ============= LOAD ================
 @app.route("/load/<name>")
 def load(name):
 
@@ -121,21 +165,82 @@ def load(name):
     conn.close()
 
     if row:
+        playtime_info = calculate_playtime(row[8] or 0)
         return jsonify({
             "coins": row[1],
             "power": row[2],
             "skin": row[3],
-            "owned": row[4].split(",") if row[4] else ["blue"]
+            "owned": row[4].split(",") if row[4] else ["blue"],
+            "favoriteSkin": row[5] or row[3],
+            "profileImage": row[6] or "",
+            "playtime": row[8] or 0,
+            "playtimeFormatted": playtime_info["formatted"]
         })
 
     return jsonify({
         "coins": 0,
         "power": 1,
         "skin": "#3b82f6",
-        "owned": ["blue"]
+        "owned": ["blue"],
+        "favoriteSkin": "#3b82f6",
+        "profileImage": "",
+        "playtime": 0,
+        "playtimeFormatted": "0T 0H 0min"
     })
 
-# ---------------- LEADERBOARD ----------------
+# ============= PROFILE IMAGE UPLOAD ================
+@app.route("/upload-profile-image", methods=["POST"])
+def upload_profile_image():
+    try:
+        data = request.json
+        player_name = data.get("name")
+        image_data = data.get("imageData")  # Base64 string
+        
+        if not player_name or not image_data:
+            return jsonify({"ok": False, "msg": "Name oder Bild fehlt"})
+        
+        # Entferne data:image/...;base64, prefix
+        if "," in image_data:
+            image_data = image_data.split(",")[1]
+        
+        # Dekodiere und speichere
+        image_bytes = base64.b64decode(image_data)
+        filename = f"{player_name}_{datetime.now().timestamp()}.png"
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        
+        with open(filepath, "wb") as f:
+            f.write(image_bytes)
+        
+        # Speichere Pfad in DB
+        conn = sqlite3.connect("game.db")
+        c = conn.cursor()
+        c.execute("UPDATE players SET profileImage=? WHERE name=?", 
+                  (f"/static/uploads/profiles/{filename}", player_name))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({"ok": True, "image": f"/static/uploads/profiles/{filename}"})
+    
+    except Exception as e:
+        return jsonify({"ok": False, "msg": str(e)})
+
+# ============= UPDATE FAVORITE SKIN ================
+@app.route("/update-favorite-skin", methods=["POST"])
+def update_favorite_skin():
+    data = request.json
+    player_name = data.get("name")
+    favorite_skin = data.get("favoriteSkin")
+    
+    conn = sqlite3.connect("game.db")
+    c = conn.cursor()
+    c.execute("UPDATE players SET favoriteSkin=? WHERE name=?", 
+              (favorite_skin, player_name))
+    conn.commit()
+    conn.close()
+    
+    return jsonify({"ok": True})
+
+# ============= LEADERBOARD ================
 @app.route("/leaderboard")
 def leaderboard():
 
@@ -154,7 +259,7 @@ def leaderboard():
 
     return jsonify(data)
 
-# ---------------- REDEEM ----------------
+# ============= REDEEM ================
 @app.route("/redeem", methods=["POST"])
 def redeem():
 
@@ -319,7 +424,7 @@ def friend_profile(name):
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
-    c.execute("SELECT name, coins, power, skin FROM players WHERE name=?", (name,))
+    c.execute("SELECT name, coins, power, skin, favoriteSkin, profileImage FROM players WHERE name=?", (name,))
     row = c.fetchone()
     conn.close()
 
@@ -328,7 +433,9 @@ def friend_profile(name):
             "name": row[0],
             "coins": row[1],
             "power": row[2],
-            "skin": row[3]
+            "skin": row[3],
+            "favoriteSkin": row[4] or row[3],
+            "profileImage": row[5] or ""
         })
 
     return jsonify({"ok": False, "msg": "Spieler nicht gefunden"})
@@ -358,13 +465,12 @@ def remove_friend():
 def save_round():
     data = request.json
     player_name = data.get("name")
-    difficulty = data.get("difficulty")  # z.B. "5s", "10s", "30s"
+    difficulty = data.get("difficulty")
     clicks = data.get("clicks")
 
     conn = sqlite3.connect("game.db")
     c = conn.cursor()
 
-    # Schau ob Spieler schon in dieser Kategorie existiert
     c.execute("""
     SELECT clicks FROM rounds
     WHERE name=? AND difficulty=?
@@ -375,17 +481,14 @@ def save_round():
     existing = c.fetchone()
 
     if existing and existing[0] >= clicks:
-        # Alter Score ist besser - nicht speichern
         conn.close()
         return jsonify({"ok": True, "msg": "Alter Score war besser"})
 
-    # Lösche alten Score wenn neuer besser ist
     c.execute("""
     DELETE FROM rounds
     WHERE name=? AND difficulty=?
     """, (player_name, difficulty))
 
-    # Speichere neuen Score
     c.execute("""
     INSERT INTO rounds (name, difficulty, clicks)
     VALUES (?, ?, ?)
@@ -413,7 +516,6 @@ def round_leaderboard(difficulty):
     rows = c.fetchall()
     conn.close()
 
-    # Convert to list of dicts
     data = [{"name": row[0], "clicks": row[1]} for row in rows]
     
     return jsonify(data)

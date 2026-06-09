@@ -799,3 +799,173 @@ li{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+/* ========== ADMIN PANEL STYLES ========== */
+
+.adminPlayerItem {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #f97316;
+}
+
+.playerInfo {
+    flex: 1;
+    text-align: left;
+}
+
+.playerName {
+    font-weight: 800;
+    font-size: 18px;
+    color: #f97316;
+}
+
+.playerStats {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.adminActions {
+    display: flex;
+    gap: 10px;
+}
+
+.editBtn {
+    background: #3b82f6;
+    padding: 8px 15px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.editBtn:hover {
+    background: #1e40af;
+    transform: scale(1.05);
+}
+
+.deleteBtn {
+    background: #ef4444;
+    padding: 8px 15px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.deleteBtn:hover {
+    background: #dc2626;
+    transform: scale(1.05);
+}
+
+.adminPopup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+}
+
+.adminPopupBox {
+    background: #0f172a;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    border: 2px solid #f97316;
+}
+
+.adminPopupBox h2 {
+    margin-top: 0;
+    color: #f97316;
+    font-size: 28px;
+}
+
+.editField {
+    margin: 20px 0;
+    text-align: left;
+}
+
+.editField label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #06b6d4;
+}
+
+.editField input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    box-sizing: border-box;
+    color: #000;
+    background: #e2e8f0;
+}
+
+.editField input:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(59,130,246,0.6);
+}
+
+.adminButtonGroup {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.saveBtn {
+    flex: 1;
+    background: #22c55e;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.saveBtn:hover {
+    background: #16a34a;
+    transform: scale(1.05);
+}
+
+.cancelBtn {
+    flex: 1;
+    background: #ef4444;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cancelBtn:hover {
+    background: #dc2626;
+    transform: scale(1.05);
+}
+
+#admin {
+    max-width: 700px;
+}
+
+#adminPlayerList {
+    max-width: 700px;
+    margin: 0 auto;
+    width: 100%;
+}

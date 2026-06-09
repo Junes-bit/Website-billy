@@ -265,6 +265,63 @@ def redeem():
 
     return jsonify({"ok": True, "reward": reward})
 
+# ============= ADMIN ENDPOINTS =============
+
+@app.route('/all-players', methods=['GET'])
+def all_players():
+    """Alle Spieler abrufen"""
+    try:
+        cursor = db.cursor()
+        cursor.execute("SELECT name, coins, power FROM players ORDER BY coins DESC")
+        players = cursor.fetchall()
+        return jsonify([{"name": p[0], "coins": p[1], "power": p[2]} for p in players])
+    except:
+        return jsonify([])
+
+@app.route('/get-player/<name>', methods=['GET'])
+def get_player(name):
+    """Einen Spieler abrufen"""
+    try:
+        cursor = db.cursor()
+        cursor.execute("SELECT name, coins, power FROM players WHERE name = ?", (name,))
+        p = cursor.fetchone()
+        if p:
+            return jsonify({"name": p[0], "coins": p[1], "power": p[2]})
+        return jsonify(None)
+    except:
+        return jsonify(None)
+
+@app.route('/admin-edit-player', methods=['POST'])
+def admin_edit_player():
+    """Admin: Spieler bearbeiten"""
+    data = request.json
+    playerName = data.get('playerName')
+    coins = data.get('coins', 0)
+    power = data.get('power', 1)
+    
+    try:
+        cursor = db.cursor()
+        cursor.execute("UPDATE players SET coins = ?, power = ? WHERE name = ?", (coins, power, playerName))
+        db.commit()
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "msg": str(e)})
+
+@app.route('/admin-delete-player', methods=['POST'])
+def admin_delete_player():
+    """Admin: Spieler löschen"""
+    data = request.json
+    playerName = data.get('playerName')
+    
+    try:
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM players WHERE name = ?", (playerName,))
+        db.commit()
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "msg": str(e)})
+
+
 # ============= FRIENDS SYSTEM =============
 
 @app.route("/add-friend", methods=["POST"])

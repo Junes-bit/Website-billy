@@ -33,6 +33,7 @@
             <button onclick="show('shop')" class="nav-btn">🛒 Shop</button>
             <button onclick="show('leaderboard')" class="nav-btn">🏆 Ranking</button>
             <button onclick="toggleCodeBox()" class="nav-btn">🎁 Code</button>
+            <button class="nav-btn" onclick="isAdmin() ? loadAdminPanel() : alert('❌ Keine Berechtigung')">🔧 Admin</button>
         </nav>
 
         <!-- CODE POPUP -->
@@ -401,6 +402,11 @@
             </div>
 
         </div>
+
+        <div id="admin" class="page">
+    <h2>🔧 Admin Panel</h2>
+    <div id="adminPlayerList"></div>
+</div>
 
     </div>
 

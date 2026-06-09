@@ -1,969 +1,908 @@
-body{
-    margin:0;
-    font-family:'Inter', sans-serif;
-    background: radial-gradient(circle at top, #1e293b, #0f172a);
-    color:white;
-    text-align:center;
-    user-select:none;
-    overflow-x:hidden;
-}
-
-.hidden{
-    display:none !important;
-}
-
-#nameScreen{
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    gap:15px;
-}
-
-input{
-    font-family:'Inter', sans-serif;
-    font-size:18px;
-    padding:12px;
-    border-radius:12px;
-    border:none;
-    outline:none;
-    color: #000;
-}
-
-button{
-    font-family:'Inter', sans-serif;
-    padding:12px 20px;
-    border:none;
-    border-radius:12px;
-    background:#1e293b;
-    color:white;
-    cursor:pointer;
-    transition:0.2s;
-    font-weight:600;
-}
-
-button:hover{
-    transform:scale(1.05);
-    background:#334155;
-}
-
-.app{
-    display:flex;
-    flex-direction:column;
-    height:100vh;
-    overflow:hidden;
-}
-
-.navbar{
-    display:flex;
-    justify-content:flex-start;
-    gap:8px;
-    padding:12px 15px;
-    background:rgba(17,24,39,0.95);
-    backdrop-filter: blur(10px);
-    overflow-x:auto;
-    border-bottom:1px solid rgba(100,200,255,0.2);
-    flex-wrap:wrap;
-}
-
-.nav-btn{
-    padding:8px 14px;
-    font-size:13px;
-    white-space:nowrap;
-    border-radius:8px;
-    background:rgba(59,130,246,0.1);
-    border:1px solid rgba(59,130,246,0.3);
-    transition:0.2s;
-}
-
-.nav-btn:hover{
-    background:rgba(59,130,246,0.3);
-    border-color:rgba(59,130,246,0.6);
-    transform:scale(1.02);
-}
-
-.content{
-    flex:1;
-    overflow-y:auto;
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
-
-.page{
-    display:none;
-    width:100%;
-    max-width:900px;
-    animation: fadeIn 0.3s ease-in;
-}
-
-.page.active{
-    display:block;
-}
-
-@keyframes fadeIn{
-    from{ opacity:0; }
-    to{ opacity:1; }
-}
-
-.backBtn{
-    align-self:flex-start;
-    margin-bottom:20px;
-    background:rgba(59,130,246,0.2);
-    border:1px solid rgba(59,130,246,0.5);
-    padding:10px 15px;
-    font-size:14px;
-}
-
-.backBtn:hover{
-    background:rgba(59,130,246,0.4);
-    border-color:rgba(59,130,246,0.8);
-}
-
-#menu h1{
-    font-size:48px;
-    margin-bottom:40px;
-    background:linear-gradient(135deg, #3b82f6, #06b6d4);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-clip:text;
-}
-
-.gameModesGrid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
-    gap:30px;
-    margin:40px 0;
-    max-width:600px;
-    margin-left:auto;
-    margin-right:auto;
-}
-
-.gameModeCard{
-    background:linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15));
-    border:2px solid rgba(59,130,246,0.3);
-    border-radius:20px;
-    padding:30px;
-    cursor:pointer;
-    transition:all 0.3s ease;
-    display:flex;
-    flex-direction:column;
-    gap:15px;
-    align-items:center;
-}
-
-.gameModeCard:hover{
-    border-color:rgba(59,130,246,0.8);
-    background:linear-gradient(135deg, rgba(59,130,246,0.25), rgba(6,182,212,0.25));
-    transform:translateY(-5px);
-    box-shadow:0 10px 30px rgba(59,130,246,0.3);
-}
-
-.modeEmoji{
-    font-size:60px;
-}
-
-.gameModeCard h2{
-    font-size:28px;
-    margin:0;
-    color:#06b6d4;
-}
-
-.gameModeCard p{
-    font-size:14px;
-    opacity:0.8;
-    margin:0;
-}
-
-.playBtn{
-    font-size:18px;
-    padding:12px 30px;
-    background:linear-gradient(135deg, #3b82f6, #06b6d4);
-    border:none;
-    border-radius:50px;
-    color:white;
-    font-weight:800;
-    cursor:pointer;
-    transition:all 0.2s;
-    margin-top:10px;
-}
-
-.playBtn:hover{
-    transform:scale(1.1);
-    box-shadow:0 0 20px rgba(59,130,246,0.6);
-}
-
-.gameContainer{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:30px;
-    min-height:60vh;
-}
-
-#coins{
-    font-size:80px;
-    font-weight:800;
-    color:#38bdf8;
-    text-shadow:0 0 30px rgba(56,189,248,0.6);
-}
-
-#power{
-    font-size:20px;
-    opacity:0.9;
-}
-
-#click{
-    width:220px;
-    height:220px;
-    border-radius:50%;
-    border:none;
-    background:linear-gradient(45deg,#3b82f6,#06b6d4);
-    box-shadow:
-        0 0 40px rgba(59,130,246,0.6),
-        inset 0 0 20px rgba(255,255,255,0.1);
-    cursor:pointer;
-    animation: float 2.5s ease-in-out infinite;
-    transition:all 0.1s;
-}
-
-#click:active{
-    transform:scale(0.95);
-}
-
-@keyframes float{
-    0%{ transform:translateY(0px); }
-    50%{ transform:translateY(-8px); }
-    100%{ transform:translateY(0px); }
-}
-
-.profileCard{
-    background:linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15));
-    border:2px solid rgba(59,130,246,0.3);
-    border-radius:16px;
-    padding:30px;
-    max-width:400px;
-    margin:30px auto;
-}
-
-.profileCard h2{
-    font-size:32px;
-    margin:0 0 20px 0;
-    color:#06b6d4;
-}
-
-.profileCard p{
-    font-size:18px;
-    margin:10px 0;
-    opacity:0.9;
-}
-
-.profileCard span{
-    color:#38bdf8;
-    font-weight:700;
-}
-
-.shopGrid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
-    gap:15px;
-    padding:20px;
-    max-width:700px;
-    margin:auto;
-}
-
-.card{
-    background:#1e293b;
-    padding:20px;
-    border-radius:16px;
-    cursor:pointer;
-    text-align:center;
-    transition: all 0.2s ease;
-    border:2px solid transparent;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    justify-content:center;
-    align-items:center;
-}
-
-.card:hover{
-    background:#334155;
-    border-color:rgba(59,130,246,0.5);
-}
-
-.card .name{
-    font-weight:800;
-    font-size:16px;
-    display:block;
-}
-
-.card .price{
-    font-size:12px;
-    color:#9ca3af;
-    font-weight:400;
-    display:block;
-}
-
-.card.selected{
-    border-color:#06b6d4;
-    background:rgba(6,182,212,0.15);
-}
-
-.card.selected::after{
-    content:"✓ Ausgestattet";
-    display:block;
-    margin-top:8px;
-    font-size:11px;
-    font-weight:600;
-    color:#06b6d4;
-    text-shadow:0 0 10px rgba(6,182,212,0.8);
-}
-
-ul{
-    list-style:none;
-    padding:0;
-    max-width:400px;
-    margin:20px auto;
-    width: 100%;
-}
-
-li{
-    margin:10px auto;
-    padding:12px;
-    width:100%;
-    background:#1e293b;
-    border-radius:10px;
-    border-left:4px solid #3b82f6;
-}
-
-.settingsBox{
-    background:linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15));
-    border:2px solid rgba(59,130,246,0.3);
-    border-radius:16px;
-    padding:30px;
-    max-width:400px;
-    margin:30px auto;
-}
-
-.settingsBox button{
-    width:100%;
-    padding:15px;
-    font-size:16px;
-    background:#ef4444;
-    color:white;
-}
-
-.settingsBox button:hover{
-    background:#dc2626;
-}
-
-.popup{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.6);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:1000;
-}
-
-.popupBox{
-    background:#0f172a;
-    padding:30px;
-    border-radius:15px;
-    width:90%;
-    max-width:350px;
-    border:2px solid rgba(59,130,246,0.3);
-}
-
-.popupBox h2{
-    margin-top:0;
-    color:#06b6d4;
-}
-
-#codeInput{
-    width:100%;
-    font-size:16px;
-    padding:12px;
-    margin:15px 0;
-    box-sizing:border-box;
-    color: #000;
-}
-
-.popupBox button{
-    width:100%;
-    margin:10px 0;
-}
-
-/* ========== FRIENDS STYLES ========== */
-
-.friendsTabs{
-    display:flex;
-    gap:10px;
-    margin-bottom:30px;
-    justify-content:center;
-    flex-wrap:wrap;
-}
-
-.friendsTab{
-    padding:10px 20px;
-    border-radius:8px;
-    background:rgba(59,130,246,0.1);
-    border:2px solid rgba(59,130,246,0.3);
-    cursor:pointer;
-    transition:all 0.2s;
-    font-weight:600;
-}
-
-.friendsTab.active{
-    background:rgba(59,130,246,0.3);
-    border-color:rgba(59,130,246,0.8);
-    color:#06b6d4;
-}
-
-.friendsTab:hover{
-    background:rgba(59,130,246,0.2);
-}
-
-.friendsList{
-    max-width:600px;
-    margin:0 auto;
-    width:100%;
-}
-
-.friendItem{
-    background:#1e293b;
-    padding:15px;
-    border-radius:12px;
-    margin:10px 0;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-left:4px solid #06b6d4;
-}
-
-.friendName{
-    font-weight:700;
-    font-size:16px;
-    text-align:left;
-    flex:1;
-}
-
-.friendActions{
-    display:flex;
-    gap:10px;
-}
-
-.friendActions button{
-    padding:8px 15px;
-    font-size:12px;
-    border-radius:6px;
-    transition:all 0.2s;
-}
-
-.acceptBtn{
-    background:#22c55e;
-}
-
-.acceptBtn:hover{
-    background:#16a34a;
-}
-
-.declineBtn{
-    background:#ef4444;
-}
-
-.declineBtn:hover{
-    background:#dc2626;
-}
-
-.profileBtn{
-    background:rgba(59,130,246,0.3);
-    border:1px solid rgba(59,130,246,0.5);
-}
-
-.profileBtn:hover{
-    background:rgba(59,130,246,0.5);
-}
-
-.removeBtn{
-    background:#ef4444;
-}
-
-.removeBtn:hover{
-    background:#dc2626;
-}
-
-.addFriendBox{
-    background:linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15));
-    border:2px solid rgba(59,130,246,0.3);
-    border-radius:16px;
-    padding:20px;
-    max-width:400px;
-    margin:0 auto 30px;
-    display:flex;
-    gap:10px;
-}
-
-.addFriendBox input{
-    flex:1;
-    padding:10px;
-    border-radius:8px;
-    border:none;
-    font-size:14px;
-    color: #000;
-}
-
-.addFriendBox button{
-    padding:10px 20px;
-    background:linear-gradient(135deg, #3b82f6, #06b6d4);
-    border:none;
-    border-radius:8px;
-    font-weight:700;
-}
-
-.emptyMessage{
-    text-align:center;
-    padding:30px;
-    opacity:0.6;
-    font-size:16px;
-}
-
-.friendProfilePopup{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.6);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index:2000;
-}
-
-.friendProfileBox{
-    background:#0f172a;
-    padding:30px;
-    border-radius:20px;
-    width:90%;
-    max-width:400px;
-    border:2px solid rgba(59,130,246,0.3);
-}
-
-.friendProfileBox h2{
-    margin-top:0;
-    color:#06b6d4;
-    font-size:28px;
-}
-
-.friendProfileBox p{
-    font-size:16px;
-    margin:15px 0;
-}
-
-.friendProfileBox span{
-    color:#38bdf8;
-    font-weight:700;
-}
-
-.friendProfileBox button{
-    width:100%;
-    margin-top:20px;
-}
-
-@media (max-width: 768px){
-    .navbar{
-        gap:6px;
-        padding:10px 8px;
+let name = "";
+let coins = 0;
+let power = 1;
+let skin = "#3b82f6";
+let owned = ["blueSkin"];
+let favoriteSkin = "#3b82f6";
+let playtimeSeconds = 0;
+
+let coinsEl;
+let powerEl;
+
+let friendsData = {
+    friends: [],
+    pendingSent: [],
+    pendingReceived: []
+};
+
+let currentFriendsTab = "friends";
+
+let wheelSpinning = false;
+let wheelRewards = [1000, 2000, 3000, 4000, 5000];
+
+// ============= INIT ================
+document.addEventListener("DOMContentLoaded", () => {
+    coinsEl = document.getElementById("coins");
+    powerEl = document.getElementById("power");
+
+    const clickBtn = document.getElementById("click");
+    if (clickBtn) {
+        clickBtn.addEventListener("click", () => {
+            coins += power;
+            update();
+            save();
+        });
     }
 
-    .nav-btn{
-        padding:6px 10px;
-        font-size:11px;
-    }
+    setTimeout(() => {
+        const app = document.getElementById("app");
+        const nameScreen = document.getElementById("nameScreen");
+        
+        if (app && nameScreen && nameScreen.style.display === "none") {
+            const activeUser = localStorage.getItem("activeUser");
+            if (activeUser) {
+                autoLoadGame(activeUser);
+            }
+        }
+    }, 100);
 
-    .gameModesGrid{
-        grid-template-columns:1fr;
-        gap:20px;
-    }
+    updateWheelCooldown();
+    setInterval(updateWheelCooldown, 1000);
+});
 
-    .gameModeCard{
-        padding:20px;
-    }
+// ============= AUTO-LOAD ================
+function autoLoadGame(playerName) {
+    name = playerName;
+    
+    fetch("/load/" + playerName)
+        .then(r => r.json())
+        .then(data => {
+            coins = data.coins || 0;
+            power = data.power || 1;
+            skin = data.skin || "#3b82f6";
+            owned = data.owned || ["blueSkin"];
+            favoriteSkin = data.favoriteSkin || skin;
+            playtimeSeconds = data.playtime || 0;
 
-    .modeEmoji{
-        font-size:40px;
-    }
+            applySkin(skin);
+            show("menu");
+            update();
+            updateProfile();
+        })
+        .catch(err => {
+            console.error("Fehler beim Laden:", err);
+            alert("Fehler beim Laden des Spielstands");
+        });
+}
 
-    .gameModeCard h2{
-        font-size:22px;
+// ============= AUTO-SAVE ================
+setInterval(() => {
+    if (name) {
+        save();
     }
+}, 10000);
 
-    #click{
-        width:180px;
-        height:180px;
-    }
+// ============= SKIN ================
+function applySkin(value) {
+    const click = document.getElementById("click");
+    if (!click) return;
 
-    #coins{
-        font-size:60px;
-    }
-
-    .content{
-        padding:15px;
-    }
-
-    .friendItem{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:10px;
-    }
-
-    .friendActions{
-        width:100%;
-        flex-wrap:wrap;
-    }
-
-    .addFriendBox{
-        flex-direction:column;
+    click.style.background = value;
+    if (coinsEl) {
+        coinsEl.style.color = value;
+        coinsEl.style.textShadow = `0 0 30px ${value}`;
     }
 }
 
-@media (max-width: 480px){
-    #menu h1{
-        font-size:32px;
+// ============= START GAME ================
+function startGame() {
+    const input = document.getElementById("nameInput");
+    if (!input || !input.value) return;
+
+    const newName = input.value.trim();
+
+    // ✅ BUG FIX 1: Nur 1x pro Name
+    const allPlayers = localStorage.getItem("allPlayers") ? JSON.parse(localStorage.getItem("allPlayers")) : [];
+    
+    if (allPlayers.includes(newName)) {
+        // Account existiert bereits
+        const pass = prompt("🔐 Passwort eingeben:");
+        const savedPass = localStorage.getItem("pass_" + newName);
+        
+        if (pass !== savedPass) {
+            alert("❌ Falsches Passwort!");
+            return;
+        }
+    } else {
+        // Neuer Account
+        const pass = prompt("🔐 Neues Passwort setzen:");
+        if (!pass) return;
+        localStorage.setItem("pass_" + newName, pass);
+        allPlayers.push(newName);
+        localStorage.setItem("allPlayers", JSON.stringify(allPlayers));
     }
 
-    .navbar{
-        gap:4px;
-        padding:8px 5px;
+    name = newName;
+    const deviceUser = localStorage.getItem("activeUser");
+    if (deviceUser && deviceUser !== name) {
+        if (!confirm(`Zu Account "${name}" wechseln?`)) {
+            return;
+        }
     }
 
-    .nav-btn{
-        padding:5px 8px;
-        font-size:9px;
+    localStorage.setItem("activeUser", name);
+
+    fetch("/load/" + name)
+        .then(r => r.json())
+        .then(data => {
+            coins = data.coins || 0;
+            power = data.power || 1;
+            skin = data.skin || "#3b82f6";
+            owned = data.owned || ["blueSkin"];
+            favoriteSkin = data.favoriteSkin || skin;
+            playtimeSeconds = data.playtime || 0;
+
+            document.getElementById("nameScreen").style.display = "none";
+            document.getElementById("app").classList.remove("hidden");
+
+            applySkin(skin);
+            show("menu");
+            update();
+            updateProfile();
+        })
+        .catch(err => {
+            console.error("Login Error:", err);
+            alert("Fehler beim Login!");
+            localStorage.removeItem("activeUser");
+        });
+}
+
+// ============= UPDATE ================
+function update() {
+    if (coinsEl) coinsEl.innerText = coins;
+    if (powerEl) powerEl.innerText = "⚡ " + power + " pro Klick";
+    updateUpgradePrices();
+    updateProfile();
+    renderWheelSkins();
+}
+
+// ============= PAGE NAVIGATION ================
+function show(id) {
+    document.querySelectorAll(".page").forEach(e => e.classList.remove("active"));
+    const el = document.getElementById(id);
+    if (el) el.classList.add("active");
+
+    if (id === "friends") {
+        Friends();
+    }
+    if (id === "profileEdit") {
+        renderFavoriteSkinGrid();
+    }
+    if (id === "leaderboard") {
+        loadLB();
+    }
+}
+
+// ============= PLAYTIME FORMAT ================
+function formatPlaytime(seconds) {
+    const days = Math.floor(seconds / (24 * 3600));
+    const remaining = seconds % (24 * 3600);
+    const hours = Math.floor(remaining / 3600);
+    const remaining2 = remaining % 3600;
+    const minutes = Math.floor(remaining2 / 60);
+    
+    return `${days}T ${hours}H ${minutes}min`;
+}
+
+// ============= PROFILE UPDATE ================
+function updateProfile() {
+    const profileName = document.getElementById("profileName");
+    const profileCoins = document.getElementById("profileCoins");
+    const profilePower = document.getElementById("profilePower");
+    const profileSkin = document.getElementById("profileSkin");
+    const profilePlaytime = document.getElementById("profilePlaytime");
+    const favoriteSkinOrb = document.getElementById("favoriteSkinOrb");
+    const favoriteSkinName = document.getElementById("favoriteSkinName");
+
+    if (profileName) profileName.innerText = name;
+    if (profileCoins) profileCoins.innerText = coins;
+    if (profilePower) profilePower.innerText = power;
+    if (profilePlaytime) profilePlaytime.innerText = formatPlaytime(playtimeSeconds);
+    
+    const skinNames = {
+        "#3b82f6": "Blau",
+        "#ef4444": "Rot",
+        "#22c55e": "Hellgrün",
+        "#f97316": "Orange",
+        "gold": "Gold",
+        "#38bdf8": "Diamant",
+        "#ff3b30": "Lava",
+        "#7dd3fc": "Ice",
+        "#84cc16": "Toxic",
+        "#ff4d9d": "Pink",
+        "#111827": "Void"
+    };
+    
+    if (profileSkin) profileSkin.innerText = skinNames[skin] || "Unbekannt";
+
+    if (favoriteSkinOrb) {
+        favoriteSkinOrb.style.background = favoriteSkin;
+        favoriteSkinOrb.style.width = "100px";
+        favoriteSkinOrb.style.height = "100px";
+        favoriteSkinOrb.style.borderRadius = "50%";
+        favoriteSkinOrb.style.margin = "20px auto";
+        favoriteSkinOrb.style.boxShadow = `0 0 40px ${favoriteSkin}`;
     }
 
-    #click{
-        width:140px;
-        height:140px;
+    if (favoriteSkinName) {
+        favoriteSkinName.innerText = skinNames[favoriteSkin] || "Unbekannt";
+    }
+}
+
+// ============= FAVORITE SKIN GRID ================
+function renderFavoriteSkinGrid() {
+    const grid = document.getElementById("favoriteSkinGrid");
+    if (!grid) return;
+
+    grid.innerHTML = "";
+
+    const skins = [
+        { name: "Blau", color: "#3b82f6", id: "blueSkin" },
+        { name: "Rot", color: "#ef4444", id: "redSkin" },
+        { name: "Hellgrün", color: "#22c55e", id: "greenSkin" },
+        { name: "Orange", color: "#f97316", id: "orangeSkin" },
+        { name: "Gold", color: "gold", id: "goldSkin" },
+        { name: "Diamant", color: "#38bdf8", id: "diamondSkin" },
+        { name: "Lava", color: "#ff3b30", id: "lavaSkin" },
+        { name: "Ice", color: "#7dd3fc", id: "iceSkin" },
+        { name: "Toxic", color: "#84cc16", id: "toxicSkin" },
+        { name: "Pink", color: "#ff4d9d", id: "pinkSkin" },
+        { name: "Void", color: "#111827", id: "voidSkin" }
+    ];
+
+    if (!owned || owned.length === 0) {
+        owned = ["blueSkin"];
     }
 
-    #coins{
-        font-size:50px;
+    skins.forEach(skin => {
+        if (!owned.includes(skin.id)) return;
+
+        const div = document.createElement("div");
+        div.className = "favoriteSkinCard";
+        if (favoriteSkin === skin.color) {
+            div.classList.add("selected");
+        }
+
+        div.style.cssText = `
+            width: 80px;
+            height: 80px;
+            background: ${skin.color};
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px ${skin.color};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+        `;
+
+        div.onclick = () => selectFavoriteSkin(skin.color);
+        div.innerText = skin.name.charAt(0);
+
+        grid.appendChild(div);
+    });
+}
+
+function selectFavoriteSkin(color) {
+    favoriteSkin = color;
+    renderFavoriteSkinGrid();
+    save();
+    updateProfile();
+}
+
+// ============= RENDER WHEEL SKINS ================
+function renderWheelSkins() {
+    const wheelSkinList = [
+        { id: "lavaSkin", name: "Lava", color: "#ff3b30" },
+        { id: "iceSkin", name: "Ice", color: "#7dd3fc" },
+        { id: "toxicSkin", name: "Toxic", color: "#84cc16" },
+        { id: "pinkSkin", name: "Pink", color: "#ff4d9d" },
+        { id: "voidSkin", name: "Void", color: "#111827" }
+    ];
+    
+    wheelSkinList.forEach(skin => {
+        const container = document.getElementById(skin.id + "Card");
+        if (!container) return;
+        
+        if (owned.includes(skin.id)) {
+            container.innerHTML = `
+                <div class="card" id="${skin.id}" onclick="selectSkin('${skin.color}', '${skin.id}')">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: ${skin.color};"></div>
+                    <span class="name">${skin.name}</span>
+                    <span class="price">🎡 Glücksrad</span>
+                </div>
+            `;
+        } else {
+            container.innerHTML = "";
+        }
+    });
+}
+
+// ============= SKINS ================
+function selectSkin(value, id) {
+    skin = value;
+    document.querySelectorAll("#skinsGrid .card").forEach(c => c.classList.remove("selected"));
+    const el = document.getElementById(id);
+    if (el) el.classList.add("selected");
+    applySkin(value);
+    save();
+    updateProfile();
+}
+
+function buySkin(id, price, value) {
+    const el = document.getElementById(id);
+    if (owned.includes(id)) {
+        selectSkin(value, id);
+        return;
     }
 
-    .shopGrid{
-        grid-template-columns:repeat(auto-fit, minmax(100px, 1fr));
-        gap:10px;
-        padding:10px;
+    if (coins >= price) {
+        coins -= price;
+        owned.push(id);
+        
+        // ✅ BUG FIX 2: Speichern SOFORT nach Kauf
+        const el = document.getElementById(id);
+        if (el) {
+            const priceTag = el.querySelector(".price");
+            if (priceTag) priceTag.remove();
+        }
+        selectSkin(value, id);
+        update();
+        save();
+    } else {
+        alert("Nicht genug Coins");
+    }
+}
+
+// ============= UPGRADES ================
+function getUpgradePrice(base) {
+    return Math.floor(base * (1 + power * 0.15));
+}
+
+function buyUpgrade(price, add) {
+    if (coins >= price) {
+        coins -= price;
+        power += add;
+        update();
+        save();
+    } else {
+        alert("Zu wenig Coins");
+    }
+}
+
+function updateUpgradePrices() {
+    const u1 = document.getElementById("u1");
+    const u2 = document.getElementById("u2");
+    const u3 = document.getElementById("u3");
+
+    if (u1) u1.innerText = getUpgradePrice(50) + " Coins";
+    if (u2) u2.innerText = getUpgradePrice(150) + " Coins";
+    if (u3) u3.innerText = getUpgradePrice(500) + " Coins";
+}
+
+// ============= CODE SYSTEM ================
+function toggleCodeBox() {
+    const popup = document.getElementById("codePopup");
+    if (!popup) return;
+    popup.classList.toggle("hidden");
+}
+
+async function redeemCode() {
+    const input = document.getElementById("codeInput");
+    if (!input) return;
+
+    const code = input.value.trim();
+    if (!code) {
+        alert("Code eingeben!");
+        return;
     }
 
-    .card{
-        padding:12px;
+    const res = await fetch("/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, name })
+    });
+
+    const data = await res.json();
+    if (data.ok) {
+        coins += data.reward;
+        alert("🎉 +" + data.reward + " Coins!");
+        input.value = "";
+        update();
+        save();
+    } else {
+        alert(data.msg);
+    }
+}
+
+// ============= SAVE ================
+function save() {
+    fetch("/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name,
+            coins,
+            power,
+            skin,
+            owned,
+            favoriteSkin
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            console.log("✅ Spielstand gespeichert!");
+        }
+    })
+    .catch(err => console.error("Speicherfehler:", err));
+}
+
+// ============= LOGOUT ================
+function logout() {
+    if (confirm("🚪 Wirklich ausloggen?")) {
+        localStorage.removeItem("activeUser");
+        location.reload();
+    }
+}
+
+// ============= FRIENDS SYSTEM =============
+function Friends() {
+    fetch("/get-friends/" + name)
+        .then(r => r.json())
+        .then(data => {
+            friendsData = data;
+            renderFriendsTab(currentFriendsTab);
+        });
+}
+
+function switchFriendsTab(tab) {
+    currentFriendsTab = tab;
+    document.querySelectorAll(".friendsTab").forEach(t => t.classList.remove("active"));
+    document.querySelector(`.friendsTab[onclick="switchFriendsTab('${tab}')"]`)?.classList.add("active");
+    renderFriendsTab(tab);
+}
+
+function renderFriendsTab(tab) {
+    const container = document.getElementById("friendsList");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (tab === "friends") {
+        if (friendsData.friends.length === 0) {
+            container.innerHTML = "<div class='emptyMessage'>Noch keine Freunde</div>";
+            return;
+        }
+        friendsData.friends.forEach(friend => {
+            const item = document.createElement("div");
+            item.className = "friendItem";
+            item.innerHTML = `
+                <div class="friendName">👤 ${friend}</div>
+                <div class="friendActions">
+                    <button class="profileBtn" onclick="showFriendProfile('${friend}')">Profil</button>
+                    <button class="removeBtn" onclick="removeFriend('${friend}')">Entfernen</button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+    else if (tab === "sent") {
+        if (friendsData.pendingSent.length === 0) {
+            container.innerHTML = "<div class='emptyMessage'>Keine ausstehenden Anfragen</div>";
+            return;
+        }
+        friendsData.pendingSent.forEach(friend => {
+            const item = document.createElement("div");
+            item.className = "friendItem";
+            item.innerHTML = `
+                <div class="friendName">⏳ Anfrage an ${friend}</div>
+                <div class="friendActions">
+                    <button class="declineBtn" onclick="declineFriendRequest('${friend}', 'sent')">Stornieren</button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+    else if (tab === "received") {
+        if (friendsData.pendingReceived.length === 0) {
+            container.innerHTML = "<div class='emptyMessage'>Keine eingegangenen Anfragen</div>";
+            return;
+        }
+        friendsData.pendingReceived.forEach(friend => {
+            const item = document.createElement("div");
+            item.className = "friendItem";
+            item.innerHTML = `
+                <div class="friendName">✉️ Anfrage von ${friend}</div>
+                <div class="friendActions">
+                    <button class="acceptBtn" onclick="acceptFriendRequest('${friend}')">Akzeptieren</button>
+                    <button class="declineBtn" onclick="declineFriendRequest('${friend}', 'received')">Ablehnen</button>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+}
+
+function addFriend() {
+    const input = document.getElementById("friendInput");
+    if (!input || !input.value.trim()) {
+        alert("Name eingeben!");
+        return;
     }
 
-    .friendsTabs{
-        flex-direction:column;
-        gap:8px;
+    const friendName = input.value.trim();
+    fetch("/add-friend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ myName: name, friendName: friendName })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("✅ Anfrage gesendet!");
+            input.value = "";
+            Friends();
+        } else {
+            alert("❌ " + data.msg);
+        }
+    });
+}
+
+function acceptFriendRequest(fromName) {
+    fetch("/accept-friend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ myName: name, fromName: fromName })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("✅ Freund akzeptiert!");
+            Friends();
+        }
+    });
+}
+
+function declineFriendRequest(friendName, type) {
+    fetch("/decline-friend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ myName: name, fromName: friendName })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("✅ Abgelehnt");
+            Friends();
+        }
+    });
+}
+
+function removeFriend(friendName) {
+    if (!confirm(`${friendName} wirklich entfernen?`)) return;
+    fetch("/remove-friend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ myName: name, friendName: friendName })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("✅ Freund entfernt");
+            Friends();
+        }
+    });
+}
+
+function showFriendProfile(friendName) {
+    fetch("/friend-profile/" + friendName)
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok === false) {
+                alert("Profil nicht gefunden");
+                return;
+            }
+
+            const skinNames = {
+                "#3b82f6": "Blau", "#ef4444": "Rot", "#22c55e": "Hellgrün",
+                "#f97316": "Orange", "gold": "Gold", "#38bdf8": "Diamant",
+                "#ff3b30": "Lava", "#7dd3fc": "Ice", "#84cc16": "Toxic",
+                "#ff4d9d": "Pink", "#111827": "Void"
+            };
+
+            const popup = document.createElement("div");
+            popup.className = "friendProfilePopup";
+            popup.innerHTML = `
+                <div class="friendProfileBox">
+                    <h2>👤 ${data.name}</h2>
+                    <p>💰 Coins: <span>${data.coins}</span></p>
+                    <p>⚡ Power: <span>${data.power}</span></p>
+                    <p>🎨 Skin: <span>${skinNames[data.skin] || "Unbekannt"}</span></p>
+                    <button onclick="this.parentElement.parentElement.remove()">Schließen</button>
+                </div>
+            `;
+            document.body.appendChild(popup);
+        });
+}
+
+// ============= LEADERBOARD ================
+function loadLB() {
+    fetch("/leaderboard")
+        .then(r => r.json())
+        .then(data => {
+            const list = document.getElementById("list");
+            if (!list) return;
+            list.innerHTML = "";
+            data.forEach((p, index) => {
+                const li = document.createElement("li");
+                li.innerText = `${index + 1}. ${p[0]} - ${p[1] ?? 0} Coins`;
+                list.appendChild(li);
+            });
+        })
+        .catch(() => console.log("Leaderboard error"));
+}
+
+// ============= RUNDEN SYSTEM =============
+let roundClicks = 0;
+let roundSeconds = 0;
+let roundTimer = null;
+let currentRoundMode = "";
+
+function startRunden(mode, seconds) {
+    roundClicks = 0;
+    roundSeconds = seconds;
+    currentRoundMode = mode;
+
+    document.getElementById("rundenSelect").classList.add("hidden");
+    document.getElementById("rundenResults").classList.add("hidden");
+
+    const countdown = document.getElementById("rundenCountdown");
+    const display = document.getElementById("countdownDisplay");
+    countdown.classList.add("active");
+
+    let c = 3;
+    display.innerText = c;
+    display.style.color = "#3b82f6";
+    display.style.fontSize = "120px";
+    display.style.fontWeight = "800";
+
+    const interval = setInterval(() => {
+        c--;
+        display.style.transform = "scale(1.5)";
+        display.style.opacity = "1";
+        display.style.textShadow = `0 0 30px #3b82f6, 0 0 60px #3b82f6`;
+
+        setTimeout(() => {
+            display.style.transform = "scale(1.2)";
+            display.style.textShadow = `0 0 20px #3b82f6`;
+        }, 150);
+
+        if (c > 0) {
+            display.innerText = c;
+        } else {
+            clearInterval(interval);
+            display.innerText = "GO!";
+            display.style.transform = "scale(2)";
+            display.style.color = "#22c55e";
+            display.style.textShadow = `0 0 40px #22c55e, 0 0 80px #22c55e`;
+            setTimeout(() => startGameNow(seconds), 700);
+        }
+    }, 1000);
+}
+
+function startGameNow(seconds) {
+    document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenGame").classList.add("active");
+
+    const clicksEl = document.getElementById("rundenClicks");
+    const timerEl = document.getElementById("rundenTimer");
+    const btn = document.getElementById("rundenClick");
+
+    roundClicks = 0;
+    clicksEl.innerText = 0;
+    timerEl.innerText = seconds;
+
+    btn.onclick = () => {
+        roundClicks++;
+        clicksEl.innerText = roundClicks;
+        
+        clicksEl.style.transform = "scale(1.5)";
+        clicksEl.style.textShadow = `0 0 30px #3b82f6, 0 0 60px #3b82f6`;
+        clicksEl.style.color = "#3b82f6";
+        clicksEl.style.fontSize = "80px";
+
+        setTimeout(() => {
+            clicksEl.style.transform = "scale(1.2)";
+            clicksEl.style.textShadow = `0 0 20px #3b82f6`;
+        }, 150);
+    };
+
+    let time = seconds;
+    roundTimer = setInterval(() => {
+        time--;
+        timerEl.innerText = time;
+
+        timerEl.style.transform = "scale(1.3)";
+        timerEl.style.textShadow = `0 0 30px #ef4444, 0 0 60px #ef4444`;
+        timerEl.style.color = "#ef4444";
+        timerEl.style.fontSize = "70px";
+
+        setTimeout(() => {
+            timerEl.style.transform = "scale(1)";
+            timerEl.style.textShadow = `0 0 20px #ef4444`;
+        }, 300);
+
+        if (time <= 0) {
+            clearInterval(roundTimer);
+            endRunden();
+        }
+    }, 1000);
+}
+
+function endRunden() {
+    document.getElementById("rundenGame").classList.remove("active");
+    document.getElementById("rundenResults").classList.remove("hidden");
+    document.getElementById("rundenResults").classList.add("active");
+
+    const resultClicks = document.getElementById("resultClicks");
+    if (resultClicks) {
+        resultClicks.innerText = roundClicks;
     }
 
-    .friendsTab{
-        width:100%;
+    loadRoundLB(currentRoundMode);
+
+    fetch("/save-round", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ name, difficulty: currentRoundMode, clicks: roundClicks })
+    });
+}
+
+function restartRunden() {
+    startRunden(currentRoundMode, roundSeconds);
+}
+
+function exitRunden() {
+    document.getElementById("rundenSelect").classList.remove("hidden");
+    document.getElementById("rundenResults").classList.add("hidden");
+    document.getElementById("rundenCountdown").classList.remove("active");
+    document.getElementById("rundenGame").classList.remove("active");
+}
+
+function loadRoundLB(mode) {
+    fetch("/round-leaderboard/" + mode)
+        .then(r => r.json())
+        .then(data => {
+            const list = document.getElementById("roundLB");
+            if (!list) return;
+            list.innerHTML = "";
+            data.forEach((p, i) => {
+                const li = document.createElement("li");
+                li.innerText = `${i + 1}. ${p.name} - ${p.clicks}`;
+                list.appendChild(li);
+            });
+        })
+        .catch(err => console.log("Round LB error:", err));
+}
+
+// ============= GLÜCKSRAD (WHEEL REWARDS) =============
+function spinWheel() {
+    if (wheelSpinning) return;
+
+    const lastSpin = localStorage.getItem("lastSpin_" + name);
+    const now = Date.now();
+
+    if (lastSpin) {
+        const timePassed = now - parseInt(lastSpin);
+        const oneDay = 24 * 60 * 60 * 1000;
+        if (timePassed < oneDay) {
+            alert("⏳ Komm in 24h wieder!");
+            return;
+        }
     }
+
+    wheelSpinning = true;
+    const wheel = document.getElementById("fortuneWheel");
+    const resultPopup = document.getElementById("wheelResult");
+
+    if (!wheel) return;
+
+    const randomIndex = Math.floor(Math.random() * 5);
+    const finalAngle = 360 * 5 + (360 - (270 + randomIndex * 72 + 36));
+
+    wheel.style.transform = `rotate(${finalAngle}deg)`;
+
+    setTimeout(() => {
+        // 🎡 Sende zum Server
+        fetch("/spin-wheel", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                name,
+                rewardIndex: randomIndex
+            })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                coins += data.coinsReward;
+                owned = data.newOwned;
+                
+                const skinNames = {
+                    "lavaSkin": "Lava",
+                    "iceSkin": "Ice",
+                    "toxicSkin": "Toxic",
+                    "pinkSkin": "Pink",
+                    "voidSkin": "Void"
+                };
+                
+                if (resultPopup) {
+                    resultPopup.innerHTML = `
+                        <div class="wheelResultBox">
+                            <h2>🎉 GEWONNEN!</h2>
+                            <p class="wheelRewardAmount">+${data.coinsReward} Coins</p>
+                            <p style="color: #06b6d4; font-size: 24px; font-weight: 800;">
+                                🎨 Neuer Skin: ${skinNames[data.skinReward]}
+                            </p>
+                            <button onclick="document.getElementById('wheelResult').classList.add('hidden')">Schließen</button>
+                        </div>
+                    `;
+                    resultPopup.classList.remove("hidden");
+                }
+                
+                update();
+                save();
+                localStorage.setItem("lastSpin_" + name, now.toString());
+                wheelSpinning = false;
+                updateWheelCooldown();
+            }
+        });
+    }, 3000);
+}
+
+function updateWheelCooldown() {
+    const lastSpin = localStorage.getItem("lastSpin_" + name);
+    const btn = document.getElementById("spinBtn");
+    const timer = document.getElementById("wheelTimer");
+
+    if (!btn || !timer) return;
+
+    if (!lastSpin) {
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        timer.innerHTML = "🎉 Dreh jetzt!";
+        return;
     }
-/* ========== RUNDEN STYLES (FIXED) ========== */
 
-.rundenCountdown,
-.rundenGame,
-.rundenResults {
-    display: none;
-}
+    const now = Date.now();
+    const timePassed = now - parseInt(lastSpin);
+    const oneDay = 24 * 60 * 60 * 1000;
+    const timeLeft = oneDay - timePassed;
 
-.rundenCountdown.active,
-.rundenGame.active,
-.rundenResults.active {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Countdown Display */
-.countdownDisplay {
-    font-size: 120px;
-    font-weight: 800;
-    color: #06b6d4;
-    text-shadow: 0 0 50px rgba(6,182,212,0.8);
-    animation: countdownPulse 1s infinite;
-}
-
-@keyframes countdownPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-/* Game Timer */
-.rundenTimer {
-    font-size: 60px;
-    font-weight: 800;
-    color: #ef4444;
-    text-shadow: 0 0 30px rgba(239,68,68,0.6);
-    margin-bottom: 20px;
-}
-
-.rundenClicks {
-    font-size: 50px;
-    font-weight: 800;
-    color: #38bdf8;
-    text-shadow: 0 0 30px rgba(56,189,248,0.6);
-    margin-bottom: 30px;
-}
-
-.rundenClickBtn {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    border: none;
-    background: linear-gradient(45deg, #3b82f6, #06b6d4);
-    box-shadow: 0 0 40px rgba(59,130,246,0.6),
-                inset 0 0 20px rgba(255,255,255,0.1);
-    cursor: pointer;
-    animation: float 2.5s ease-in-out infinite;
-    transition: all 0.1s;
-    font-size: 40px;
-}
-
-.rundenClickBtn:active {
-    transform: scale(0.9);
-}
-
-/* Results */
-.rundenResults {
-    gap: 20px;
-}
-
-.resultBox {
-    background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.15));
-    border: 2px solid rgba(59,130,246,0.3);
-    border-radius: 16px;
-    padding: 30px;
-    max-width: 400px;
-    text-align: center;
-}
-
-.resultBox p {
-    font-size: 20px;
-    margin: 15px 0;
-}
-
-.resultBox span {
-    color: #06b6d4;
-    font-weight: 700;
-    font-size: 28px;
-}
-
-.orbBtn {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-
-    background: radial-gradient(circle, #3b82f6, #1e3a8a);
-    box-shadow: 0 0 30px #3b82f6;
-
-    transition: transform 0.1s;
-}
-
-.orbBtn:active {
-    transform: scale(0.9);
-}
-
-/* ========== GLÜCKSRAD ZAHLEN FIX ========== */
-
-.wheel {
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    position: relative;
-    background: conic-gradient(
-        #ef4444 0deg 72deg,
-        #f97316 72deg 144deg,
-        #22c55e 144deg 216deg,
-        #3b82f6 216deg 288deg,
-        #a855f7 288deg 360deg
-    );
-    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: geometricPrecision;
-}
-
-.wheel span {
-    position: absolute;
-    font-weight: 800;
-    font-size: 18px;
-    color: white;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    left: 50%;
-    top: 50%;
-    transform-origin: center;
-}
-
-/* ✅ BUG FIX 3: Unterschiedliche Zahlenwerte pro Feld */
-
-/* Feld 1: 1000 Coins - oben (rot) */
-.wheel span:nth-child(1) {
-    transform: translate(-50%, -130px);
-}
-
-/* Feld 2: 2000 Coins - rechts oben (orange) */
-.wheel span:nth-child(2) {
-    transform: translate(-50%, -50%) rotate(72deg) translateY(-110px) rotate(-72deg);
-}
-
-/* Feld 3: 3000 Coins - rechts unten (grün) */
-.wheel span:nth-child(3) {
-    transform: translate(-50%, -50%) rotate(144deg) translateY(-110px) rotate(-144deg);
-}
-
-/* Feld 4: 4000 Coins - unten (blau) */
-.wheel span:nth-child(4) {
-    transform: translate(-50%, -50%) rotate(216deg) translateY(-110px) rotate(-216deg);
-}
-
-/* Feld 5: 5000 Coins - links (lila) */
-.wheel span:nth-child(5) {
-    transform: translate(-50%, -50%) rotate(288deg) translateY(-110px) rotate(-288deg);
-}
-
-.wheel span {
-    position: absolute;
-    font-weight: 800;
-    font-size: 18px;
-    color: white;
-
-    /* 🔥 macht Schrift sauber */
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
-
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    transform: translateZ(0);
-    backface-visibility: hidden;
-}
-
-/* Mittelpunkt */
-.wheel div {
-    position: absolute;
-    z-index: 10;
-}
-
-/* ===== BUTTON ===== */
-
-#spinBtn {
-    padding: 15px 40px;
-    font-size: 18px;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    border-radius: 50px;
-    font-weight: 800;
-    width: 200px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-#spinBtn:hover {
-    transform: scale(1.05);
-}
-
-#spinBtn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* ===== RESULT POPUP ===== */
-
-.wheelResultBox {
-    text-align: center;
-    animation: popupAppear 0.4s ease-out;
-}
-
-@keyframes popupAppear {
-    from { transform: scale(0.5); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-.wheelRewardAmount {
-    font-size: 48px;
-    font-weight: 800;
-    color: #22c55e;
-    margin: 20px 0;
-}
-
-/* ===== GLOBAL SAFE FIX ===== */
-
-* {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-/* ========== PROFILBILD FIX ========== */
-
-#profileImageDisplay {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 50%;
-    display: block;
-    margin: 20px auto;
-    border: 3px solid rgba(59, 130, 246, 0.5);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-}
-
-#previewImage {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 50%;
-    display: block;
-    margin: 20px auto;
-    border: 3px solid rgba(59, 130, 246, 0.5);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-}
-
-/* ========== LIEBLINGSSKIN GRID FIX ========== */
-
-#favoriteSkinGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 20px;
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 20px;
-}
-
-.favoriteSkinCard {
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.favoriteSkinCard:hover {
-    transform: scale(1.1);
-    filter: brightness(1.2);
-}
-
-.favoriteSkinCard.selected {
-    border: 4px solid #06b6d4 !important;
-    box-shadow: 0 0 30px rgba(6, 182, 212, 0.8) !important;
+    if (timeLeft <= 0) {
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        timer.innerHTML = "🎉 Dreh jetzt!";
+    } else {
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        const hours = Math.floor(timeLeft / (60 * 60 * 1000));
+        const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+        const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+        timer.innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
+    }
 }

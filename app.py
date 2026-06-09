@@ -271,9 +271,11 @@ def redeem():
 def all_players():
     """Alle Spieler abrufen"""
     try:
-        cursor = db.cursor()
-        cursor.execute("SELECT name, coins, power FROM players ORDER BY coins DESC")
-        players = cursor.fetchall()
+        conn = sqlite3.connect("game.db")
+        c = conn.cursor()
+        c.execute("SELECT name, coins, power FROM players ORDER BY coins DESC")
+        players = c.fetchall()
+        conn.close()
         return jsonify([{"name": p[0], "coins": p[1], "power": p[2]} for p in players])
     except:
         return jsonify([])
@@ -282,9 +284,11 @@ def all_players():
 def get_player(name):
     """Einen Spieler abrufen"""
     try:
-        cursor = db.cursor()
-        cursor.execute("SELECT name, coins, power FROM players WHERE name = ?", (name,))
-        p = cursor.fetchone()
+        conn = sqlite3.connect("game.db")
+        c = conn.cursor()
+        c.execute("SELECT name, coins, power FROM players WHERE name = ?", (name,))
+        p = c.fetchone()
+        conn.close()
         if p:
             return jsonify({"name": p[0], "coins": p[1], "power": p[2]})
         return jsonify(None)
@@ -300,9 +304,11 @@ def admin_edit_player():
     power = data.get('power', 1)
     
     try:
-        cursor = db.cursor()
-        cursor.execute("UPDATE players SET coins = ?, power = ? WHERE name = ?", (coins, power, playerName))
-        db.commit()
+        conn = sqlite3.connect("game.db")
+        c = conn.cursor()
+        c.execute("UPDATE players SET coins = ?, power = ? WHERE name = ?", (coins, power, playerName))
+        conn.commit()
+        conn.close()
         return jsonify({"ok": True})
     except Exception as e:
         return jsonify({"ok": False, "msg": str(e)})
@@ -314,13 +320,14 @@ def admin_delete_player():
     playerName = data.get('playerName')
     
     try:
-        cursor = db.cursor()
-        cursor.execute("DELETE FROM players WHERE name = ?", (playerName,))
-        db.commit()
+        conn = sqlite3.connect("game.db")
+        c = conn.cursor()
+        c.execute("DELETE FROM players WHERE name = ?", (playerName,))
+        conn.commit()
+        conn.close()
         return jsonify({"ok": True})
     except Exception as e:
         return jsonify({"ok": False, "msg": str(e)})
-
 
 # ============= FRIENDS SYSTEM =============
 
@@ -591,5 +598,5 @@ def spin_wheel():
 
 # ============= RUN =============
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 500))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

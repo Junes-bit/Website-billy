@@ -815,5 +815,131 @@ function updateWheelCooldown() {
         const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
         const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
         timer.innerHTML = `⏳ ${hours}h ${minutes}m ${seconds}s`;
+}
+
+    // ============= ADMIN PANEL =============
+const ADMIN_NAMES = ["Junes3012"];
+
+function isAdmin() {
+    return ADMIN_NAMES.includes(name);
+}
+
+function loadAdminPanel() {
+    if (!isAdmin()) {
+        alert("❌ Du bist kein Admin!");
+        return;
     }
+    show("admin");
+    loadAllPlayers();
+}
+
+function loadAllPlayers() {
+    fetch("/all-players")
+        .then(r => r.json())
+        .then(data => {
+            const list = document.getElementById("adminPlayerList");
+            if (!list) return;
+            list.innerHTML = "";
+
+            if (!data || data.length === 0) {
+                list.innerHTML = "<div class='emptyMessage'>Keine Spieler gefunden</div>";
+                return;
+            }
+
+            data.forEach(player => {
+                const item = document.createElement("div");
+                item.className = "adminPlayerItem";
+                item.innerHTML = `
+                    <div class="playerInfo">
+                        <div class="playerName">${player.name}</div>
+                        <div class="playerStats">💰 ${player.coins} Coins | ⚡ ${player.power} Power</div>
+                    </div>
+                    <div class="adminActions">
+                        <button class="editBtn" onclick="openEditPlayer('${player.name}')">✏️ Bearbeiten</button>
+                        <button class="deleteBtn" onclick="deletePlayer('${player.name}')">🗑️ Löschen</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        })
+        .catch(err => console.error("Admin Panel Error:", err));
+}
+
+function openEditPlayer(playerName) {
+    fetch("/get-player/" + playerName)
+        .then(r => r.json())
+        .then(data => {
+            if (!data) {
+                alert("Spieler nicht gefunden!");
+                return;
+            }
+
+            const popup = document.createElement("div");
+            popup.className = "adminPopup";
+            popup.innerHTML = `
+                <div class="adminPopupBox">
+                    <h2>👤 ${data.name} bearbeiten</h2>
+                    
+                    <div class="editField">
+                        <label>💰 Coins:</label>
+                        <input type="number" id="editCoins" value="${data.coins}" placeholder="Coins">
+                    </div>
+
+                    <div class="editField">
+                        <label>⚡ Power:</label>
+                        <input type="number" id="editPower" value="${data.power}" placeholder="Power">
+                    </div>
+
+                    <div class="adminButtonGroup">
+                        <button class="saveBtn" onclick="savePlayerEdit('${data.name}', this.parentElement.parentElement)">💾 Speichern</button>
+                        <button class="cancelBtn" onclick="this.parentElement.parentElement.parentElement.remove()">❌ Abbrechen</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(popup);
+        })
+        .catch(err => console.error("Edit Error:", err));
+}
+
+function savePlayerEdit(playerName, popupBox) {
+    const coins = parseInt(document.getElementById("editCoins").value) || 0;
+    const power = parseInt(document.getElementById("editPower").value) || 1;
+
+    fetch("/admin-edit-player", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerName, coins, power })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("✅ Spieler aktualisiert!");
+            popupBox.parentElement.remove();
+            loadAllPlayers();
+        } else {
+            alert("❌ " + data.msg);
+        }
+    })
+    .catch(err => console.error("Save Error:", err));
+}
+
+function deletePlayer(playerName) {
+    if (!confirm(`${playerName} WIRKLICH löschen? ⚠️`)) return;
+
+    fetch("/admin-delete-player", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ playerName })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("✅ Spieler gelöscht!");
+            loadAllPlayers();
+        } else {
+            alert("❌ " + data.msg);
+        }
+    })
+    .catch(err => console.error("Delete Error:", err));
+}
 }

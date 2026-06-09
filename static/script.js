@@ -16,7 +16,6 @@ let friendsData = {
 };
 
 let currentFriendsTab = "friends";
-
 let wheelSpinning = false;
 let wheelRewards = [1000, 2000, 3000, 4000, 5000];
 
@@ -94,18 +93,15 @@ function applySkin(value) {
     }
 }
 
-// ============= START GAME ================
+// ============= START GAME (FIX 1: Player nur 1x) ================
 function startGame() {
     const input = document.getElementById("nameInput");
     if (!input || !input.value) return;
 
     const newName = input.value.trim();
-
-    // ✅ BUG FIX 1: Nur 1x pro Name
     const allPlayers = localStorage.getItem("allPlayers") ? JSON.parse(localStorage.getItem("allPlayers")) : [];
     
     if (allPlayers.includes(newName)) {
-        // Account existiert bereits
         const pass = prompt("🔐 Passwort eingeben:");
         const savedPass = localStorage.getItem("pass_" + newName);
         
@@ -114,7 +110,6 @@ function startGame() {
             return;
         }
     } else {
-        // Neuer Account
         const pass = prompt("🔐 Neues Passwort setzen:");
         if (!pass) return;
         localStorage.setItem("pass_" + newName, pass);
@@ -123,13 +118,6 @@ function startGame() {
     }
 
     name = newName;
-    const deviceUser = localStorage.getItem("activeUser");
-    if (deviceUser && deviceUser !== name) {
-        if (!confirm(`Zu Account "${name}" wechseln?`)) {
-            return;
-        }
-    }
-
     localStorage.setItem("activeUser", name);
 
     fetch("/load/" + name)
@@ -172,15 +160,9 @@ function show(id) {
     const el = document.getElementById(id);
     if (el) el.classList.add("active");
 
-    if (id === "friends") {
-        Friends();
-    }
-    if (id === "profileEdit") {
-        renderFavoriteSkinGrid();
-    }
-    if (id === "leaderboard") {
-        loadLB();
-    }
+    if (id === "friends") Friends();
+    if (id === "profileEdit") renderFavoriteSkinGrid();
+    if (id === "leaderboard") loadLB();
 }
 
 // ============= PLAYTIME FORMAT ================
@@ -210,17 +192,10 @@ function updateProfile() {
     if (profilePlaytime) profilePlaytime.innerText = formatPlaytime(playtimeSeconds);
     
     const skinNames = {
-        "#3b82f6": "Blau",
-        "#ef4444": "Rot",
-        "#22c55e": "Hellgrün",
-        "#f97316": "Orange",
-        "gold": "Gold",
-        "#38bdf8": "Diamant",
-        "#ff3b30": "Lava",
-        "#7dd3fc": "Ice",
-        "#84cc16": "Toxic",
-        "#ff4d9d": "Pink",
-        "#111827": "Void"
+        "#3b82f6": "Blau", "#ef4444": "Rot", "#22c55e": "Hellgrün",
+        "#f97316": "Orange", "gold": "Gold", "#38bdf8": "Diamant",
+        "#ff3b30": "Lava", "#7dd3fc": "Ice", "#84cc16": "Toxic",
+        "#ff4d9d": "Pink", "#111827": "Void"
     };
     
     if (profileSkin) profileSkin.innerText = skinNames[skin] || "Unbekannt";
@@ -245,7 +220,6 @@ function renderFavoriteSkinGrid() {
     if (!grid) return;
 
     grid.innerHTML = "";
-
     const skins = [
         { name: "Blau", color: "#3b82f6", id: "blueSkin" },
         { name: "Rot", color: "#ef4444", id: "redSkin" },
@@ -260,34 +234,16 @@ function renderFavoriteSkinGrid() {
         { name: "Void", color: "#111827", id: "voidSkin" }
     ];
 
-    if (!owned || owned.length === 0) {
-        owned = ["blueSkin"];
-    }
+    if (!owned || owned.length === 0) owned = ["blueSkin"];
 
     skins.forEach(skin => {
         if (!owned.includes(skin.id)) return;
 
         const div = document.createElement("div");
         div.className = "favoriteSkinCard";
-        if (favoriteSkin === skin.color) {
-            div.classList.add("selected");
-        }
+        if (favoriteSkin === skin.color) div.classList.add("selected");
 
-        div.style.cssText = `
-            width: 80px;
-            height: 80px;
-            background: ${skin.color};
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.3s;
-            box-shadow: 0 0 20px ${skin.color};
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: white;
-        `;
+        div.style.cssText = `width: 80px; height: 80px; background: ${skin.color}; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.3s; box-shadow: 0 0 20px ${skin.color}; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white;`;
 
         div.onclick = () => selectFavoriteSkin(skin.color);
         div.innerText = skin.name.charAt(0);
@@ -318,13 +274,7 @@ function renderWheelSkins() {
         if (!container) return;
         
         if (owned.includes(skin.id)) {
-            container.innerHTML = `
-                <div class="card" id="${skin.id}" onclick="selectSkin('${skin.color}', '${skin.id}')">
-                    <div style="width: 60px; height: 60px; border-radius: 50%; background: ${skin.color};"></div>
-                    <span class="name">${skin.name}</span>
-                    <span class="price">🎡 Glücksrad</span>
-                </div>
-            `;
+            container.innerHTML = `<div class="card" id="${skin.id}" onclick="selectSkin('${skin.color}', '${skin.id}')"><div style="width: 60px; height: 60px; border-radius: 50%; background: ${skin.color};"></div><span class="name">${skin.name}</span><span class="price">🎡 Glücksrad</span></div>`;
         } else {
             container.innerHTML = "";
         }
@@ -342,6 +292,7 @@ function selectSkin(value, id) {
     updateProfile();
 }
 
+// ============= FIX 2: Shop speichert gekaufte Items! ================
 function buySkin(id, price, value) {
     const el = document.getElementById(id);
     if (owned.includes(id)) {
@@ -353,15 +304,13 @@ function buySkin(id, price, value) {
         coins -= price;
         owned.push(id);
         
-        // ✅ BUG FIX 2: Speichern SOFORT nach Kauf
-        const el = document.getElementById(id);
         if (el) {
             const priceTag = el.querySelector(".price");
             if (priceTag) priceTag.remove();
         }
         selectSkin(value, id);
         update();
-        save();
+        save();  // WICHTIG: Speichert owned!
     } else {
         alert("Nicht genug Coins");
     }
@@ -490,13 +439,7 @@ function renderFriendsTab(tab) {
         friendsData.friends.forEach(friend => {
             const item = document.createElement("div");
             item.className = "friendItem";
-            item.innerHTML = `
-                <div class="friendName">👤 ${friend}</div>
-                <div class="friendActions">
-                    <button class="profileBtn" onclick="showFriendProfile('${friend}')">Profil</button>
-                    <button class="removeBtn" onclick="removeFriend('${friend}')">Entfernen</button>
-                </div>
-            `;
+            item.innerHTML = `<div class="friendName">👤 ${friend}</div><div class="friendActions"><button class="profileBtn" onclick="showFriendProfile('${friend}')">Profil</button><button class="removeBtn" onclick="removeFriend('${friend}')">Entfernen</button></div>`;
             container.appendChild(item);
         });
     }
@@ -508,12 +451,7 @@ function renderFriendsTab(tab) {
         friendsData.pendingSent.forEach(friend => {
             const item = document.createElement("div");
             item.className = "friendItem";
-            item.innerHTML = `
-                <div class="friendName">⏳ Anfrage an ${friend}</div>
-                <div class="friendActions">
-                    <button class="declineBtn" onclick="declineFriendRequest('${friend}', 'sent')">Stornieren</button>
-                </div>
-            `;
+            item.innerHTML = `<div class="friendName">⏳ Anfrage an ${friend}</div><div class="friendActions"><button class="declineBtn" onclick="declineFriendRequest('${friend}', 'sent')">Stornieren</button></div>`;
             container.appendChild(item);
         });
     }
@@ -525,13 +463,7 @@ function renderFriendsTab(tab) {
         friendsData.pendingReceived.forEach(friend => {
             const item = document.createElement("div");
             item.className = "friendItem";
-            item.innerHTML = `
-                <div class="friendName">✉️ Anfrage von ${friend}</div>
-                <div class="friendActions">
-                    <button class="acceptBtn" onclick="acceptFriendRequest('${friend}')">Akzeptieren</button>
-                    <button class="declineBtn" onclick="declineFriendRequest('${friend}', 'received')">Ablehnen</button>
-                </div>
-            `;
+            item.innerHTML = `<div class="friendName">✉️ Anfrage von ${friend}</div><div class="friendActions"><button class="acceptBtn" onclick="acceptFriendRequest('${friend}')">Akzeptieren</button><button class="declineBtn" onclick="declineFriendRequest('${friend}', 'received')">Ablehnen</button></div>`;
             container.appendChild(item);
         });
     }
@@ -626,15 +558,7 @@ function showFriendProfile(friendName) {
 
             const popup = document.createElement("div");
             popup.className = "friendProfilePopup";
-            popup.innerHTML = `
-                <div class="friendProfileBox">
-                    <h2>👤 ${data.name}</h2>
-                    <p>💰 Coins: <span>${data.coins}</span></p>
-                    <p>⚡ Power: <span>${data.power}</span></p>
-                    <p>🎨 Skin: <span>${skinNames[data.skin] || "Unbekannt"}</span></p>
-                    <button onclick="this.parentElement.parentElement.remove()">Schließen</button>
-                </div>
-            `;
+            popup.innerHTML = `<div class="friendProfileBox"><h2>👤 ${data.name}</h2><p>💰 Coins: <span>${data.coins}</span></p><p>⚡ Power: <span>${data.power}</span></p><p>🎨 Skin: <span>${skinNames[data.skin] || "Unbekannt"}</span></p><button onclick="this.parentElement.parentElement.remove()">Schließen</button></div>`;
             document.body.appendChild(popup);
         });
 }
@@ -676,9 +600,6 @@ function startRunden(mode, seconds) {
 
     let c = 3;
     display.innerText = c;
-    display.style.color = "#3b82f6";
-    display.style.fontSize = "120px";
-    display.style.fontWeight = "800";
 
     const interval = setInterval(() => {
         c--;
@@ -827,7 +748,6 @@ function spinWheel() {
     wheel.style.transform = `rotate(${finalAngle}deg)`;
 
     setTimeout(() => {
-        // 🎡 Sende zum Server
         fetch("/spin-wheel", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
@@ -851,16 +771,7 @@ function spinWheel() {
                 };
                 
                 if (resultPopup) {
-                    resultPopup.innerHTML = `
-                        <div class="wheelResultBox">
-                            <h2>🎉 GEWONNEN!</h2>
-                            <p class="wheelRewardAmount">+${data.coinsReward} Coins</p>
-                            <p style="color: #06b6d4; font-size: 24px; font-weight: 800;">
-                                🎨 Neuer Skin: ${skinNames[data.skinReward]}
-                            </p>
-                            <button onclick="document.getElementById('wheelResult').classList.add('hidden')">Schließen</button>
-                        </div>
-                    `;
+                    resultPopup.innerHTML = `<div class="wheelResultBox"><h2>🎉 GEWONNEN!</h2><p class="wheelRewardAmount">+${data.coinsReward} Coins</p><p style="color: #06b6d4; font-size: 24px; font-weight: 800;">🎨 Neuer Skin: ${skinNames[data.skinReward]}</p><button onclick="document.getElementById('wheelResult').classList.add('hidden')">Schließen</button></div>`;
                     resultPopup.classList.remove("hidden");
                 }
                 
